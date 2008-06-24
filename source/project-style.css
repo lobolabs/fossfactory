@@ -1,0 +1,226 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#projectlead {
+    margin-top:.4em;
+    border: 1px solid #dedfe1; 
+    padding:.3em .8em .4em 3em;
+    background-image:url(images/icons/projectlead-big.png);
+    background-repeat:no-repeat;
+    background-position:center left;
+    font-weight:bold;
+    float:left;
+    display:block;
+    position:relative;
+    font-size:13px;
+    height:2.65em;
+}
+#projectlead h1 {
+    color:#117aad;
+    font-weight:bold;
+    margin:0em;
+    display:inline;
+}
+#projectlead em {
+    font-style:normal;
+    font-weight:normal;
+}
+#projectlead b {
+    font-weight:bold;
+}
+#projectlead p {
+    font-weight:normal;
+    margin:0em;
+}
+#bounty {
+    height:2.65em;
+    margin-top:.4em;
+    border: 1px solid #dedfe1;
+    border-left:0px;
+    padding:.3em .8em .4em 3.3em;
+    background-image:url(images/icons/bounty-big.png);
+    background-position:center left;
+    background-repeat:no-repeat;
+    font-weight:bold;
+    display:block;
+    position:relative;
+    float:left;
+    font-size:13px;
+}
+#bounty h1 {
+    color:#117aad;
+    font-weight:bold;
+    display:inline;
+}
+#bounty a {
+    font-weight:normal;
+    display:block;
+}
+#thermometer {
+    height:2.65em;
+    padding:.3em .8em .4em .8em;
+    margin-top:.4em;
+    border: 1px solid #dedfe1;
+    border-left:0px;
+    display:block;
+    position:relative;
+    float:left;
+}
+#thermometer div {
+    float: left;
+    font-weight:bold;
+    font-size:13px;
+    margin: 0 .4em;
+}
+#thermometer h1 {
+    color:#117aad;
+    font-weight:bold;
+    margin: 0;
+}
+#thermometer a {
+    font-weight:normal;
+}
+#thermometer form {
+    line-height: 2.65em;
+}
+#status {
+    margin-top:1em;
+    border:1px solid #dedfe1;
+    padding:1em;
+    color:white;
+    font-weight:normal;
+    width:50em;
+}
+#status h1 {
+    font-weight:bold;
+    color:white;
+}
+#status em {
+    font-style:normal;
+}
+#status a {
+    color:white;
+    font-weight:bold;
+}
+#status p {
+    margin-bottom:0em;
+}
+#status.submitted {
+    background-color:#eb5901;
+}
+#status.accept {
+    background-color:#008000;
+}
+#status.complete {
+    background-color:#000080;
+}
+    
+.project-title {
+    font-weight:bold;
+    font-size:1.3em;
+    color:black;
+}
+.abstract-content {
+    font-style:normal;
+    color:black;
+    display:block;
+    clear:left;
+    padding-top:.5em;
+}  
+#sponsor {
+    margin-top:1em;
+    position:relative;
+    bottom:1em;
+}
+#sponsor img {
+    position:relative;
+    margin-left:.3em;
+    top:1em;
+}
+#actions {
+    margin-top:1em;
+    border-top:1px solid #dedfe1;
+    text-align:right;
+}
+#actions a {
+   color:#117aad; 
+   font-weight:bold;
+   text-decoration:none;
+   padding-bottom:3px;
+   padding-left:25px;
+   margin-right:.3em;
+   background-image:url(images/icons/check.png);
+   background-repeat:no-repeat;
+}
+#actions a:hover {
+    text-decoration:underline;
+}
+#actions a.first-child {
+    background-image:url(images/icons/eye.png);
+}
+#options {
+    list-style-type:none;
+    padding-left:0em;
+    position:relative;
+    top:0em;margin-top:.2em;
+    float:left;
+}
+#options li {
+    padding:.4em;
+    padding-bottom:.4em;
+    background-repeat:no-repeat;
+    background-position:center left;
+}
+#options a {
+    text-decoration:none;
+    color:#117aad;
+    font-weight:bold;
+    padding:.29em;
+    padding-left:30px;
+    padding-bottom:3px;
+    white-space:nowrap;
+    background-image:url(images/icons/scale.png);
+    background-repeat:no-repeat;
+}
+#options a:hover {
+    text-decoration:underline;
+}
+#options li.first-child a {
+    background-image:url(images/icons/subproject.png);
+}
+#options li.last-child a {
+    background-image:url(images/icons/submission.png);
+}
+
+#sponsors_table td, #sponsors_table th {
+    padding: 0.2em 1em 0.2em 3em;
+}
+#sponsors_table td.username, #sponsors_table th.username {
+    padding: 0.2em 1em 0.2em 1em;
+}
+#sponsors_table tr {
+    background-color: #f0f0ff;
+}
+#sponsors_table tr.oddrow {
+    background-color: #e0e0ff;
+}
+#sponsors_table tr th {
+    background-color: #fff;
+}

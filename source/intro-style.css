@@ -1,0 +1,396 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    color: #696969;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    background-color: #FFFFFF;
+    font-size: 11px;
+}
+
+#maincontent {
+    position: relative;
+    width: 72em;
+    padding-bottom: 2em;
+    clear: both;
+    margin: 0.8em 0em 0em 0em;
+}
+
+#maincontent, #featured_projects {
+    margin-left: 3.2em;
+}
+
+#sidebar {
+    float: left;
+    width: 26em;
+}
+
+#introduction {
+    width: 26em;
+    height: 10.3em;
+}
+
+#maincontent h1 {
+    font-size: 14px;
+    font-weight: bold;
+    color: #660099;
+    margin: 0em 0em 0.3em 0em;
+}
+
+#introduction p {
+    font-size: 11px;
+    margin-top: 0em;
+}
+
+#intro_tabs {
+    padding: 0em;
+    margin: 0.05em 0em 0em 0em;
+    white-space: nowrap;
+    display: block;
+    padding: 0.2em 0em 0.2em 0em;
+}
+
+#intro_tabs li {
+    display: inline;
+    white-space: normal;
+}
+
+#intro_tabs a {
+    background-color: #ebeced;
+    border: 1px solid #dedfe1;
+    border-bottom: 0px;
+    font-weight: bold;
+    color: #696969;
+    text-decoration: none;
+    padding: 0.25em 0.5em ;
+    text-transform: lowercase;
+}
+
+#intro_tabs li.selected a {
+    background-color: black;
+    color: white;
+}
+
+#intro_tabs li.selected a {
+    background-color: transparent;
+    color: #27387a;
+}
+
+#howitworks {
+    margin: 0em 0em 0em 26.4em;
+    width: 43.8em;
+}
+
+#howitworks div {
+    margin: 0em;
+    background-repeat: repeat-x;
+    background-position: top;
+    border-left: 1px solid #dedfe1;
+    border-right: 1px solid #dedfe1;
+    font-weight: bold;
+    font-size: 12px;
+    position: relative;
+    display: none;
+}
+
+#howitworks div div {
+    display: block;
+}
+
+#howitworks div.selected {
+    display: block;
+}
+
+#howitworks div p {
+    margin: 0em;
+    padding: 0.6em 0.7em 0em 0.8em;
+    height: 10.4em;
+    font-size:12px;
+    background-position: top left;
+    background-repeat: no-repeat;
+}
+
+#howitworks div a {
+    border: none;
+    display: block;
+    text-align: right;
+    position: absolute;
+    top: 8.2em;
+    right: 0.95em;
+    background-color: transparent;
+    padding: 0.3em 0.5em 0.3em 1.5em;
+    background-repeat: no-repeat;
+    background-position: left;
+    color: inherit;
+    text-decoration: none;
+}
+
+#howitworks div div a:hover {
+    text-decoration: underline;
+}
+
+#howitworks div ul {
+    background-position: top;
+    background-repeat: repeat-x;
+    background-color: white;
+    margin: 0em;
+    padding: 0em;
+    display: none;
+}
+
+#howitworks.open div ul {
+    display: block;
+}
+
+/* Special cases for individual tabs */
+#intro_tabs #innovators.selected a { background-color: #213453; color: #fff }
+#howitworks #innovators_details p { background-image: url(images/ideas5.png); color: #fff }
+#innovators_details a { background-image: url(images/innovators_arrow_right.gif);color:#fff }
+.open #innovators_details a { background-image: url(images/innovators_arrow_down.gif); }
+#howitworks #innovators_details { background-image: url(images/innovators_bg.png); background-color: #2c3850; }
+#innovators_details ul { background-image: url(images/innovators_table_bg.gif); }
+
+#intro_tabs #designers.selected a { background-color: #fff; color: #000; }
+#howitworks #designers_details p { background-image: url(images/designers4.png); color: #000; }
+#designers_details a { background-image: url(images/designers_arrow_right.gif); color:black;}
+.open #designers_details a { background-image: url(images/designers_arrow_down.gif); }
+#howitworks #designers_details { background-image: url(images/designers_bg.gif); background-color:#e3e3e2; }
+#designers_details ul { background-image: url(images/designers_table_bg.gif); }
+
+#intro_tabs #sponsors.selected a { background-color: #611c17; color: #fdf8c0; }
+#howitworks #sponsors_details p { background-image: url(images/sponsors3.png); color: #fdf8c0; }
+#sponsors_details a { background-image: url(images/sponsors_arrow_right.gif);color:white; }
+.open #sponsors_details a { background-image: url(images/sponsors_arrow_down.gif); }
+#howitworks #sponsors_details { background-image: url(images/sponsors_bg.gif); background-color:#431a13; }
+#sponsors_details ul { background-image: url(images/sponsors_table_bg.gif); }
+
+#intro_tabs #developers.selected a { background-color: #647242; color: white; }
+#howitworks #developers_details p { background-image: url(images/developers4.png); color: white; }
+#developers_details a { background-image: url(images/developers_arrow_right.gif); }
+.open #developers_details a { background-image: url(images/developers_arrow_down.gif); }
+#howitworks #developers_details { background-image: url(images/developers_bg.gif); background-color:#a1a965; }
+#developers_details ul { background-image: url(images/developers_table_bg.gif); }
+/* The developers tab is the only one with the See details link coloured
+ * differently than the section blurb. */
+#howitworks #developers_details a { color: #000; }
+#howitworks #developers_details ul a { color: #27387a; }
+
+#intro_tabs #everybody.selected a { background-color:#cdcbe5; color: #2a2d56; }
+#howitworks #everybody_details p { background-image: url(images/everybody.png); color: #2a2d56; }
+#everybody_details a { background-image: url(images/everybody_arrow_right.gif);color: #2a2d56; }
+.open #everybody_details a { background-image: url(images/everybody_arrow_down.gif);}
+#howitworks #everybody_details { background-image: url(images/everybody2.png); background-color:#9fa2c5; background-position:top; }
+#everybody_details ul { background-image: url(images/everybody_table_bg.gif); }
+
+#howitworks div ul ul {
+    background-image: none;
+    background-color: transparent;
+    display: block;
+    text-align: right;
+    margin: 1.25em 0em 0.5em 0em;
+}
+
+#howitworks div ul a, #howitworks.open div ul a {
+    position: static;
+    margin: 0em;
+    background-image: none;
+    display: inline;
+    padding: 0em 0.5em 0em 0.5em;
+    color: #27387a;
+    text-decoration: none;
+}
+
+#howitworks div ul a:hover, #howitworks.open div ul a:hover {
+    text-decoration: underline;
+}
+
+#howitworks div li {
+    position: relative;
+    display: block;
+    margin: 0em;
+    padding: 0.9em 0em 0em 7.1em;
+    font-size: 11px;
+    font-weight: normal;
+    border-bottom: 1px solid #dedfe1;
+}
+
+#howitworks div li li {
+    padding: 0em;
+    border: none;
+    display: inline;
+}
+
+#howitworks div li li:before {
+    content: " | ";
+    color: #696969;
+}
+
+#howitworks div li li:first-child:before {
+    content: "";
+}
+
+#howitworks div h2 {
+    margin: 0em 0em 0.2em 0em;
+    font-size: 11px;
+}
+
+#howitworks div img {
+    font-size: 12px;
+    position: absolute;
+    left: 1em;
+    top: 1.25em;
+    max-width: 5em;
+    max-height: 5em;
+}
+
+#howitworks div li.last-child {
+    background-color: #27387a;
+    color: #fff;
+    margin: 0em;
+    padding: 1em;
+    height: auto;
+    min-height: 0em;
+}
+
+#howitworks div h3 {
+    margin: 0em 0em 0.2em 0em;
+    font-size: 11px;
+}
+
+#why_better {
+    background-image: url(images/why_better_bg.gif);
+    background-repeat:repeat-x;
+    background-color: #4c6bab;
+    color: white;
+    font-weight: bold;
+    width: 25em;
+    margin-top: 0.4em;
+}
+
+#why_better a {
+    padding: 0.5em 0.4em 0.4em 1.6em;
+    color: white;
+    text-decoration: none;
+    background-position: left;
+    background-image:url(images/white_arrow_right.gif);
+    background-repeat: no-repeat;
+    height: 1.5em;
+    z-index:11;
+    background-position: left;
+    display: block;
+}
+#browse {
+    width: 22.81em;
+    padding: 0.5em 0.4em 0.4em 1.6em;
+    color: #393b3d;
+    text-decoration: none;
+    font-weight:bold;
+    background-position: top;
+    background-image: url(images/browse_bg.gif);
+    background-repeat: repeat-x;
+    height: 1.5em;
+    display: block;
+    text-align:center;
+    border:1px #dedfe1  solid;
+}
+#why_better.open a {
+    display: block;
+    background-image:url(images/white_arrow_down.gif);
+}
+
+#why_better ul {
+    display: none;
+    font-size: 12px;
+    border: 1px solid #dedfe1;
+    width:26em;
+    height:13.4em;
+    background-image: url(benefits_bg.gif);
+    background-repeat: repeat-x;
+    background-color: #27377a;
+    padding: 0em;
+    margin: 0em;
+    position: relative;
+}
+#why_better.open ul {
+    display: block;
+}
+
+#why_better ul li:first-child {
+    border: none;
+}
+#why_better ul li {
+    border-top: 1px solid #dedfe1;
+    display: block;
+    padding-left: 1em;
+    padding-top: 0.5em;
+    padding-right:0em;
+    padding-bottom:0.5em;
+    display: block;
+    color: white;
+    font-weight: bold;
+    width:25em;
+}
+#why_better ul li:hover {
+    background-color: #1d2957;
+}
+#why_better ul li.selected {
+    background-color: black;
+}
+#why_better ul li div {
+    display: none;
+    font-size: 12px;
+    position: absolute;
+    top: 0em;
+    left: 26em;
+    border: 1px solid #dedfe1;
+    border-left: 0px;
+    padding: 1em 1em 2em 1em;
+    width:36em;
+    height:10.4em;
+    color: #696969;
+}
+#why_better ul li.selected div {
+    display: block;
+}
+#footer {
+    color: #9a9a9a;
+    text-align: center;
+    font-size: 11px;
+    left: 0em;
+    right: 0em;
+    background-color: #e3e3e5;
+    padding: .3em 0em .3em 0em;
+    white-space: nowrap;
+    z-index:11;
+    position:relative;
+    margin: 1em 0em 0em 0em;
+}
+#footer a {
+    text-decoration: none;
+    color: #9a9a9a;
+}
+#footer a:hover {
+    text-decoration: underline;
+}
+#copyright {
+    padding: 1.4em;
+    font-size: x-small;
+    color: #a7a7a7;
+}

@@ -1,0 +1,805 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#narrow_results {
+    position: relative;
+    left:.2em;
+    top:0.2em; 
+    width: 14.8em;
+    border: 1px solid #dedfe1; 
+    display:block;
+    margin:0em;
+    padding-bottom:.4em;
+    float:left;
+}
+#narrow_results_title {
+    color: white;
+    text-align: center;
+    vertical-align: top;
+    font-weight:bold;
+    font-size:12px;
+    font-weight: bold;
+    height:1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 1em;
+    padding-top: .5em;
+    width:14em;
+    background-image: url(images/narrow_results_bg.gif); 
+    background-repeat: repeat-x;
+    border-bottom: 1px solid #dedfe1;
+}
+
+#search_results {
+    position:relative;
+    margin-left:16.5em;
+    left: 0;
+    top: .3em;
+    right:0em;
+    height: 1.5em;
+}
+
+#search_results span {
+    font-size:12px;
+    position:absolute;
+    right:0em;
+    bottom:0em;
+    padding-bottom:.3em;
+    margin:0em;
+    padding-right:.5em;
+}
+#search_results span input[type="checkbox"] {
+    position:relative;
+    top:0.2em;
+    right:.95em;
+}
+#search_results span label[for="check"] {
+    position:relative;
+    right:.95em;
+    color:#696969;
+    font-size:11px;
+    font-weight:bold;
+}
+#user_tabs span.clear {
+    font-size:12px;
+    right:0em;
+    top:.45em;
+    padding-bottom:.3em;
+    margin:0em;
+    padding-right:.5em;
+    float:right;
+}
+#user_tabs ul li span.clear input[type="checkbox"] {
+    position:relative;
+    top:.2em;
+    right:.95em;
+}
+#user_tabs ul li span.clear label[for="check"] {
+    position:relative;
+    right:.95em;
+    color:#696969;
+    font-size:11px;
+    font-weight:bold;
+}
+#user_tabs {
+    margin-left:0em;
+    margin-top:.4em;
+    margin-right:0em;
+    position:relative;
+    padding:0em;
+    top:0em;
+
+}
+#search_result_tabs {
+    margin-left:15.5em;
+    margin-top:.4em;
+    margin-right:0em;
+    position: relative;
+    top: 0em;
+    left: 0em;
+    right:0em;
+    padding: 0em;
+    white-space:nowrap;
+}
+#search_result_tabs li {
+    /*if this is static, then any absolutely position child will look
+     * at the grand parent.. it will look at whatever is higher*/
+    display: inline;
+    list-style-type:none;
+}
+#user_tabs li {
+    list-style-type:none;
+}
+    
+
+#search_result_tabs a, #user_tabs a {
+    background-color: #ebeced;
+    font-size:11px;
+    border: 1px solid #dedfe1;
+    font-weight:bold;
+    color: #696969;
+    text-decoration: none;
+    padding: 0em 0.5em 0.3em 0.5em;
+}
+#search_result_tabs ul li.search-top,#user_tabs ul li.search-top {
+    background-color:#ffffcc;
+    display:block;
+    height:2.6em;
+    width:100%;
+}
+#search_result_tabs li.selected a {
+    background-color: #ffffcc;
+    color: black;
+}
+/*ie project_container*/
+form[name=projects_container_form] {
+    padding:0em;
+    margin:0em;
+}
+#search_result_tabs ul, #user_tabs ul {
+    position: relative;
+    padding:0em 0em 0em 0em; 
+    margin:0em;
+    top:.21em;
+    left: 0em;
+    margin-right:.3em;
+    z-index: 0;
+    font-weight:bold;
+    font-size:12px;
+    color:black;
+    border: 1px solid #dedfe1; 
+
+}
+#search_result_tabs ul.open {
+    display:block;
+}
+#search_result_tabs ul.closed {
+    display:none;
+}
+#user_tabs ul li label[for="textfield"] {
+    color:#696969;
+    display:inline;
+    position:absolute;
+    right:16.0em;
+}
+#user_tabs ul li input[name="textfield"] {
+    display:block;
+    position:absolute;
+    right:11.3em;
+    top:.1em;
+    width:5em;
+    color:black;
+    display:block;
+    border-style:solid;
+    border-color:#bdc7d8;
+    border-width:1px;
+    padding:.2em .4em;
+}
+    
+/*header row of search results*/
+#search_result_tabs ul li.row-title, #user_tabs ul li.row-title {
+    top:0em;
+    left:0em;
+    display:block;
+    border-bottom: 1px solid #dedfe1; 
+    background-color:#f7f7f7;
+    color:black;
+    position:relative;
+    background-image:none;
+    padding:.2em 0em .2em .5em;
+}
+/*rows*/
+#search_result_tabs ul li, #user_tabs ul li {
+    padding:.2em 0em .2em 0em;
+    margin: 0em 0em 0em 0em;
+    display:block;
+    border-bottom: 1px solid #dedfe1; 
+    color: #696969;
+    position:relative;
+}
+#search_result_tabs ul li a, #user_tabs ul li a {
+    color:#660099 ! important;
+    font-weight:normal;
+    font-size:11px;
+    border:none;
+    background-color:transparent ! important;
+    padding:0em;
+    position:relative;
+    bottom:.3em;
+}
+
+#search_result_tabs ul li a:hover, #user_tabs ul li a:hover {
+    text-decoration:underline;
+}
+#search_result_tabs ul li div.name, #user_tabs ul li div.name {
+    position:relative;
+    left:2.6em;
+    width:10em;
+}
+#user_tabs ul li div.totalsponsorship {
+    display:block;
+    position:absolute;
+    right:21.5em;
+    top:.2em;
+}
+#user_tabs ul li div.icons {
+    display:block;
+    position:absolute;
+    right:32.5em;
+    top:.05em;
+}
+/*#sponsorship {*/
+#search_result_tabs ul li div.sponsorship, #user_tabs ul li div.sponsorship {
+    display:block;
+    position:absolute;
+    float:right;
+    right:10em;
+    top:.2em;
+}
+/*#status {*/
+#search_result_tabs ul li div.status,#user_tabs ul li div.status {
+    margin:0em ! important;
+    display:block;
+    position:absolute;
+    right:3.5em;
+    top:0.2em;
+}
+
+#search_result_tabs ul li span, #user_tabs ul li span {
+    left:0em;
+    bottom:.2em;
+    display:inline;
+    position:relative;
+    padding:0em;
+}
+/*name_field*/
+#search_result_tabs ul li span a, #user_tabs ul li span a {
+    left:0em;
+    color:#696969 ! important;
+    font-weight:bold;
+    font-size:12px ! important;
+    position:relative;
+    bottom:0em;
+    padding-right:.3em;
+    padding-left:1.5em;
+    background-image:url(images/blue_arrow_right.gif);
+    background-repeat:no-repeat;
+    background-position:top left;
+}
+/*so that the project name at the rows don't get underlined, whereas [go]
+ * does*/
+#search_result_tabs ul li span a:hover, #user_tabs ul li span a:hover {
+    text-decoration:none ! important;
+}
+
+#search_result_tabs ul li.open span a, #user_tabs ul li.open span a {
+    background-image:url(images/blue_arrow_down.gif);
+}
+
+.details.open {
+    display:block;
+    height:5em;
+}
+.details.closed {
+    display:none;
+}
+.sponsorshipfield {
+    padding:0em 0em 0em 0em;
+    margin:0em;
+    display:inline;
+    position:absolute;
+    right:10.71em;
+    top:.2em;
+    float:right;
+}
+.statusfield {
+    font-size:10px ! important;
+    right:1em;
+    top:.2em;
+    position:absolute;
+    display:inline;
+    float:right;
+}
+.totalsponsorship-field {
+    font-size:12px ! important;
+    right:25em;
+    top:.2em;
+    position:absolute;
+    display:inline;
+}
+#search_result_tabs li.selected ul, #user_tabs li.selected ul {
+    display:block;
+}
+.abstract {
+    font-size:12px;
+    color:#696969;
+    font-style:italic;
+    font-weight:normal;
+    padding:0em ! important;
+    position:relative;
+    white-space:normal;
+    padding-left:7em;
+    display:block;
+    padding:1em;
+    left:2.5em;
+    margin-right:2.5em;
+}
+#search_result_tabs ul.shown .abstract, #user_tabs ul.shown .abstract {
+    display:block ! important;
+}
+#search_result_tabs ul.hidden .abstract,#user_tabs ul.hidden .abstract {
+    display:none ! important;
+}
+.abstract.hidden {
+    display:none;
+}
+.abstract.shown {
+    display:block;
+}
+/*when the "show Abstracts" checkbox is ticked*/
+#search_result_tabs ul li div div, #user_tabs ul li div div {
+    padding-top:0em;
+    position:relative;
+    padding-left:2.5em ! important;
+}
+#search_result_tabs ul li div div em, #user_tabs ul li div div em {
+    font-size:12px;
+    font-weight:bold;
+    color:#eb5901;
+    font-style:normal;
+}
+#search_result_tabs ul li div div h1, #user_tabs ul li div div h1 {
+    font-weight:bold;
+}
+#search_result_tabs ul li div div a, #user_tabs ul li div div a {
+    color:#660099 ! important;
+    text-decoration:none ! important;
+    top:0em;
+    padding-left:.3em ! important;
+    background-image:none ! important;
+    font-weight:normal ! important;
+}
+#search_result_tabs ul li div div a:hover, #user_tabs ul li div div a:hover {
+    text-decoration:underline ! important;
+}
+#search_result_tabs ul li.search-top div.last-child {
+    float:right;
+    margin-right:1em;
+    margin-top:.8em;
+}
+#search_result_tabs ul li.search-top div.last-child a:hover {
+    text-decoration:underline;
+}
+#search_result_tabs ul li.search-top div.last-child a {
+    padding-right:1em;
+    padding-left:1em;
+    color:#107aac ! important;
+    background-image:url(vertical_divider.gif);
+    background-position: top right;
+    background-repeat: repeat-y;
+}
+#search_result_tabs ul li.search-top div.last-child a.last-child {
+    background-image:none;
+}
+#search_result_tabs ul li div.messages {
+    font-size:11px;
+    position:relative;
+    float:right;
+    margin-right:21em;
+    clear:both;
+    margin-top:-1.7em;
+}
+#search_result_tabs ul li div.pagination {
+    position:relative;
+    float:right;
+    margin-top:-1.2em;
+    margin-right:1em;
+    clear:both;
+}
+#search_result_tabs ul li div.pagination a {
+    padding-right:1em;
+    padding-left:1em;
+    color:#107aac ! important;
+    background-image:url(vertical_divider.gif);
+    background-position: top right;
+    background-repeat: repeat-y;
+}
+#search_result_tabs ul li div.pagination a.last-child {
+    background-image:none;
+}
+#user_tabs ul li div.pagination {
+    height:1.6em;
+    top:.3em;
+    position:relative;
+    margin-right:1em;
+    clear:both;
+}
+#user_tabs ul li div.pagination a {
+    padding-right:1em;
+    padding-left:1em;
+    color:#107aac ! important;
+    background-image:url(vertical_divider.gif);
+    background-position: top right;
+    background-repeat: repeat-y;
+}
+#user_tabs ul li div.pagination a.last-child {
+    background-image:none;
+}
+#search_result_tabs ul li.last-child div.pagination {
+    float:left ! important;
+    top:1.5em;
+}
+#search_result_tabs ul li div.pagination a:hover {
+    text-decoration:underline;
+}
+#search_result_tabs ul li.last-child {
+    position:relative;
+    height:1.5em;
+    left:0em;
+    right:0em;
+}
+#search_result_tabs ul li input[name="abstracts"] {
+    position:absolute;
+    font-size:11px;
+    right:10em;
+}
+#search_result_tabs ul li label[for="check2"] {
+    font-size:11px;
+    position:absolute;
+    right:0em;
+    padding-top:0.1em;
+    margin-right:1em;
+}
+
+#search_result_tabs ul li div.pagination a.last-child {
+    background-image:none;
+}
+#user_tabs ul li div.update-button {
+    float:left;
+    display:block;
+    background-repeat:repeat-x;
+    background-color: #eb5901;
+    border-color: #eb7934 #8f3500 #8f3500 #eb7934;
+    border-width:1px;
+    border-style:solid;
+    color: white;
+    font-weight: bold;
+    width: 6em;
+    margin-top:.4em;
+    margin-left:.5em;
+}
+#user_tabs ul li div.update-button a {
+    position:relative;
+    left:-0.0em;
+    top:.05em;
+    padding: 0.2em 1.4em 0.7em 1.2em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    display: block;
+    line-height:1.5em;
+    /*background-color:black ! important;*/
+}
+#search_result_tabs ul li div.button {
+    float:left;
+    display:block;
+    background-repeat:repeat-x;
+    background-color: #eb5901;
+    border-color: #eb7934 #8f3500 #8f3500 #eb7934;
+    border-width:1px;
+    border-style:solid;
+    color: white;
+    font-weight: bold;
+    width: 6em;
+    margin-top:.4em;
+    margin-left:.5em;
+}
+
+#search_result_tabs ul li div.button a {
+    position:relative;
+    left:-0.6em;
+    padding: 0.2em 10em 0.7em 1.8em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    display: block;
+    line-height:1.8em;
+}
+
+#user_tabs ul li div.assign-button {
+    float:left;
+    display:block;
+    background-color: #107aac;
+    border-color: #4977a3 #003060 #003060 #4977a3;
+    border-style:solid;
+    border-width:1px;
+    color: white;
+    font-weight: bold;
+    position: relative;
+    left:2em;
+    margin-top:.2em;
+    margin-left:.5em;
+    margin-right:0em;
+    width:14em ! important;
+
+}
+#user_tabs ul li div.assign-button a {
+    float:left;
+    position:relative;
+    left:-3em;
+    top:.05em;
+    padding: 0.0em 2em 1em 2em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    line-height:1.8em;
+    display: block;
+    white-space:nowrap;
+}
+#user_tabs ul li div.assign-button a:hover {
+    text-decoration:none;
+}
+#user_tabs ul li div.remove-button {
+    float:left;
+    display:block;
+    background-color: #eb5901;
+    border-color: #eb7934 #8f3500 #8f3500 #eb7934;
+    border-width:1px;
+    border-style:solid;
+    color: white;
+    font-weight: bold;
+    position: static;
+    width: 6em;
+    margin-top:.4em;
+    margin-left:.5em;
+}
+#user_tabs ul li div.remove-button a {
+    float:left;
+    position:relative;
+    left:-0.0em;
+    top:.05em;
+    padding: 0.2em .9em 0.7em .9em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    display: block;
+}
+#search_result_tabs ul li div.button2 {
+    float:left;
+    display:block;
+    background-color: #eb5901;
+    border-color: #eb7934 #8f3500 #8f3500 #eb7934;
+    border-width:1px;
+    border-style:solid;
+    color: white;
+    font-weight: bold;
+    position: static;
+    width: 6em;
+    margin-top:.4em;
+    margin-left:.5em;
+}
+#search_result_tabs ul li div.button2 a {
+    float:left;
+    position:relative;
+    left:-0.6em;
+    padding: 0.2em 2em 0.7em 2em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    line-height:1.8em;
+    display: block;
+}
+/*-------------------------*/
+#search_result_tabs ul li div div.button {
+    float:left;
+   display:block;
+    /*background-color: #0053a3;*/
+    background-color:#107aac;
+    border-color: #4977a3 #003060 #003060 #4977a3;
+    border-width:1px;
+    border-style:solid;
+    color: white;
+    font-weight: bold;
+    width: 3.1em;
+    margin-top:.4em;
+    margin-left:2.6em;
+}
+#search_result_tabs ul li div div.button a {
+    position:relative;
+    left:-3.5em;
+    padding: 0.2em 10em 0.7em 1.8em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    display: block;
+    line-height:1.3em;
+}
+#search_result_tabs ul li div div.button2 { 
+    float:left;
+    display:block;
+    /*background-color: #0053a3;*/
+    background-color:#107aac;
+    border-color: #4977a3 #003060 #003060 #4977a3;
+    border-width:1px;
+    border-style:solid;
+    color: white;
+    font-weight: bold;
+    position: static;
+    width: 3.1em;
+    margin-top:.4em;
+    margin-left:.5em;
+}
+#search_result_tabs ul li div div.button2 a{
+    float:left;
+    position:relative;
+    left:-3.6em;
+    padding: 0.2em 2em 0.7em 2em ! important;
+    color: white ! important;
+    font-weight:bold ! important;
+    text-decoration: none;
+    height: 1em;
+    line-height:1.3em;
+    display: block;
+}
+#search_result_tabs ul li div div.button2 a:hover, #search_result_tabs ul li div div.button a:hover, #user_tabs ul li div div.button a:hover, #user_tabs ul li div div.assign-button a:hover { 
+    text-decoration:none ! important;
+}
+#search_result_tabs ul li div div h2 a:hover  {
+    text-decoration:none;
+}
+#project_lead h1{
+    font-weight:bold ! important;
+}
+#search_results h2 {
+    display: inline;
+    font-size: 14px;
+    font-weight: bold;
+    color: #660099;
+    margin-top: 0em;
+}
+.header h1 {
+    font-size: 12px;
+    font-weight: normal;
+    display:inline;
+}
+.pop-up {
+    position:absolute;
+    width:36.1em;
+    left:10em;
+    top:5em;
+    display:block;
+    background-color: white;
+    border: 1em solid #a0a0a0;
+}
+.pop-up h1 {
+    background-color:#876499;
+    color:white;
+    font-weight: bold;
+    font-size: 12px;
+    display: block;
+    padding:.3em .4em .4em .4em;
+    border: 1px solid #660099 ; 
+    margin:0em;
+}
+.pop-up p {
+    margin: 1em;
+}
+.pop-up .sponsorship,.pop-up .assignment {
+    position: relative;
+    float: left;
+    width: auto;
+    display: block;
+    margin: 1em;
+    height: 2em;
+}
+.pop-up .assignment {
+    float: right;
+    margin-right: 1.5em;
+}
+.pop-up label {
+    font-weight:bold;
+    font-size:11px;
+}
+.pop-up div select, .pop-up div input {
+    width: 4em;
+    border: 1px solid #bdc7d8;
+    padding: 0.2em 0.4em;
+}
+.pop-up div select {
+    width: 10em;
+}
+.pop-up .buttons {
+    clear: both;
+    padding: .9em 1em 1.2em 1em;
+    background-color:#f2f2f2;
+    display: block;
+    border-top: 1px solid #cccccc;
+    text-align: right;
+    white-space: nowrap;
+}
+.pop-up .buttons a {
+    padding: 0.2em 0.5em 0.4em 0.5em;
+    margin: 0em;
+    color: white;
+    font-weight:bold;
+    text-decoration: none;
+    font-size:11px;
+    background-color: #eb5901;
+    border-style:solid;
+    border-color: #eb7934 #8f3500 #8f3500 #eb7934;
+    border-width:1px;
+}
+#pay-up {
+    float:right;
+    clear:both;
+    margin: 1em;
+    margin-top:.3em;
+}
+#pay-up div h1 {
+    font-size:12px;
+    font-weight:bold;
+    color:#696969;
+}
+#pay-up #pending  {
+    background-image:url(images/icons/hour_glass.png);
+}
+#pay-up div  {
+    line-height:1.8em;
+    background-image:url(images/icons/piggy_bank.png);
+    padding-left:28px;
+    background-repeat:no-repeat;
+    background-position: center left;
+    font-size:12px;
+    font-weight:bold;
+    color:#107aac;
+}
+#pay-up a   {
+    display:block;
+    position: relative;
+    background-image:url(images/paypal-bg.gif);
+    background-repeat:repeat-x;
+    color:#107aac;
+    font-weight:bold;
+    padding:1em;
+    text-align: center;
+    margin: 1em 0em 0em 0em;
+    border:solid 1px #107aac;
+    border-top: solid 3px #107aac;
+    text-decoration:none;
+}
+#pay-up img {
+    position:absolute;
+    top:-1em;
+    left:2em;
+    border-style:none;
+}
+
+.pop-up.hidden {
+    display:none;
+}
+.pop-up.shown {
+    display:block;
+}

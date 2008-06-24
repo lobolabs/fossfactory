@@ -1,0 +1,190 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    color: #515151;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    background-color: #FFFFFF;
+    padding:0em;
+    margin:0em;
+    display: table;
+    width: 100%;
+}
+#header {
+    background-image: url(header_bg.gif);
+    background-repeat: repeat-x;
+    background-position: bottom left;
+    background-color: white;
+    position: relative;
+    height: 3.75em;
+    font-size: 16px;
+}
+#fflogo {
+    width: 314px;
+    height: 36px;
+    position: absolute;
+    left: 0em;
+    top: 0em;
+    background-image: url(logo.png);
+    background-repeat: no-repeat;
+    background-position: top left;
+    z-index:11;
+    margin:11px 0px 0px 15px;
+}
+
+#fflogo:hover {
+    background-image: url(logo_hover.png);
+}
+#login_form {
+    position:absolute;
+    top:1.5em;
+    right:-1.15em;
+    display:inline;
+    float:right;
+    width:50em;
+    height:2.3em;
+}
+#login_form input{
+    border: 1px solid #90bed4;
+    padding:.2em .2em .2em .2em;
+    font-size:11px;
+ /*   margin:.2em;*/
+}
+#login_form.open {
+    display:block;
+}
+#login_form.closed {
+    display:none;
+}
+#login_form label{
+    z-index:3;
+    padding:.2em;
+}
+#search_form {
+    position: absolute;
+    top: 1.5em;
+    right: -1.15em;
+    display:inline;
+    width:20em;
+    height:2.3em;
+}
+#search_form.open {
+    display:block;
+}
+#search_form.closed {
+    display:none;
+}
+
+#remember {
+    position:relative;
+    top:.2em;
+}
+#login_button {
+    position:absolute;
+    right:.2em;
+    font-size:11px;
+    bottom:.2em;
+    right:1em;
+    color:white ! important;
+    font-weight:bold;
+    border: 1px solid #dedfe1;
+    background-color: #90bed4 ! important;
+    padding:.10em .3em .7em .8em;
+    text-decoration:none;
+    width:2em;
+    height:.9em;
+}
+#login_button:hover {
+    text-decoration:none ! important;
+}
+#search_field {
+    position:relative;
+    right:2em;
+    top:.2em;
+    width:12.3em;
+    height:1.3em;
+    font-size:11px;
+    border: 1px solid #dedfe1;
+    padding:.2em .3em .25em 1.6em;
+    background-image:url(images/magnifying_glass.gif);
+    background-repeat:no-repeat;
+    background-position:left;
+    float:right;
+    margin-right:2em;
+}
+#search_button {
+    position:absolute;
+    right:.2em;
+    font-size:11px;
+    bottom:.2em;
+    right:1em;
+    color:white ! important;
+    font-weight:bold;
+    border: 1px solid #dedfe1;
+    background-color: #90bed4 ! important;
+    padding:.10em .3em .7em .8em;
+    text-decoration:none;
+    width:2em;
+    height:.9em;
+}
+label[for="search_field"] {
+    position:relative;
+    right:2.4em;
+    top:.25em;
+    color:#107aac ! important;
+    font-weight:normal;
+    font-size:11px;
+    z-index:2;
+    text-transform: lowercase;
+}
+#top-right {
+    font-size:11px;
+    position: absolute; 
+    text-decoration: none;
+    right: 22px;
+    top: 10px;
+}
+#top-right a {
+    color: #107aac;
+    text-decoration: none;
+}
+#top-right a:hover {
+    text-decoration:underline;
+}
+#logout {
+    padding-left: 1em;
+    float: right;
+    background-image:url(vertical_divider.gif);
+    background-position: top left;
+    background-repeat: repeat-y;
+    white-space: nowrap;
+}
+#logout:hover {
+    text-decoration: underline;
+}
+#sign_up {
+    position: absolute;
+    top: 0em;
+    right: 4.5em;
+}
+#sign_up a:hover {
+    text-decoration:underline ! important;
+}
+

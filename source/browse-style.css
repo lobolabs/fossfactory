@@ -1,0 +1,68 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#browse_table {
+    width: 100%;
+    border: 1px solid #dedfe1;
+    margin-top: 0.5em;
+}
+
+#browse_table th {
+    color: white;
+    text-align: left;
+    padding: 0.2em;
+}
+
+#browse_table .project span {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+}
+
+#browse_table td {
+    vertical-align: top;
+    padding: 0.2em;
+}
+
+#browse_table .project div {
+    margin-left: 0em;
+    padding-left: 0em;
+}
+
+#browse_table .lead {
+    width: 8em;
+    border-left: #dedfe1;
+}
+
+#browse_table .bounty {
+    text-align: right;
+    width: 2em;
+}
+#browse_table tr {
+    background-color:#27387a;
+}
+
+#browse_table tr.evenrow {
+    background-color: white;
+}
+
+#browse_table tr.oddrow {
+    background-color: #eaf2f8;
+}

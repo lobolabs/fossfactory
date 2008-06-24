@@ -1,0 +1,376 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    color: #515151;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    background-color: #FFFFFF;
+    padding:0em;
+    margin:0em;
+    display: table;
+    width: 100%;
+}
+#header {
+    background-image: url(header_bg.gif);
+    background-repeat: repeat-x;
+    background-position: bottom left;
+    background-color: white;
+    position: relative;
+    font-size: 11px;
+    padding: 1em 0em 0em 0em;
+}
+#fflogo {
+    width: 289px;
+    height:36px;
+    padding-right: 10px;
+    display: block;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-position: top right;
+}
+#fflogo img {
+    font-size: 1px;
+    margin: 0em 0em 0em 15px;
+    border: none;
+    width: 289px;
+    height: 36px;
+}
+
+#decoration1 {
+    background-color: #C6D1D7;
+    background-image: url(horizontal_fade.gif);
+    background-position: top right;
+    background-repeat: no-repeat;
+    margin: 8px 1.5em 0.5em 1.5em;
+    height: 1px;
+}
+#logout {
+    position: absolute; 
+    right: 1.5em;
+    top: 1em;
+    color: #107aac;
+    text-decoration: none;
+}
+#logout:hover {
+    text-decoration: underline;
+}
+#sign_up {
+    float: left;
+    height: 2em;
+    line-height: 2em;
+    margin-bottom: .5em;
+    margin: 0em 0em 0em 16.5px;
+}
+#signup_button {
+    color:white ! important;
+    font-weight:bold;
+    border: 1px solid #dedfe1;
+    background-color: #90bed4 ! important;
+    padding:.1em .5em .25em .5em;
+    margin-left:.2em;
+    text-decoration:none;
+}
+#login_form {
+    float: right;
+    white-space:nowrap;
+    height: 2em;
+    line-height: 2em;
+    margin-bottom: .5em;
+    margin-right:11px;
+}
+#login_form input{
+    border: 1px solid #90bed4;
+    padding:.2em .2em .2em .2em;
+    font-size:11px;
+}
+#login_form input[type=checkbox] {
+    top:.3em;
+    border:0px;
+}
+#login_form a{
+    background-color:#90bed4;
+    border: 1px solid #dedfe1;
+    color:white ! important;
+    font-weight:bold ! important;
+    text-decoration:none;
+    padding:.1em .5em .25em .5em;
+    position:relative;
+    top:0em;
+}
+#login_form label{
+    z-index:3;
+    padding:0em .2em 0em .2em;
+}
+#login_button:hover {
+    text-decoration:none ! important;
+}
+#currency {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    text-align: right;
+}
+body.loggedin #currency {
+    right: 8em;
+}
+#currency a {
+    padding: 0em 14px 0em 14px;
+    background-image:url(down_arrow_blue.gif);
+    background-position: right;
+    background-repeat: no-repeat;
+    white-space: nowrap;
+    color: #107aac;
+    text-decoration: none;
+    display: block;
+}
+#currency ul {
+    text-align: left;
+    margin: 0em;
+    padding: 0em;
+    display: block;
+    background-color: #107aac;
+    height: 0em;
+    overflow: hidden;
+    list-style-type:none;
+}
+#currency ul li {
+    display: block;
+    padding-left: 0em;
+    clear: both;
+}
+#currency.open:hover ul {
+    height: auto;
+}
+#currency ul a {
+    color: #FFFFFF;
+    background-image: none;
+    display: block;
+    text-align: right;
+    padding: 0.2em 14px 0.3em 14px;
+}
+#currency ul a:hover {
+    background-color: #3894c6;
+}
+#welcome {
+    position:relative;
+    font-size:12px;
+    display: block;
+    float: left;
+    margin-left: 16px;
+    bottom:.2em;
+}
+#welcome em {
+    color: #107aac;
+    font-weight:bold;
+    font-style:normal;
+}
+#mystuff {
+    position:absolute;
+    white-space: nowrap;
+    font-size:12px;
+    margin-left: 7em;
+    height:1.9em;
+    right:0em;
+    top:48px;
+    margin-top:1em;
+}
+#myfactory {
+    float: left;
+    position: relative;
+    margin-bottom: 0.3em;
+}
+#myfactory a {
+    color: #107aac;
+    text-decoration: none;
+    background-image: url('cog.gif');
+    background-position: left;
+    background-repeat: no-repeat;
+    padding: 0.3em 0.3em 0.3em 26px;
+    margin: -0.2em;
+    min-height: 20px;
+    white-space: nowrap;
+    line-height:1.3em;
+   /* display: block;*/
+}
+#myfactory ul {
+    position: absolute;
+    left: 0em;
+    top: 1.3em;
+    margin: 0em;
+    padding: 0em;
+    display: block;
+    height: 0em;
+    overflow: hidden;
+    z-index: 200;
+    width: 12em;
+}
+#myfactory ul li {
+    display: block;
+    padding: 0em;
+    margin: 0em;
+}
+#myfactory:hover ul {
+    height: auto;
+}
+#myfactory ul a {
+    color: #FFFFFF;
+    display: block;
+    text-decoration: none;
+    padding: 0.2em 0.5em 0.2em 0.5em;
+    background-image: none;
+    margin: 0em;
+    background-color: #107aac;
+}
+#myfactory ul a:hover {
+    background-color: #3894c6;
+}
+#myfactory:hover {
+    background-color:#dfdfe0;
+}
+#sponsorships {
+    color: #107aac;
+    text-decoration: none;
+    padding-left: 29px;
+    margin: 0em 1.5em 0em 2em;
+    min-height: 19px;
+    background-image: url('sponsorships2.gif');
+    background-position: left;
+    background-repeat: no-repeat;
+    white-space: nowrap;
+    display: block;
+    float: left;
+}
+#sponsorships em {
+    font-weight: bold;
+    font-style: normal;
+}
+#sponsorships:hover {
+    background-color:#dfdfe0;
+}
+
+#myreserve {
+    color: #107aac;
+    text-decoration: none;
+    padding-left: 26px;
+    margin: 0em 1.5em 0em 0.5em;
+    min-height: 19px;
+    background-image: url('piggybank.gif');
+    background-position: left;
+    background-repeat: no-repeat;
+    white-space: nowrap;
+    display: block;
+    float: left;
+}
+#myreserve em {
+    font-weight: bold;
+    font-style: normal;
+}
+#myreserve:hover {
+    background-color:#dfdfe0;
+}
+
+#breadcrumbs {
+    display: block;
+    background-color: #107aac;
+    padding: 0em ;
+    margin: 0em;
+    white-space: nowrap;
+    height:2.04em;
+    margin-top:.29em;
+}
+#breadcrumbs li {
+    display: block;
+    float: left;
+    padding-top: 0.2em;
+    font-size: 12px;
+    color:white;
+}
+#breadcrumbs a {
+    color: white;
+    text-decoration: none;
+}
+#breadcrumbs li.first-of-type:before {
+    content: "";
+}
+
+#breadcrumbs form {
+    float: right;
+    white-space: nowrap;
+    margin-right: .9em;
+    margin-top: 0em;
+    font-size: 11px;
+    color: white;
+}
+
+#breadcrumbs form a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#breadcrumbs form a:hover {
+    text-decoration: underline;
+}
+
+#breadcrumbs form input[type=text] {
+    border: 1px solid #90bed4;
+    height: 1.25em;
+    font-size: 12px;
+}
+
+#breadcrumbs form input[type=submit] {
+    font-weight:bold;
+    color:white;
+    border: 1px solid #dedfe1;
+    background-color: #90bed4;
+    height: 1.8em;
+    margin-top: 1px;
+    padding: 0em 0em 0.1em 0em;
+    font-size: 11px;
+}
+
+#new_project {
+    display: block;
+    float: left;
+    color: white;
+    font-weight: bold;
+    font-size:12px;
+    background-color: #eb5901;
+    padding: 0.3em 0.8em 0.3em 0.5em;
+    -moz-border-radius: 0em 0em 0.5em 0em;
+    text-decoration: none;
+    margin:0em;
+    height:1.28em;
+}
+#new_project:hover {
+    background-color: #ff6101;
+}
+#new_project:before {
+    content: "+ ";
+} 
+
+#content_body {
+    position:relative;
+    top:0em;
+    left:0em;
+    padding: 0em;
+    margin:0em;
+    border:0.1px solid transparent;
+    z-index:0;
+}

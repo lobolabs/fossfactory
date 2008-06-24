@@ -1,0 +1,150 @@
+/*
+Copyright 2008 John-Paul Gignac
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#paymentoptions-div {
+    min-width: 62em;
+}
+
+#wrapper {
+    width:100%;
+    max-width: 77em;
+    height:11.4em;
+    padding: 0em 0em 19px 0em;
+    font-size: 12px;
+    text-align: center;
+    display: block;
+    position: relative;
+}
+
+#wrapper a {
+    display: block;
+    padding:1em;
+    color:white;
+    font-weight:bold;
+    width:20em;
+    height:12em;
+    text-align:center;
+    text-decoration:none;
+    -moz-border-radius: 1.5em;
+    position: absolute;
+    top: 0em;
+}
+
+#wrapper #option1 {
+    background-color:#91bed4;
+    left: 50%;
+    margin-left: -11em;
+}
+#wrapper #option2 {
+    background-color:#bcbccf;
+    left: 0em;
+}
+#wrapper #option3 {
+    background-color:#e35b38;
+    right: 0em;
+}
+
+#wrapper a img {
+    padding-top:1em;
+    border:0em;
+    max-width:16em;
+    max-height:6em;
+}
+
+#wrapper a img.arrow {
+    display: none;
+    position: absolute;
+    font-size:12px;
+    bottom:-18px;
+    left:50%;
+    margin-left:-18px;
+    width:36px;
+    height:19px;
+}
+
+#wrapper a.selected img.arrow {
+    display: block;
+}
+
+#wrapper a span {
+    display: block;
+    font-size: 13px;
+    margin: 0em;
+}
+
+#payment-body {
+    margin:2em 0em 2em 0em;
+    padding: 0em;
+    background-color:#e3e3e5;
+    width:100%;
+    -moz-border-radius: 1em;
+}
+
+#payment-body div {
+    padding: 1.5em;
+    display: none;
+}
+
+#payment-body div div {
+    padding: 0em;
+    display: block;
+}
+
+#payment-body div.selected {
+    display: block;
+}
+
+#payment-body div table.invoice {
+    border: 1px solid #bbb;
+    margin-bottom: 1.2em;
+}
+
+#payment-body div table.invoice th {
+    text-align: left;
+    padding: 0.2em 20em 0.2em 0.5em;
+    margin: 0em;
+    font-weight: normal;
+}
+
+#payment-body div table.invoice tr.total th,
+    #payment-body div table.invoice tr.total td {
+    font-weight: bold;
+}
+
+#payment-body div table.invoice td {
+    text-align: right;
+    padding: 0.2em 0.5em 0.2em 0.2em;
+    margin: 0em;
+}
+
+#payment-body div table.invoice tr.sponsorshipfee td input {
+    width: 5em;
+}
+
+#payment-body div table.invoice tr {
+    background-color: #c0c0ff;
+}
+
+#payment-body div table.invoice tr.basefee {
+    background-color: #eaf2f8;
+}
+
+#payment-body div table.invoice tr.sponsorshipfee {
+    background-color: #fff;
+}

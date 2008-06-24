@@ -1,0 +1,107 @@
+/*
+Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
+
+This file is part of Fossfactory-src.
+
+Fossfactory-src is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Fossfactory-src is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#featured_projects {
+    width:68.3em;
+    display:block;
+    position: relative;
+    clear: both;
+}
+#featured_projects h1 {
+    background-image: url(images/featured_projects_bg.gif);
+    background-repeat: repeat-x;
+    width: 69em;
+    border:1px solid #dedfe1;
+    padding:0.5em;
+    height:1.3em;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    background-color: #7d21ab;
+    margin: 0em;
+}
+#featured_projects ul {
+    width: 69em;
+    height:11.8em;
+    background-image: url(images/featured_projects_menu_bg.gif);
+    background-repeat: repeat-x;
+    background-position: bottom;
+    border:1px solid #dedfe1;
+    border-top:none;
+    padding: 0em .5em .5em .5em;
+    margin: 0em;
+}
+#featured_projects li {
+    padding: 0em;
+    margin: 0em;
+    width: 17.15em;
+    display: block;
+    border-right: 1px dashed #dedfe1;
+    float: left;
+}
+#featured_projects li:last-child {
+    border-right:none;
+}
+#featured_projects h2 {
+    color:black;
+    font-weight: bold;
+    font-size:11px;
+    height:1.5em;
+    overflow: hidden;
+    margin: 0.15em 0em 0.15em 0em;
+}
+#featured_projects a {
+    color: #fff;
+    text-transform: lowercase;
+    font-weight: normal;
+}
+#featured_projects ul a {
+    padding: 1em 0.5em 0.5em 0.5em;
+    margin: 0em;
+    display: block;
+    border: 1px dotted transparent;
+    text-decoration: none;
+    text-transform: none;
+    font-weight: inherit;
+}
+#featured_projects ul a:hover {
+    border: 1px dotted black;
+}
+#featured_projects p {
+    line-height: 1.3em;
+    height: 6.6em;
+    color:#696969;
+    font-size:11px;
+    font-weight:normal;
+    overflow: hidden;
+    margin: 0em 0em 0.3em 0em;
+}
+#featured_projects h3 {
+    color:#2585b3;
+    font-size:11px;
+    font-weight:bold;
+    display:block;
+    margin: 0em;
+    white-space: nowrap;
+}
+#featured_projects h3 em {
+    color:#eb5901;
+    font-style: normal;
+}

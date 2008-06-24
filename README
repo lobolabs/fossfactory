@@ -1,0 +1,30 @@
+Sandbox Installation Part 1 (requires root)
+-------------------------------------------
+
+1. apt-get update
+2. apt-get install apg subversion apache2 php5 postgresql-8.2 php5-pgsql php5-gd
+3. Make sure that /etc/apache2/mods-available/userdir.* are linked to
+   from /etc/apache2/mods-enabled/
+4. Set "AllowOverride All" and "FollowSymLinks" in
+   /etc/apache2/mods-enabled/userdir.conf (for public_html directories)
+5. /etc/init.d/apache2 reload
+6. Set postgres permissions to "local all postgres trust" in
+   /etc/postgresql/8.2/main/pg_hba.conf
+7. Make sure that port=5432 and unix_socket_directory='/var/run/postgresql'
+   in /etc/postgresql/8.2/main/postgresql.conf
+8. /etc/init.d/postgresql-8.2 restart
+
+Sandbox Installation Part 2 (as regular user)
+---------------------------------------------
+
+1. cd into the fossfactory-src directory.
+2. createdb -U postgres -E LATIN1 fossfactory
+3. psql -U postgres fossfactory < schema/structure
+4. echo "update config set value='`apg -x40 -n1`' where name='secret'" |
+    psql -U postgres fossfactory
+5. mkdir -p ~/public_html
+6. ln -s `pwd`/source ~/public_html/fossfactory
+7. Type crontab -e and add the following lines, replacing YOURUSERNAME
+   with your Linux username:
+*/5 * * * * wget --output-document=/dev/null 'http://localhost/~YOURUSERNAME/fossfactory/cron.daily.php' >/dev/null 2>/dev/null
+* * * * * wget --output-document=/dev/null 'http://localhost/~YOURUSERNAME/fossfactory/cron.php' >/dev/null 2>/dev/null
