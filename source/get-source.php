@@ -27,7 +27,7 @@ if( getenv("PATH_INFO")) {
         passthru("cd ".escapeshellarg($srcdir).
             "; tar cz LICENSE contributors README source/ schema/ ".
             "--transform 's,^,fossfactory-src/,' ".
-            "--exclude .svn --owner root --group root");
+            "--exclude .svn --exclude .git --owner root --group root");
     } else if( ereg("^/[-._a-zA-Z0-9]+$",getenv("PATH_INFO")) &&
         is_file("$srcdir/releases".getenv("PATH_INFO"))) {
         readfile( "$srcdir/releases".getenv("PATH_INFO"));
