@@ -121,8 +121,7 @@ apply_template('Welcome to FOSS Factory','','setup()',array(
             curHeight = 0;
         }
     </script>
-<a href="http://sourceforge.net/awards/cca/?project_name=FOSS%20Factory&project_url=http%3A//www.fossfactory.org/" style="position:absolute;right:1em;width:120px;height:240px"><img src="http://sourceforge.net/awards/cca/badge_img.php?project_name=FOSS%20Factory&project_url=http%3A//www.fossfactory.org/&style=3" border="0" /></a>
-<div id="maincontent" style="min-height:240px">
+<div id="maincontent">
 <!-- beginning of body-->
 <div id="sidebar">
 <div id="introduction">
