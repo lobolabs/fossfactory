@@ -2551,7 +2551,7 @@ function ff_gettext( $textid, $macros)
             "to reset your password:\n\n".
             "  %LINK%";
     } else if( $textid == 'newduty-submission-subject') {
-        $text = "Code submitted for '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Code submitted for '%PROJECTNAME%'";
     } else if( $textid == 'newduty-submission-body') {
         $text = "A code submission has been made for project ".
             "'%PROJECTNAME%' by user '%SUBMITTER%'.  As project ".
@@ -2559,7 +2559,7 @@ function ff_gettext( $textid, $macros)
             "the submission should be accepted or rejected.  The ".
             "deadline for this task has not yet been assigned.";
     } else if( $textid == 'newduty2-submission-subject') {
-        $text = "Code submitted for '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Code submitted for '%PROJECTNAME%'";
     } else if( $textid == 'newduty2-submission-body') {
         $text = "A code submission has been made for project ".
             "'%PROJECTNAME%' by user '%SUBMITTER%'.  As project ".
@@ -2572,7 +2572,7 @@ function ff_gettext( $textid, $macros)
         $text = "A code submission has been made for project ".
             "'%PROJECTNAME%' by user '%SUBMITTER%'.";
     } else if( $textid == 'newduty-newsubproject-subject') {
-        $text = "Allotment of funds needed for '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Allotment of funds needed for '%PROJECTNAME%'";
     } else if( $textid == 'newduty-newsubproject-body') {
         $text = "A new subproject '%PROJECTNAME%' has been created for ".
             "project '%PARENTNAME%'.  As project lead for ".
@@ -2580,7 +2580,7 @@ function ff_gettext( $textid, $macros)
             "funds to allot to it, if any.  The deadline for this task ".
             "has not yet been assigned.";
     } else if( $textid == 'newduty2-newsubproject-subject') {
-        $text = "Allotment of funds needed for '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Allotment of funds needed for '%PROJECTNAME%'";
     } else if( $textid == 'newduty2-newsubproject-body') {
         $text = "A new subproject '%PROJECTNAME%' has been created for ".
             "project '%PARENTNAME%'.  As project lead for ".
@@ -2599,7 +2599,7 @@ function ff_gettext( $textid, $macros)
         $text = "A new top-level project '%PROJECTNAME%' has been created.  ".
             "The initial requirements are as follows:\n%REQUIREMENTS%";
     } else if( $textid == 'newduty-newdispute-subject') {
-        $text = "Complaint filed about project '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Complaint filed about project '%PROJECTNAME%'";
     } else if( $textid == 'newduty-newdispute-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "User %USERNAME% has filed a complaint ".
@@ -2612,7 +2612,7 @@ function ff_gettext( $textid, $macros)
             "an opportunity to respond to your remarks.  ".
             "The deadline for this task has not yet been assigned.";
     } else if( $textid == 'newduty2-newdispute-subject') {
-        $text = "Complaint filed about project '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Complaint filed about project '%PROJECTNAME%'";
     } else if( $textid == 'newduty2-newdispute-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "User %USERNAME% has filed a complaint ".
@@ -2625,7 +2625,7 @@ function ff_gettext( $textid, $macros)
             "to comment, then %USERNAME% will be given ".
             "an opportunity to respond to your remarks.";
     } else if( $textid == 'newduty-dispute-subject') {
-        $text = "Respond to dispute about project '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Respond to dispute about project '%PROJECTNAME%'";
     } else if( $textid == 'newduty-dispute-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "User %USERNAME% has added further comment ".
@@ -2637,7 +2637,7 @@ function ff_gettext( $textid, $macros)
             "another opportunity to respond to your remarks.  ".
             "The deadline for this task has not yet been assigned.";
     } else if( $textid == 'newduty2-dispute-subject') {
-        $text = "Respond to dispute about project '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Respond to dispute about project '%PROJECTNAME%'";
     } else if( $textid == 'newduty2-dispute-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "User %USERNAME% has added further comment ".
@@ -2649,7 +2649,7 @@ function ff_gettext( $textid, $macros)
             "another opportunity to respond to your remarks.  ".
             "This task must be accomplished before %DEADLINE%.";
     } else if( $textid == 'continuedispute-subject') {
-        $text = "Your dispute about project '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Your dispute about project '%PROJECTNAME%'";
     } else if( $textid == 'continuedispute-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "The project lead has responded to your complaint ".
@@ -2666,14 +2666,14 @@ function ff_gettext( $textid, $macros)
             "'%PROJECTNAME%'.  The text of the complaint follows:\n".
             "Subject: %SUBJECT%\n%BODY%";
     } else if( $textid == 'newduty-changeproposal-subject') {
-        $text = "Proposed requirements change for '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Proposed requirements change for '%PROJECTNAME%'";
     } else if( $textid == 'newduty-changeproposal-body') {
         $text = "A requirements change has been proposed for project ".
             "'%PROJECTNAME%'.  As the project lead, you must ".
             "decide whether to accept or reject the proposal.  The ".
             "deadline for this task has not yet been assigned.";
     } else if( $textid == 'newduty2-changeproposal-subject') {
-        $text = "Proposed requirements change for '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Proposed requirements change for '%PROJECTNAME%'";
     } else if( $textid == 'newduty2-changeproposal-body') {
         $text = "A requirements change has been proposed for project ".
             "'%PROJECTNAME%'.  As the project lead, you must ".
@@ -2710,7 +2710,7 @@ function ff_gettext( $textid, $macros)
         $text = "Project '%PROJECTNAME%' is now being led by user ".
             "%NEWLEAD%.  The position of project lead was previously vacant.";
     } else if( $textid == 'plaintiff-subject') {
-        $text = "Continue your dispute about project '%PROJECTNAME%'";
+        $text = "[NEW DUTY] Continue your dispute about project '%PROJECTNAME%'";
     } else if( $textid == 'plaintiff-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "The project lead has responded to your ".
@@ -2719,7 +2719,7 @@ function ff_gettext( $textid, $macros)
             "Note that if you choose to comment, the project ".
             "lead will be given another opportunity to respond.";
     } else if( $textid == 'misseddeadline-subject') {
-        $text = "Missed FOSS Factory duty deadline";
+        $text = "[IMPORTANT] Missed FOSS Factory duty deadline";
     } else if( $textid == 'misseddeadline-body') {
         $text = "Hi %NAME%.\n\n".
             "Please note that, due to a missed deadline, you have ".
@@ -2755,7 +2755,7 @@ function ff_gettext( $textid, $macros)
             "By order of the arbiter, a previously accepted requirements ".
             "change for project \"%PROJECTNAME%\" has been reverted.";
     } else if( $textid == 'resolveconflict-subject') {
-        $text = "Merge conflict in change dispute";
+        $text = "[NEW DUTY] Merge conflict in change dispute";
     } else if( $textid == 'resolveconflict-body') {
         $text = "Subject of complaint: %SUBJECT%\n\n".
             "Because of recent (possibly unrelated) changes made to the ".
