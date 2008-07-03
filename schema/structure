@@ -488,3 +488,6 @@ alter table projects add column funding_goal text default null;
 alter table projects add column funding_goal_orig text default null;
 alter table draft_projects add column funding_goal integer default '0' not null;
 update version set version=107;
+alter table projects add column priority text;
+update projects set priority='subproject';
+update version set version=108;

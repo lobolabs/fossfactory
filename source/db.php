@@ -1023,7 +1023,8 @@ function ff_deleteprojectdraft( $draftid, $creator)
 // <duties>
 // 
 function ff_createproject( $creator, $name,
-    $reqmts, $parent='', $attachments=false, $draftid=false)
+    $reqmts, $parent='', $attachments=false, $draftid=false,
+    $priority='subproject',$lead=false,$allotment=false)
 {
     if( $draftid !== false) {
         $nid = intval(substr($draftid,1));
@@ -1068,36 +1069,47 @@ function ff_createproject( $creator, $name,
     list($rc,$err) = private_createattachments( $attachments, 0, $nid);
     if( $rc) return private_dberr($rc,$err);
 
+    if( $lead === false) $lead = $creator;
+    if( $name === '') $name = "Bug p$nid";
+
     $qu = sql_exec( "insert into projects ".
         "(id,parent,creator,time,name,reqmts,bounty,direct_bounty,allotment,".
-        "bounty_portions,held_amounts,root,lead,status,".
+        "bounty_portions,held_amounts,priority,root,lead,status,".
         "numattachments) values ".
         "($nid,".($parent===''?"null":$pnid).
         ",'".sql_escape($creator)."',$now,'".sql_escape($name).
-        "','".sql_escape($reqmts)."','','',null,'$zeroes','$zeroes',".
-        "$root,'".sql_escape($creator).
+        "','".sql_escape($reqmts)."','','',".
+        ($allotment===false?"null":intval($allotment)).
+        ",'$zeroes','$zeroes',".
+        "'".sql_escape($priority)."',$root,'".sql_escape($lead).
         "','pending',".(is_array($attachments)?sizeof($attachments):0).")");
     if( $qu === false) return private_dberr(1);
 
     if( $parent !== '') {
-        list($rc,$deadline) = private_createduty(
-            $pnid, "new-subproject", $nid, 129600);
-        if( $rc) return private_dberr($rc,$deadline);
-
         list($rc,$projinfo)=ff_getprojectinfo($parent);
+        if( $rc) return array($rc,$projinfo);
 
-        // Trigger some event notifications
-        $macros = array(
-            "projectname" => $name,
-            "parentname" => $projinfo["name"],
-            "deadline" => date("D F j, H:i:s T",$deadline),
-        );
-        $url = "project.php?p=$parent&tab=subprojects&requser=".
-            $projinfo["lead"];
-        $tag = ($deadline?"newduty2":"newduty");
-        $rc = al_triggerevent( "lead:".substr($parent,1), $url,
-            "$tag-newsubproject", $macros);
-        if($rc[0]) return $rc;
+        if( $allotment === false) {
+            list($rc,$deadline) = private_createduty(
+                $pnid, "new-subproject", $nid, 129600);
+            if( $rc) return private_dberr($rc,$deadline);
+
+            // Inform the parent project lead of his allotment duty
+            $macros = array(
+                "projectname" => $name,
+                "parentname" => $projinfo["name"],
+                "deadline" => date("D F j, H:i:s T",$deadline),
+            );
+            $url = "project.php?p=$parent&tab=subprojects&requser=".
+                $projinfo["lead"];
+            $tag = ($deadline?"newduty2":"newduty");
+            $rc = al_triggerevent( "lead:".substr($parent,1), $url,
+                "$tag-newsubproject", $macros);
+            if($rc[0]) return $rc;
+        } else {
+            $rc = private_updatechildbounties( $pnid);
+            if( $rc[0]) return $rc;
+        }
 
         $macros = array(
             "projectname" => $name,
@@ -1148,6 +1160,7 @@ function private_makeprojectrecord( $row)
         "name" => $row["name"],
         "reqmts" => $row["reqmts"],
         "reqmts_seq" => intval($row["reqmts_seq"]),
+        "priority" => $row["priority"],
         "direct_bounty" => $row["direct_bounty"],
         "indirect_bounty" => $row["indirect_bounty"],
         "allotment" => intval($row["allotment"]),

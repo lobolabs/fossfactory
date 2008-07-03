@@ -309,7 +309,7 @@ include_once("tabs.php");
 
 $tabs = array(
     "requirements" => "Requirements",
-    "subprojects" => "Subprojects",
+    "subprojects" => "Bugs/Subprojects",
     "sponsors" => "Sponsors",
     "news" => "Activity",
     "submissions" => "Submissions",

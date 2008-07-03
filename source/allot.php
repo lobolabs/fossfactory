@@ -91,39 +91,48 @@ function checkAllot() {
 }
 </script>
 <form action="allotpost.php" name='form' method='post'>
-<table width=100% cellpadding=0 cellspacing=0>
+<table width=100% border=1 cellpadding=5 cellspacing=0>
+<tr bgcolor="#e0e0e0"><th>ID</th><th>Priority</th><th>Status</th><th>Project<br>Lead</th><th>Allotment</th><th>Bounty</th><th>Summary</th></tr>
 <? foreach($subprojects as $subproject) { 
     $totalallotment+=$subproject['allotment']/10;
 ?>
-    <tr><td><a href='project.php?p=<?=$subproject['id']?>'><?=htmlentities($subproject['name'])?></a></td></tr>
-    <tr><td><?=formatText(ereg_replace("\n.*","",$subproject['reqmts']))?></td></tr>
-    <tr><td align=right>allotment:
-   <? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
-    <input type='textfield' name='sub<?=$subproject['id']?>' size='4' onChange="return update_unallotedPercentage()" maxLength='4' value='<?=($subproject['allotment'])/10?>'>
-    <? } else { 
-    print ($subproject['allotment']/10);
-     } ?>
-    %<br><br></td></tr>
+    <tr>
+        <td align=right valign=top><?=$subproject['status']==='complete'?'<del>':''?><a href="project.php?p=<?=$subproject['id']?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
+        <td valign=top><?=$subproject['priority']?></td>
+        <td valign=top><?=$subproject['status']?></td>
+        <td valign=top><? if($subproject["lead"] !== '') { ?><a href="member.php?id=<?=urlencode($subproject['lead'])?>"><?=htmlentities($subproject['lead'])?></a><? } else { ?>(none)<? } ?></td>
+        <td align=right valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
+            <input type='textfield' name='sub<?=$subproject['id']?>' size='4' onChange="return update_unallotedPercentage()" maxLength='4' value='<?=($subproject['allotment'])/10?>'>
+            <? } else { ?>
+                <?=$subproject['allotment']/10?>
+            <? } ?>%
+        </td>
+        <td align=right valign=top><?=htmlentities(format_money($subproject['bounty']))?></td>
+        <td valign=top><?=ereg("^Bug [a-z0-9]*$",$subproject["name"])?formatText(ereg_replace("\n.*","",$subproject['reqmts'])):htmlentities($subproject["name"])?></td>
+    </tr>
 <?  
 }
 ?>
-   <? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
+</tr></table>
+<? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
 <input type='hidden' name='id' value=<?=$parentid?>>
 <input type='hidden' name='tab' value='subprojects'>
-<tr><td align='right'><input type='submit' name='submit' value='update allotments' onClick='return checkAllot()'><br><br></td>
-</tr>
+<p align='right'><input type='submit' name='submit' value='update allotments' onClick='return checkAllot()'></p>
 <? } ?>
-<tr><td><hr height=1></td></hr>
-<tr><td align=right><b>Unalloted Percentage:</b><span id='totalpercentage'><?=(100-$totalallotment)?>%</span></td></tr>
-</table>
+<hr height=1></hr>
+<p align=right><b>Unalloted Percentage:</b><span id='totalpercentage'><?=(100-$totalallotment)?>%</span></p>
 </form>
+<p>
+<a href="newbug.php?p=<?=$parentid?>">Report a bug</a>
+</p>
 <?
 } else {
 ?>
 <br>
-<b>This project has no subprojects.</b>
+<b>This project has no bugs/subprojects.</b>
 <br>
 <br>
+<a href="newbug.php?p=<?=$parentid?>">Report a bug</a><br><br>
 <a href="newsubproject.php?p=<?=$parentid?>">Create a subproject</a><br><br>
 <?
 }

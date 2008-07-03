@@ -108,7 +108,7 @@ be made based on the subproject's quality, clarity, scope and relevance.
 <a href="overview.php#subprojects">Learn more about subprojects.</a>
 </p>
 
-<b>Parent Project:</b> <?=htmlentities($parent["name"])?><br><br>
+<b>Parent Project:</b> <a href="project.php?p=<?=$parent["id"]?>"><?=htmlentities($parent["name"])?></a><br><br>
 <input type=hidden name=p value="<?=$p?>">
 </td><td valign="top" rowspan="3" width="0%">
 <div class=important>
