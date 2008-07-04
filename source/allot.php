@@ -96,8 +96,8 @@ function checkAllot() {
 <? foreach($subprojects as $subproject) { 
     $totalallotment+=$subproject['allotment']/10;
 ?>
-    <tr>
-        <td align=right valign=top><?=$subproject['status']==='complete'?'<del>':''?><a href="project.php?p=<?=$subproject['id']?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
+    <tr<?=$subproject['status']==='complete'?" bgcolor='#c0c0c0'":""?>>
+        <td align=right valign=top><?=$subproject['status']==='complete'?"<del style='color:#000'>":''?><a href="project.php?p=<?=$subproject['id']?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
         <td valign=top><?=$subproject['priority']?></td>
         <td valign=top><?=$subproject['status']?></td>
         <td valign=top><? if($subproject["lead"] !== '') { ?><a href="member.php?id=<?=urlencode($subproject['lead'])?>"><?=htmlentities($subproject['lead'])?></a><? } else { ?>(none)<? } ?></td>
