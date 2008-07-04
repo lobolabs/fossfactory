@@ -25,7 +25,7 @@ if( getenv("PATH_INFO")) {
 
     if( getenv("PATH_INFO") === '/fossfactory-src-LIVE.tar.gz') {
         passthru("cd ".escapeshellarg($srcdir).
-            "; tar cz LICENSE contributors README source/ schema/ ".
+            "; tar cz LICENSE contributors README source/ schema/ contrib/ ".
             "--transform 's,^,fossfactory-src/,' ".
             "--exclude .svn --exclude .git --owner root --group root");
     } else if( ereg("^/[-._a-zA-Z0-9]+$",getenv("PATH_INFO")) &&
