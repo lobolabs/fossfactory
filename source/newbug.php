@@ -99,7 +99,7 @@ function checkAllot() {
 </td><td valign="bottom" width="50%">
 <? if( $parent['lead'] === $GLOBALS["username"]) { ?>
 <h2>Bounty Allotment</h2>
-<input name="allotment" value="0" size=5>&nbsp;% of <?=format_money($parent["bounty"])?>
+<input name="allotment" value="0" size=5>&nbsp;% of <?=convert_money($parent["bounty"])?>
 <? } ?>
 </td></tr><tr><td valign="bottom" colspan="2" width="100%">
 <br>
