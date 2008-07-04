@@ -107,7 +107,7 @@ function checkAllot() {
                 <?=$subproject['allotment']/10?>
             <? } ?>%
         </td>
-        <td align=right valign=top><?=htmlentities(format_money($subproject['bounty']))?></td>
+        <td align=right valign=top><?=htmlentities(convert_money($subproject['bounty']))?></td>
         <td valign=top><?=ereg("^Bug [a-z0-9]*$",$subproject["name"])?formatText(ereg_replace("\n.*","",$subproject['reqmts'])):htmlentities($subproject["name"])?></td>
     </tr>
 <?  
