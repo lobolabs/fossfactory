@@ -46,6 +46,9 @@ function set_showpoor() {
     display: none;
 }
 </style>
+<div style="float: right;">
+    <a href="rss.php?src=projects" title="New projects feed"><img src="images/rss.png" style="border: 0;" alt="RSS" /></a>
+</div>
 <form>
 <input id=showpoor type=checkbox onClick="set_showpoor()"> <label for="showpoor">Show projects with no bounty</label>
 </form>

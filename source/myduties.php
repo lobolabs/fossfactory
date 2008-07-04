@@ -103,5 +103,5 @@ You will also be notified (usually by email) whenever a new duty appears.
     }
 ?>
 <div align="right" style="margin:0.5em;margin-right:0em">
-<a href="duties.php?u=<?=$username?>"><img src='images/rss.png' border=0></a>
+<a href="rss.php?src=duties&u=<?=$username?>"><img src='images/rss.png' border=0></a>
 </div>

@@ -382,6 +382,7 @@ if( $tab =='requirements') {
 } else if ($tab=='submissions') {
 	include_once('submissions.php');
 } else if( $tab=='news') {
+    print '<div style="float: right;"><a href="rss.php?src=projectevents&p='.$id.'" title="Project news feed"><img src="images/rss.png" style="border: 0;" alt="RSS" /></a></div>';
     list($rc,$events) = al_getrecentevents( "watch:$id-news");
     if( !$rc && sizeof($events) > 0) {
         print "<b>Recent Activity:</b><br><nobr>\n";
@@ -396,8 +397,6 @@ if( $tab =='requirements') {
         print "<br><b>There has been no recent activity on this project.</b>";
         print "<br><br>";
     }
-    print "<a href='recentevents.php?p=$id";
-    print "'><img src='xml.gif' width=36 height=14 border=0></a><br><br>";
 }
 
 tab_footer();

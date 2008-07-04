@@ -86,6 +86,25 @@ function sql_nextval($sequence) {
     return intval($row["nextval"]);
 }
 
+function ff_getnewprojects($limit = 10) {
+    $limit = (int)$limit;
+
+    $sql = 'select * from projects where parent is null '.
+        'order by id desc limit '.$limit;
+    $qu = sql_exec( $sql );
+
+    if( $qu === false ) return private_dberr();
+
+    $projects = array();
+    $num_prj = sql_numrows( $qu );
+    for( $i = 0; $i < $num_prj; $i++ ) {
+        $row = sql_fetch_array( $qu, $i );
+        $projects['p'.$row['id']] = private_makeprojectrecord( $row );
+    }
+
+    return array( 0, $projects );
+}
+
 function ff_findprojects($searchkeyword, $sort, $limit,$offset) {
 	if (!$searchkeyword) { 
 		$qustring = "select * from projects where parent is null";
@@ -1166,6 +1185,7 @@ function private_makeprojectrecord( $row)
         "allotment" => intval($row["allotment"]),
         "bounty" => $row["bounty"],
         "creator" => $row["creator"],
+        "created" => intval($row["time"]),
         "lead" => $row["lead"],
         "status" => $row["status"],
         "numattachments" => intval($row['numattachments']),
