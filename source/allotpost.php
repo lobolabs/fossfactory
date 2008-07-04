@@ -19,36 +19,23 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 <? 
 $parentid = scrub($_REQUEST["id"]);
 
-list($rc,$projinfo) = ff_getprojectinfo($parentid);
-
-//get subprojects of project 
+//get subprojects of project
 list($rc,$subprojects) = ff_getsubprojects($parentid);
 if( $rc) {
     print "Internal error: $rc $subprojects";
     exit;
 }
 
+foreach($subprojects as $subproject) {
+    $allotment = round($_REQUEST["sub$subproject[id]"]*10);
+    if( isset( $_REQUEST["sub$subproject[id]"]) &&
+        $allotment >= 0 && $allotment <= 1000 &&
+        $allotment != $subproject["allotment"])
+        ff_setallotment( $username, $parentid, $subproject['id'], $allotment);
 
-list($rc,$subprojects) = ff_getsubprojects($parentid);
-$totsubprojallot = 0;
-//the total amount of allotment for the subprojects of the parent
-foreach($subprojects as $subproject) $totsubprojallot +=$subproject['allotment'];
-
-
-//set the allotment
-$total = 0;
-foreach($subprojects as $subproject) {  
-    //allotment submitted by user
-    $allotment = round($_REQUEST["sub".$subproject['id']]*10);
-    $total += $alloment;
-    if( $allotment < 0) exit;
-}
-if( $total > 1000) exit;
-
-
-foreach($subprojects as $subproject) {  
-    $allotment = round($_REQUEST["sub".$subproject['id']]*10);
-    list($rc,$err) = ff_setallotment($username,$parentid,$subproject['id'],$allotment);
+    $priority = scrub($_REQUEST["pri$subproject[id]"]);
+    if( $priority !== $subproject["priority"])
+        ff_setpriority( $username, $parentid, $subproject['id'], $priority);
 }
 
 header( "Location: project.php?p=$parentid&tab=subprojects");

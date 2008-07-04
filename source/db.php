@@ -1411,6 +1411,21 @@ function ff_setallotment($username,$parentid,$childid,$allotment) {
     return private_commit();
 }
 
+function ff_setpriority($username,$parentid,$childid,$priority) {
+    $childnid = intval(substr($childid,1));
+
+    list($rc,$row) = private_begin_authorize( $username, $parentid);
+    if( $rc) return array($rc,$row);
+
+    $qu = sql_exec("update projects ".
+        "set priority='".sql_escape($priority)."' where id=$childnid");
+    if ($qu === false) return private_dberr(1);
+
+    unset($GLOBALS["PRIVATE_PROJECT_INFO"]["p$childnid"]);
+
+    return private_commit();
+}
+
 // This function must be called in a transaction.
 // It acquires the following lock:
 //   <projects>

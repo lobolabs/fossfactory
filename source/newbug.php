@@ -91,12 +91,9 @@ function checkAllot() {
 </tr><tr><td valign="bottom" width="50%">
 <h2>Bug Priority</h2>
 <select name=priority>
-<option value=enhancement>enhancement</option>
-<option value=low selected>low</option>
-<option value=medium>medium</option>
-<option value=high>high</option>
-<option value=critical>critical</option>
-<option value=blocker>blocker</option>
+<? foreach( $GLOBALS["priorities"] as $priority) { ?>
+<option value="<?=htmlentities($priority)?>"<?=$priority==='low'?" selected":""?>><?=htmlentities($priority)?></option>
+<? } ?>
 </select>
 </td><td valign="bottom" width="50%">
 <? if( $parent['lead'] === $GLOBALS["username"]) { ?>

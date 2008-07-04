@@ -463,4 +463,6 @@ if( $_REQUEST["requser"] &&
     include_once("login.php");
     softexit();
 }
+
+$GLOBALS["priorities"] = array('enhancement','low','medium','high','critical','blocker');
 ?>

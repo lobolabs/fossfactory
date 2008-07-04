@@ -71,15 +71,15 @@ function checkAllot() {
     var total = 0;
     i=0; 
 <? foreach( $subprojects as $id => $subproject) { ?>
-        if(document.form.elements[i].value<0) {
+        if(document.form.elements['sub<?=$subproject['id']?>'].value<0) {
             alert("Cannot have negative percentages");
             return false;
-        } else if(isNaN(document.form.elements[i].value)) {
+        } else if(isNaN(document.form.elements['sub<?=$subproject['id']?>'].value)) {
             alert("Please enter percentages in integers only");
             return false;
         }
 
-        total = total + 10*document.form.elements[i].value;
+        total = total + 10*document.form.elements['sub<?=$subproject['id']?>'].value;
         i++;
  <? } ?> 
     if (total<=1000) { 
@@ -98,7 +98,23 @@ function checkAllot() {
 ?>
     <tr<?=$subproject['status']==='complete'?" bgcolor='#c0c0c0'":""?>>
         <td align=right valign=top><?=$subproject['status']==='complete'?"<del style='color:#000'>":''?><a href="project.php?p=<?=$subproject['id']?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
-        <td valign=top><?=$subproject['priority']?></td>
+        <td valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?>
+                <select name="pri<?=$subproject['id']?>">
+                <?
+                    foreach( array_merge($GLOBALS["priorities"],
+                        array("subproject")) as $priority) {
+                        print "<option value=\"".htmlentities($priority).
+                            "\"";
+                        if( $priority === $subproject['priority'])
+                            print " selected";
+                        print ">".htmlentities($priority)."</option>\n";
+                    }
+                ?>
+                </select>
+            <? } else { ?>
+                <?=$subproject['priority']?>
+            <? } ?>
+        </td>
         <td valign=top><?=$subproject['status']?></td>
         <td valign=top><? if($subproject["lead"] !== '') { ?><a href="member.php?id=<?=urlencode($subproject['lead'])?>"><?=htmlentities($subproject['lead'])?></a><? } else { ?>(none)<? } ?></td>
         <td align=right valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
@@ -117,7 +133,7 @@ function checkAllot() {
 <? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
 <input type='hidden' name='id' value=<?=$parentid?>>
 <input type='hidden' name='tab' value='subprojects'>
-<p align='right'><input type='submit' name='submit' value='update allotments' onClick='return checkAllot()'></p>
+<p align='right'><input type='submit' name='submit' value='Update' onClick='return checkAllot()'></p>
 <? } ?>
 <hr height=1></hr>
 <p align=right><b>Unalloted Percentage:</b><span id='totalpercentage'><?=(100-$totalallotment)?>%</span></p>
