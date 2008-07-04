@@ -45,6 +45,8 @@ if( trim($reqmts)) {
         '', $reqmts, $p, $attachments, false, $priority, '',
         isset($_REQUEST["allotment"]) ? round($allotment * 10) : false);
     if( !$rc) {
+        if( $username !== '') al_createwatch( "$id-news", $username);
+
         header( "Location: project.php?p=$p&tab=subprojects");
         exit;
     }
