@@ -2297,6 +2297,55 @@ function ff_supplantlead( $id, $username)
     return private_commit();
 }
 
+// This function may lock the following tables in this order:
+//
+// <projects>
+// <duties>
+//
+function ff_resignlead( $id, $username)
+{
+    $nid = intval(substr($id,1));
+
+    $qu = sql_exec("begin");
+    if( $qu === false) return private_dberr();
+
+    $qu = sql_exec( "select lead from projects where id=$nid for update");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows( $qu) == 0)
+        return private_dberr(2,"No such project: $id");
+    $row = sql_fetch_array( $qu, 0);
+    if( $row["lead"] === '' || $row["lead"] !== $username)
+        return private_dberr(5,"You are not the project lead");
+
+    $rc = private_removelead( $nid);
+    if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+
+    return private_commit();
+}
+
+// Only call this function in a transaction.
+// This function may lock the following tables in this order:
+//
+// <projects>
+// <duties>
+//
+function private_removelead( $nid)
+{
+    $qu = sql_exec("update projects set lead='' where id=$nid");
+    if( $qu === false) return private_dberr();
+
+    unset($GLOBALS["PRIVATE_PROJECT_INFO"]["p$nid"]);
+
+    // Clear the deadlines, since there's no leader anyway.
+    // This is also necessary to prevent the cron job from processing
+    // meaningless deadlines.
+    $qu = sql_exec("update duties set deadline=null ".
+        "where project=$nid and deadline is not null");
+    if( $qu === false) return private_dberr();
+
+    return array(0,"Success");
+}
+
 function ff_getsubprojects( $id)
 {
     $nid = intval(substr($id,1));
@@ -4452,17 +4501,8 @@ function ff_enforcedutydeadlines()
         }
 
         // Now oust the project lead
-        $qu = sql_exec("update projects set lead='' where id=$nid");
-        if( $qu === false) return private_dberr(1);
-
-        unset($GLOBALS["PRIVATE_PROJECT_INFO"]["p$nid"]);
-
-        // Clear the deadline, since there's no leader anyway.
-        // This is also necessary to prevent the cron job from processing
-        // meaningless deadlines.
-        $qu = sql_exec("update duties set deadline=null ".
-            "where project=$nid and seq=$seq");
-        if( $qu === false) return private_dberr(1);
+        $rc = private_removelead( $nid);
+        if( $rc[0]) return private_dberr($rc[0],$rc[1]);
 
         list($rc,$memberinfo) = ff_getmemberinfo($lead);
         if( $rc) return private_dberr($rc,$memberinfo);

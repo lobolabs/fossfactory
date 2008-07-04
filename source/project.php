@@ -157,6 +157,9 @@ from this project's bounty and placed in your
 <?
     list($rc,$hiscredits) = ff_numcredits( $id, $projinfo["lead"]);
     if( $rc == 0) print "<em>($hiscredits credits)</em>";
+    if( $projinfo["lead"] === $username) {
+?><br><a href="resign.php?id=<?=$id?>" onClick="return confirm('Are you sure you want to resign?')">(resign)</a><?
+    }
 } else {
     $hiscredits = -1;
 ?>
