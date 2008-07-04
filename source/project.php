@@ -106,6 +106,7 @@ apply_template($projinfo["name"],array(
     <ul id="options">
         <li class="first-child"><a href="newsubproject.php?p=<?=$id?>">Create a Subproject</a></li>
         <li><a href="disputepost.php?id=<?=$id?>">File a Complaint</a></li>
+        <li class="bug"><a href="newbug.php?p=<?=$id?>">Report a Bug</a></li>
         <li class="last-child"><a href="submission.php?id=<?=$id?>">Make a Submission</a></li>
     </ul>
 <? } ?>

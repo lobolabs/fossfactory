@@ -208,6 +208,9 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 #options li.last-child a {
     background-image:url(images/icons/submission.png);
 }
+#options li.bug a {
+    background-image:url(images/icons/bug.png);
+}
 
 #sponsors_table td, #sponsors_table th {
     padding: 0.2em 1em 0.2em 3em;
