@@ -138,7 +138,11 @@ that you have completely satisfied all of the project requirements:
 <div class=legal>
 All submitted files must include proper copyright
 notices and must be licensed under one or more of the free/open source
-licenses listed in our <a href="terms.php">terms of use</a>.  Submissions
+licenses listed in our <a href="terms.php">terms of use</a>.  <b>You may not
+submit a copy or derivative work of any copyrighted work that was first 
+published less than three days ago, unless you are the copyright owner of
+that work, or unless you have special written permission from the copyright
+owner.</b>  Submissions
 that do not comply with these terms are not eligible for acceptance.
 Submitting files here constitutes public distribution.  Do not submit
 any file here that you do not have the legal right or permission to
