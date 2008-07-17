@@ -1,7 +1,6 @@
 #!/bin/bash
 
-SITE_URL=http://localhost//////~jjgignac/fossfactory/
-GIT_BASE=/home/jjgignac/git-projects/fossfactory/data/git/
+SITE_URL=http://www.fossfactory.org/
 CREDFILE="${HOME}/.fossfactory"
 
 COMMAND="$1"
