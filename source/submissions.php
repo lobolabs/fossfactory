@@ -92,6 +92,8 @@ if( $projectinfo["numattachments"] > 0)
 <div class=spec><?=$body?></div>
 <br>
 <? } ?>
+<b>Submission notes:</b><br>
+<?=formatText($submission['comments'])?>
 <table cellpadding=0 cellspacing=0>
 <? foreach($submission['files'] as $filekey => $file) { ?>
         <tr>
