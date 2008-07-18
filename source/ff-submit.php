@@ -64,7 +64,7 @@ if( ereg( '^git@[-._a-z]+:([-_a-z0-9]+)(\.git)?$', $origin, $regs)) {
     // Clone a similar repository, and rewind it back to the beginning.
     // We do this in order to have hard-linked copies of the objects.
     system("sudo -u git git clone --bare $origin /home/git/s$subid.git >/dev/null");
-    system("sudo -u git git push /home/git/s$subid.git :master >/dev/null");
+    system("sudo -u git git --git-dir=/home/git/s$subid.git push /home/git/s$subid.git :master >/dev/null");
 } else {
     // Create the repository
     system("sudo -u git mkdir /home/git/s$subid.git");

@@ -348,7 +348,7 @@ submit)
         echo "Success.  The submission repository is $repo"
     else
         echo "There was a problem pushing your changes."
-        echo "Submission incomplete."
+        echo "Submission incomplete.  The submission repository is $repo"
         exit 1
     fi
 
