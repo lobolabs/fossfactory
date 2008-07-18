@@ -264,7 +264,7 @@ show)
     [ "$parent" != 0 ] && echo "Parent project: p$parent"
     echo
     echo "Requirements:"
-    echo "$reqmts" | dos2unix | fmt -s | sed 's/^/> /'
+    echo "$reqmts" | tr -d '\r' | fmt -s | sed 's/^/> /'
 
     ;;
 
@@ -289,7 +289,7 @@ subproject)
     echo "# Parent Project: $name" >> "$tmp"
     echo "#" >> "$tmp"
     echo "# Parent Project Requirements:" >> "$tmp"
-    echo "$reqmts" | dos2unix | fmt -s | sed 's/^/# > /' >> "$tmp"
+    echo "$reqmts" | tr -d '\r' | fmt -s | sed 's/^/# > /' >> "$tmp"
     echo "#" >> "$tmp"
 
     "$EDITOR" "$tmp"
@@ -316,7 +316,7 @@ submit)
     echo "# Project Name: $name" >> "$tmp"
     echo "#" >> "$tmp"
     echo "# Requirements:" >> "$tmp"
-    echo "$reqmts" | dos2unix | fmt -s | sed 's/^/# > /' >> "$tmp"
+    echo "$reqmts" | tr -d '\r' | fmt -s | sed 's/^/# > /' >> "$tmp"
     echo "#" >> "$tmp"
 
     ORIGIN=

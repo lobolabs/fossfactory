@@ -2,7 +2,7 @@ Sandbox Installation Part 1 (requires root)
 -------------------------------------------
 
 1. apt-get update
-2. apt-get install apg subversion apache2 php5 postgresql-8.2 php5-pgsql php5-gd git-core tofrodos
+2. apt-get install apg subversion apache2 php5 postgresql-8.2 php5-pgsql php5-gd git-core
 3. Make sure that /etc/apache2/mods-available/userdir.* are linked to
    from /etc/apache2/mods-enabled/
 4. Set "AllowOverride All" and "FollowSymLinks" in
