@@ -236,7 +236,7 @@ init)
         rm -rf "$TMPDIR"
         cp -a "$SOURCE" "$TMPDIR"
         pushd "$TMPDIR" > /dev/null
-        git init > /dev/null
+        git init-db > /dev/null
         git add .
         git commit -m 'First commit' > /dev/null
         git push "$repo" master > /dev/null 2>/dev/null
