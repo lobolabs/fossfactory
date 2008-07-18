@@ -317,6 +317,7 @@ $tabs = array(
     "sponsors" => "Sponsors",
     "news" => "Activity",
     "submissions" => "Submissions",
+    "start" => "Get Started",
     );
 list($rc,$disputes) = ff_getprojectdisputes($id);
 if (!$rc && sizeof($disputes)) $tabs["disputes"] = "Disputes";
@@ -381,6 +382,8 @@ if( $tab =='requirements') {
 	include_once('sponsors.php');
 } else if ($tab=='submissions') {
 	include_once('submissions.php');
+} else if ($tab=='start') {
+	include_once('getstarted.php');
 } else if( $tab=='news') {
     print '<div style="float: right;"><a href="rss.php?src=projectevents&p='.$id.'" title="Project news feed"><img src="images/rss.png" style="border: 0;" alt="RSS" /></a></div>';
     list($rc,$events) = al_getrecentevents( "watch:$id-news");

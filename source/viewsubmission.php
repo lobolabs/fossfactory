@@ -19,7 +19,7 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 <?
 if( !ereg( "^/([0-9]*)/([0-9]*)", getenv("PATH_INFO"), $args)) exit;
 
-ereg ("\\.(pdf|txt|png|jpeg|jpg|html|htm)$",strtolower($_SERVER['PHP_SELF']),$ags);
+ereg ("\\.(pdf|txt|png|jpeg|jpg|html|htm|patch)$",strtolower($_SERVER['PHP_SELF']),$ags);
 
 if($ags[1] == 'pdf')
     header("Content-type: application/pdf");
@@ -27,6 +27,8 @@ elseif($ags[1]=='png')
     header("Content-type: image/png");
 elseif($ags[1]=='jpeg'||$ags[1]=='jpg')
     header("Content-type: image/jpeg");
+elseif($ags[1]=='txt'||$ags[1]=='patch')
+    header("Content-type: text/plain");
 
 ff_showsubmissionfile($args[1],$args[2]);
     

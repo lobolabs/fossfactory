@@ -19,6 +19,9 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 <?
 $id = scrub($id);
 
+$hostname = $_SERVER["HTTP_HOST"];
+if($hostname === "www.fossfactory.org") $hostname = "git.fossfactory.org";
+
 list($rc,$submissions) = ff_getsubmissions( $id);
 
 // Remove from the list any projects that have been rejected with prejudice
@@ -100,7 +103,7 @@ if( $projectinfo["numattachments"] > 0)
             <td><?=htmlentities($file['filename'])?></td>
             <td align=right>&nbsp;&nbsp;&nbsp;(<?=htmlentities($file['filesize'])?> bytes)</td>
             <td>&nbsp;&nbsp;&nbsp;<nobr><a href="displaysubmission.php/<?=$submission['id']?>/<?=($filekey+1)?>/<?=urlencode($file['filename'])?>" style="font-size:small">[download]</a>&nbsp;<?
-                if (ereg ("\\.(pdf|txt|png|jpeg|jpg|html|htm)$",strtolower(htmlentities($file['filename'])),$regs)) {
+                if (ereg ("\\.(pdf|txt|png|jpeg|jpg|html|htm|patch)$",strtolower(htmlentities($file['filename'])),$regs)) {
                 ?>
                 <a href="viewsubmission.php/<?=$submission['id']?>/<?=($filekey+1)?>/<?=urlencode($file['filename'])?>" style="font-size:small;margin-right:2em">[view]</a>
              <?   
@@ -109,6 +112,12 @@ if( $projectinfo["numattachments"] > 0)
         </tr>    
     <? } ?>
 </table>
+<? if( file_exists("/home/git/s$submission[id].git")) { ?>
+<p>
+<b>Git Download:</b><br>
+<tt>git clone git@<?=htmlentities($hostname)?>:s<?=$submission['id']?></tt>
+</p>
+<? } ?>
 <br>
 <?
     if( $submission["status"] === "reject") {
