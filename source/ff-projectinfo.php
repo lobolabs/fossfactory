@@ -21,4 +21,6 @@ if($hostname === "www.fossfactory.org") $hostname = "git.fossfactory.org";
 if( is_dir( "/home/git/$projectinfo[id].git")) {
     print "gitrepo=".urlencode("git@$hostname:$projectinfo[id]")."\n";
 }
+
+print "fbounty=".urlencode(format_money($projectinfo["bounty"]))."\n";
 ?>
