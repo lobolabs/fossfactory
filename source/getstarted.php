@@ -19,6 +19,7 @@ if( file_exists("/home/git/$repoproject.git")) {
 }
 ?>
 <div style='float:right;white-space:nowrap;border:1px solid black;background-color:#ffffd0;padding:1em'>
+Project ID: <b><tt><?=$id?></tt></b><br><br>
 Git repository:<br><b><tt><?=htmlentities($repo)?></tt></b>
 </div>
 <h2>1. Install the ff Script</h2>
