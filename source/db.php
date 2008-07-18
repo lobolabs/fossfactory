@@ -4780,13 +4780,12 @@ function al_queuenotifications()
         if( substr( $eventid, 0, 5) === 'lead:') {
             $nid = intval(substr($eventid,5));
             list($rc,$projectinfo) = ff_getprojectinfo("p$nid");
-            if( $rc) return array($rc,$projectinfo);
-            if( "$projectinfo[lead]" === "")
-                return array(0,"No project lead");
-
-            $rc = private_queuenotification( "$seq",
-                $projectinfo["lead"], $url, $subject, $body);
-            if($rc[0]) return private_dberr($rc[0],$rc[1]);
+            if( $rc) return private_dberr($rc,$projectinfo);
+            if( "$projectinfo[lead]" !== "") {
+                $rc = private_queuenotification( "$seq",
+                    $projectinfo["lead"], $url, $subject, $body);
+                if($rc[0]) return private_dberr($rc[0],$rc[1]);
+            }
         } else if( substr( $eventid, 0, 6) === 'watch:') {
             $watchid = substr($eventid,6);
             $qu2 =sql_exec("select * from watches where eventid='".
