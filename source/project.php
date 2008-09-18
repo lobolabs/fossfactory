@@ -21,7 +21,11 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 $id = scrub($_REQUEST["p"]);
 $tab = scrub($_REQUEST["tab"]);
 
-if( isset($_REQUEST["sponsor_amount"])) {
+if( isset($_REQUEST["newname"])) {
+    ff_renameproject( $username, $id, $_REQUEST["newname"]);
+    header( "Location: project.php?p=$id&tab=".urlencode($tab));
+    exit;
+} else if( isset($_REQUEST["sponsor_amount"])) {
     if( !is_secure()) {
         header( "Location: $GLOBALS[SITE_URL]project.php?p=$id".
             "&tab=".urlencode($tab)."&sp_err=1");
@@ -150,6 +154,22 @@ from this project's bounty and placed in your
 <? } ?>
 
 <span class=project-title><?=htmlentities($projinfo["name"])?></span>
+<? if( $username && $projinfo["lead"] === $username) { ?>
+<a href="javascript:rename()" style="font-size:x-small">(rename)</a>
+<script>
+function rename() {
+    var newname = prompt('Please enter the new project name',
+        '<?=jsencode($projinfo["name"])?>');
+    if( newname != null && newname != '<?=jsencode($projinfo["name"])?>') {
+        if( confirm("Are you sure you want to rename "+
+            "the project to '"+newname+"'?")) {
+            document.location = 'project.php?p=<?=$id?>&tab='+
+                '<?=urlencode($_REQUEST["tab"])?>&newname='+encodeURI(newname);
+        }
+    }
+}
+</script>
+<? } ?>
 
 <div id=projectlead><h1>Project Lead: </h1>
 <? if( $projinfo["lead"]) { ?>
