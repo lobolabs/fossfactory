@@ -70,6 +70,7 @@ if [ "${repo_id:0:1}" = p ]; then
     done
     [ -n "$lead" -a "$lead" = "$FFMEMBER" ] &&
         grant >/dev/null "User is the project lead"
+    deny >/dev/null "User is not the project lead.  Denying access"
 else
     # Make sure that the user is the person who made the submission
     username=
@@ -78,6 +79,7 @@ else
     done
     [ -n "$username" -a "$username" = "$FFMEMBER" ] &&
         grant >/dev/null "User is the submitter"
+    deny >/dev/null "User is not the submitter.  Denying access"
 fi
 
 deny >/dev/null "There are no more rules to check.  Denying access"
