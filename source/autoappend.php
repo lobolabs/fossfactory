@@ -26,6 +26,7 @@ if( $GLOBALS["auto_apply_footer"])
 <div id=footer>
 [&nbsp;&nbsp;<a href="./">Home</a>&nbsp;
 | &nbsp;<a href="aboutus.php">About&nbsp;Us</a>&nbsp;
+| &nbsp;<a href="http://www.fossfactory.org/abdullah/">Blog</a>&nbsp;
 | &nbsp;<a href="team.php">The&nbsp;Team</a>&nbsp;
 | &nbsp;<a href="advisors.php">advisors</a>&nbsp;
 | &nbsp;<a href="contact.php">Contact&nbsp;Us</a>&nbsp;

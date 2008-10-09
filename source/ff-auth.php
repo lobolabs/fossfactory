@@ -1,5 +1,6 @@
 <? /*
 Copyright 2008 John-Paul Gignac
+Copyright 2008 FOSS Factory Inc.
 
 This file is part of Fossfactory-src.
 
@@ -16,20 +17,11 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 */ ?>
-<?
-if( !ereg( "^/([0-9]*)/([0-9]*)", getenv("PATH_INFO"), $args)) exit;
-
-ereg ("\\.(pdf|txt|png|jpeg|jpg|html|htm|patch)$",strtolower($_SERVER['PHP_SELF']),$ags);
-
-if($ags[1] == 'pdf')
-    header("Content-type: application/pdf");
-elseif($ags[1]=='png')
-    header("Content-type: image/png");
-elseif($ags[1]=='jpeg'||$ags[1]=='jpg')
-    header("Content-type: image/jpeg");
-elseif($ags[1]=='txt'||$ags[1]=='patch')
-    header("Content-type: text/plain");
-
-ff_showsubmissionfile($args[1],$args[2]);
-    
+<?php
+list($rc,$err) = ff_checkpassword("$_REQUEST[u]", "$_REQUEST[p]");
+if( $rc) {
+    print ($rc==5 ? "unauthorized" : "syserr");
+    exit;
+}
 ?>
+authorized

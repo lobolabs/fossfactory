@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Based on a sample script by
+# Junio C Hamano <junkio@cox.net> and Carl Baldwin <cnb@fc.hp.com>
+# http://www.kernel.org/pub/software/scm/git/docs/howto/update-hook-example.txt
+
+umask 002
+
+# If you are having trouble with this access control hook script
+# you can try setting this to true.  It will tell you exactly
+# why a user is being allowed/denied access.
+
+verbose=true
+
+# Default shell globbing messes things up downstream
+GLOBIGNORE=*
+
+function grant {
+  $verbose && echo >&2 "-Grant-     $1"
+  echo grant
+  exit 0
+}
+
+function deny {
+  $verbose && echo >&2 "-Deny-      $1"
+  echo deny
+  exit 1
+}
+
+function info {
+  $verbose && echo >&2 "-Info-      $1"
+}
+
+# Implement generic branch and tag policies.
+# - Tags should not be updated once created.
+# - Branches should only be fast-forwarded unless their pattern starts with '+'
+case "$1" in
+  refs/tags/*)
+    git rev-parse --verify -q "$1" &&
+    deny >/dev/null "You can't overwrite an existing tag"
+    ;;
+  refs/heads/*)
+    # No rebasing or rewinding
+    if expr "$2" : '0*$' >/dev/null; then
+      info "The branch '$1' is new..."
+    else
+      # updating -- make sure it is a fast forward
+      mb=$(git-merge-base "$2" "$3")
+      case "$mb,$2" in
+        "$2,$mb") info "Update is fast-forward" ;;
+    *)    noff=y; info "This is not a fast-forward update.";;
+      esac
+    fi
+    ;;
+  *)
+    deny >/dev/null \
+    "Branch is not under refs/heads or refs/tags.  What are you trying to do?"
+    ;;
+esac
+
+# Implement per-repository controls based on $FFMEMBER
+
+repo_id=$(basename "$PWD" | sed 's/\..*//')
+
+if [ "${repo_id:0:1}" = p ]; then
+    # Make sure that the user is the project lead
+    lead=
+    for line in $(curl -s "${FFURL}ff-projectinfo.php?id=$repo_id"); do
+        [ "${line:0:5}" = lead= ] && lead="${line:5}"
+    done
+    [ -n "$lead" -a "$lead" = "$FFMEMBER" ] &&
+        grant >/dev/null "User is the project lead"
+else
+    # Make sure that the user is the person who made the submission
+    username=
+    for line in $(curl -s "${FFURL}ff-submissioninfo.php?id=$repo_id"); do
+        [ "${line:0:9}" = username= ] && username="${line:9}"
+    done
+    [ -n "$username" -a "$username" = "$FFMEMBER" ] &&
+        grant >/dev/null "User is the submitter"
+fi
+
+deny >/dev/null "There are no more rules to check.  Denying access"

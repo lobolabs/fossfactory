@@ -2,7 +2,7 @@ Sandbox Installation Part 1 (requires root)
 -------------------------------------------
 
 1. apt-get update
-2. apt-get install apg subversion apache2 php5 postgresql-8.2 php5-pgsql php5-gd
+2. apt-get install apg subversion apache2 php5 postgresql-8.2 php5-pgsql php5-gd git-core
 3. Make sure that /etc/apache2/mods-available/userdir.* are linked to
    from /etc/apache2/mods-enabled/
 4. Set "AllowOverride All" and "FollowSymLinks" in
@@ -13,6 +13,13 @@ Sandbox Installation Part 1 (requires root)
 7. Make sure that port=5432 and unix_socket_directory='/var/run/postgresql'
    in /etc/postgresql/8.2/main/postgresql.conf
 8. /etc/init.d/postgresql-8.2 restart
+9. adduser git --shell /usr/bin/git-shell
+10. Use visudo to add the following line to the sudoers file:
+      www-data ALL=(git) NOPASSWD: ALL
+11. Make sure that PermitUserEnvironment is set to yes in /etc/ssh/sshd_config
+12. /etc/init.d/ssh reload
+13. echo 'FFURL=http://localhost/~YOURUSERNAME/fossfactory/' | su - git tee .ssh/environment
+14. chown git.git ~/.ssh/environment
 
 Sandbox Installation Part 2 (as regular user)
 ---------------------------------------------

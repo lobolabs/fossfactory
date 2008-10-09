@@ -1,0 +1,360 @@
+#!/bin/bash
+
+SITE_URL=http://www.fossfactory.org/
+SECURE_URL=https://www.fossfactory.org/
+CREDFILE="${HOME}/.fossfactory"
+
+COMMAND="$1"
+
+# Select an editor
+[ -n "$EDITOR" ] || EDITOR="$(which editor)" || EDITOR=vi
+
+oldmodes=$(stty -g)
+
+function usage() {
+    case "$1" in 
+    setup)
+        cat <<"USAGE"
+ff setup [<keyfile>] - Set up Git access on the FOSS Factory server
+
+This command transfers an ssh public key to FOSS Factory to enable
+Git connections.  If <keyfile> is not provided, then this script will
+look for one in your ~/.ssh directory.
+USAGE
+      ;;
+    duties)
+        cat <<"USAGE"
+ff duties - Display your FOSS Factory duties
+
+This command lists all of your current FOSS Factory duties.
+USAGE
+      ;;
+    init)
+        cat <<"USAGE"
+ff init <projid> [<source>] - Create a public Git repository
+
+This command creates a public Git repository for the given project, hosted
+on FOSS Factory's server.  Only the project lead can do this.
+
+If provided, <source> should be either the URL of an existing public
+Git repository, or the location of a non-empty directory on your local
+filesystem.  If a Git repository is given, the new public repository
+will be a clone of the given one.  If a directory is given, the new
+repository will initially contain a copy of everything in that directory.
+
+If <source> is not provided and the given project has an ancestor with an
+existing repository, then this command will offer to clone that ancestor's
+repository.
+USAGE
+      ;;
+    show)
+        cat <<"USAGE"
+ff show <projid> - Display information about a project
+
+This command displays information about a given project, including its
+current bounty and requirements.
+USAGE
+      ;;
+    subproject)
+        cat <<"USAGE"
+ff subproject <projid> <name> - Create a new subproject
+
+This command creates a subproject for the given FOSS Factory project.
+$EDITOR is launched to allow you to enter the subproject requirements.
+USAGE
+      ;;
+    submit)
+        cat <<"USAGE"
+ff submit <projid> - Submit local Git commits as a project solution
+
+This command prepares a FOSS Factory submission using local Git commits.
+It creates a submission repository on the FOSS Factory server, and pushes
+changes from the current local HEAD into the master branch of the submission
+repository.
+
+$EDITOR is launched to allow you to enter submission comments.  You can
+cancel the operation by leaving the submission comments blank.
+USAGE
+      ;;
+    '' | *)
+        cat <<"USAGE"
+Usage: ff [help] COMMAND [ARGS]
+
+Commands:
+   setup [<keyfile>]          Set up Git access on the FOSS Factory server
+   duties                     List all of your current duties
+   init <projid> [<source>]   Create a public Git code repository
+   show <projid>              Display information about a project
+   subproject <projid> <name> Create a new subproject
+   submit <projid>            Submit local Git commits as a project solution
+USAGE
+      ;;
+    esac
+
+    exit
+}
+
+function url_encode() {
+    echo -n "$1" |
+        perl -e '$_=<>;s/([\W])/"%".uc(sprintf("%2.2x",ord($1)))/eg;print'
+}
+
+function url_decode() {
+    echo -n "$1" |
+        perl -e '$_=<>;tr/+/ /;s/%([a-fA-F0-9]{2})/chr(hex($1))/eg;print'
+}
+
+function get_creds() {
+    if [ -e "$CREDFILE" ]; then
+        for line in $(< "$CREDFILE"); do
+            if [ "${line:0:9}" = username= ]; then
+                USERNAME="${line:9}"
+            elif [ "${line:0:9}" = password= ]; then
+                PASSWORD="${line:9}"
+            fi
+        done
+        return 0
+    fi
+
+    while true; do
+        echo -n "FOSS Factory username: " >&2
+        read USERNAME
+        echo -n "FOSS Factory password: " >&2
+        stty -echo; read PASSWORD; stty "$oldmodes"; echo
+        [ "$(curl -s "${SECURE_URL}ff-auth.php?u=$(url_encode "$USERNAME")&p=$(url_encode "$PASSWORD")")" = authorized ] && break
+        echo "Incorrect username or password."
+    done
+
+    # Write the credentials file
+    cat > "$CREDFILE" <<EOF
+username=$USERNAME
+password=$PASSWORD
+EOF
+}
+
+function get_project_info() {
+    # Parse the project info
+    local result="$(curl -s "${SITE_URL}ff-projectinfo.php?id=$(url_encode "$1")")"
+    [ "$result" = nosuchproject ] && return 2
+    [ "$result" = syserr ] && return 1
+
+    for line in $result; do
+        for token in reqmts name parent gitrepo lead fbounty; do
+            if [ "${line:0:$((${#token}+1))}" = $token= ]; then
+                eval $token='$(url_decode ${line:$((${#token}+1))})'
+            fi
+        done
+    done
+}
+
+case "$COMMAND" in
+--help | help)
+    usage "$2"
+    ;;
+setup)
+    get_creds
+
+    sendkey="$2"
+
+    if [ -z "$sendkey" ]; then
+        RSA="$HOME/.ssh/id_rsa.pub"
+        DSA="$HOME/.ssh/id_dsa.pub"
+
+        # Decide which ssh public key to send to the server
+        if [ -f "$RSA" -a -f "$DSA" ]; then
+            echo "RSA and DSA public keys found in ~/.ssh"
+            echo -n "Which one would you like to send to the server? (r or d)"
+            stty raw; key=$(dd bs=1 count=1 2>/dev/null); stty "$oldmodes"; echo
+            case "$key" in
+              r) sendkey="$RSA"
+                 ;;
+              d) sendkey="$DSA"
+                 ;;
+              '' | *) 
+                 exit 1
+                 ;;
+            esac
+        elif [ -f "$RSA" ]; then
+            echo "RSA public key found in $RSA"
+            sendkey="$RSA"
+        elif [ -f "$DSA" ]; then
+            echo "DSA public key found in $DSA"
+            sendkey="$DSA"
+        else
+            echo "No RSA or DSA public key found in $HOME/.ssh"
+            echo "Please create one using ssh-keygen."
+            exit 1
+        fi
+    fi
+
+    # Send the public key to the server
+    curl -s "${SECURE_URL}ff-setpubkey.php?u=$(url_encode "$USERNAME")&p=$(url_encode "$PASSWORD")&k=$(url_encode "$(< $sendkey)")"
+
+    ;;
+duties)
+    get_creds
+    curl -s "${SECURE_URL}ff-duties.php?u=$(url_encode "$USERNAME")&p=$(url_encode "$PASSWORD")"
+    ;;
+
+init)
+    get_creds
+    PROJECTID="$2"
+    [ -z "$PROJECTID" ] && usage
+
+    SOURCE="$3"
+
+    get_project_info "$PROJECTID"
+
+    if [ -n "$gitrepo" ]; then
+        echo "That project already has a repository at $gitrepo"
+        exit 1
+    fi
+
+    use_dir=
+    [ -d "$SOURCE" ] && use_dir=1
+
+    while [ -z "$SOURCE" -a "$parent" != 0 ]; do
+        get_project_info "p$parent"
+        if [ -n "$gitrepo" ]; then
+            echo "An ancestor project has a repository at $gitrepo"
+            echo -n "Would you like to clone it? (y or n)"
+            stty raw;key=$(dd bs=1 count=1 2>/dev/null);stty "$oldmodes";echo
+            [ "$key" = n ] && exit 1
+            SOURCE="$gitrepo"
+        fi
+    done
+
+    repo=$(curl -s "${SECURE_URL}ff-initrepo.php?u=$(url_encode "$USERNAME")&p=$(url_encode "$PASSWORD")&id=$(url_encode "$PROJECTID")&c=$(url_encode "$SOURCE")&e=$use_dir")
+
+    if [ $(expr "$repo" : "^git@") = 0 ]; then
+        echo "$repo"
+        exit 1
+    fi
+
+    if [ -n "$use_dir" ]; then
+        TMPDIR="/tmp/ff-git-$$"
+        rm -rf "$TMPDIR"
+        cp -a "$SOURCE" "$TMPDIR"
+        pushd "$TMPDIR" > /dev/null
+        git init-db > /dev/null
+        git add .
+        git commit -m 'First commit' > /dev/null
+        git push "$repo" master > /dev/null 2>/dev/null
+        popd > /dev/null
+        rm -rf "$TMPDIR"
+    fi
+
+    echo "Created new repository $repo"
+
+    ;;
+
+show)
+    PROJECTID="$2"
+    [ -z "$PROJECTID" ] && usage
+
+    if ! get_project_info "$PROJECTID"; then
+        echo "No such project: $PROJECTID"
+        exit 1
+    fi
+
+    echo "Name: $name"
+    [ -z "$lead" ] && lead='<none>'
+    echo "Project Lead: $lead"
+    echo "Bounty: $fbounty"
+    [ "$parent" != 0 ] && echo "Parent project: p$parent"
+    echo
+    echo "Requirements:"
+    echo "$reqmts" | tr -d '\r' | fmt -s | sed 's/^/> /'
+
+    ;;
+
+subproject)
+    get_creds
+    PROJECTID="$2"
+    [ -z "$PROJECTID" ] && usage
+
+    NAME="$3"
+    [ -z "$NAME" ] && usage
+
+    get_project_info "$PROJECTID"
+
+    tmp=$(tempfile)
+
+    echo >> "$tmp"
+    echo "# Please enter the initial subproject requirements." >> "$tmp"
+    echo "# (Comment lines starting with '#' will not be included)" >> "$tmp"
+    echo "#" >> "$tmp"
+    echo "# Subproject Name: $NAME" >> "$tmp"
+    echo "#" >> "$tmp"
+    echo "# Parent Project: $name" >> "$tmp"
+    echo "#" >> "$tmp"
+    echo "# Parent Project Requirements:" >> "$tmp"
+    echo "$reqmts" | tr -d '\r' | fmt -s | sed 's/^/# > /' >> "$tmp"
+    echo "#" >> "$tmp"
+
+    "$EDITOR" "$tmp"
+    REQMTS="$(grep -v '^#' "$tmp")"
+    rm "$tmp"
+
+    id="$(curl -s "${SECURE_URL}ff-newsubproject.php?u=$(url_encode "$USERNAME")&p=$(url_encode "$PASSWORD")&id=$(url_encode "$PROJECTID")&name=$(url_encode "$NAME")&reqmts=$(url_encode "$REQMTS")")"
+
+    ;;
+
+submit)
+    get_creds
+    PROJECTID="$2"
+    [ -z "$PROJECTID" ] && usage
+
+    get_project_info "$PROJECTID"
+
+    tmp=$(tempfile)
+
+    echo >> "$tmp"
+    echo "# Please enter your submission comments." >> "$tmp"
+    echo "# (Comment lines starting with '#' will not be included)" >> "$tmp"
+    echo "#" >> "$tmp"
+    echo "# Project Name: $name" >> "$tmp"
+    echo "#" >> "$tmp"
+    echo "# Requirements:" >> "$tmp"
+    echo "$reqmts" | tr -d '\r' | fmt -s | sed 's/^/# > /' >> "$tmp"
+    echo "#" >> "$tmp"
+
+    ORIGIN=
+    if git branch -r | grep -q '^..origin/master$'; then
+        echo "# Changes to submit:" >> "$tmp"
+        git diff origin/master HEAD | sed 's/^/# /' >> "$tmp"
+        echo "#" >> "$tmp"
+        ORIGIN="$(git config --get remote.origin.url)"
+    fi
+
+    # Invoke the editor
+    "$EDITOR" "$tmp"
+    comments="$(grep -v '^#' "$tmp")"
+    rm "$tmp"
+
+    if [ -z "$comments" ]; then
+        echo "No comments given.  Aborting."
+        exit 1
+    fi
+
+    repo="$(git diff origin/master HEAD | curl -s -F patch=@- "${SECURE_URL}ff-submit.php?u=$(url_encode "$USERNAME")&p=$(url_encode "$PASSWORD")&id=$(url_encode "$PROJECTID")&origin=$(url_encode "$origin")&comments=$(url_encode "$comments")")"
+
+    if [ ${repo:0:4} != git@ ]; then
+        echo "Error preparing the submission: $repo"
+        exit 1
+    fi
+
+    if git push "$repo" HEAD:refs/heads/master >/dev/null 2>/dev/null; then
+        echo "Success.  The submission repository is $repo"
+    else
+        echo "There was a problem pushing your changes."
+        echo "Submission incomplete.  The submission repository is $repo"
+        exit 1
+    fi
+
+    ;;
+'' | *)
+    usage
+    ;;
+esac
+
