@@ -91,7 +91,9 @@ function checkAllot() {
 </tr><tr><td valign="bottom" width="50%">
 <h2>Bug Priority</h2>
 <select name=priority>
-<? foreach( $GLOBALS["priorities"] as $priority) { ?>
+<? foreach( array_keys($GLOBALS["priorities"]) as $priority) {
+    if( $priority === 'subproject') continue;
+?>
 <option value="<?=htmlentities($priority)?>"<?=$priority==='low'?" selected":""?>><?=htmlentities($priority)?></option>
 <? } ?>
 </select>
