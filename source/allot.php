@@ -31,7 +31,59 @@ list($rc,$subprojects) = ff_getsubprojects($parentid);
 $totsubprojallot = 0;
 foreach($subprojects as $subproject) $totsubprojallot +=$subproject['allotment']; 
 
+function pri_cmp( $a, $b) {
+    if( $GLOBALS["priorities"][$a["priority"]] <
+        $GLOBALS["priorities"][$b["priority"]]) return 1;
+    if( $GLOBALS["priorities"][$a["priority"]] >
+        $GLOBALS["priorities"][$b["priority"]]) return -1;
+    return 0;
+}
+
+function id_cmp( $a, $b) {
+    if( intval(substr($a["id"],1)) < intval(substr($b["id"],1))) return -1;
+    if( intval(substr($a["id"],1)) > intval(substr($b["id"],1))) return 1;
+    return 0;
+}
+
+function allot_cmp( $a, $b) {
+    if( $a["allotment"] < $b["allotment"]) return 1;
+    if( $a["allotment"] > $b["allotment"]) return -1;
+    return 0;
+}
+
+function lead_cmp( $a, $b) {
+    if(strtolower($a["lead"]) < strtolower($b["lead"])) return -1;
+    if(strtolower($a["lead"]) > strtolower($b["lead"])) return 1;
+    return 0;
+}
+
+function bounty_cmp( $a, $b) {
+    if(converted_value($a["bounty"])<converted_value($b["bounty"])) return 1;
+    if(converted_value($a["bounty"])>converted_value($b["bounty"])) return -1;
+    return 0;
+}
+
+function status_cmp( $a, $b) {
+    if($a["status"]<$b["status"]) return -1;
+    if($a["status"]>$b["status"]) return 1;
+    return 0;
+}
+
+$columns = array(
+    "id"=>"ID",
+    "pri"=>"Priority",
+    "status"=>"Status",
+    "lead"=>"Project<br>Lead",
+    "allot"=>"Allotment",
+    "bounty"=>"Bounty",
+);
+
 if( sizeof($subprojects)) {
+    // Sort the subprojects by the appropriate column
+    $sort_key = $_REQUEST["sort"];
+    if(!isset($columns[$sort_key])) $sort_key = 'pri';
+    uasort( $subprojects, $sort_key."_cmp");
+
 ?>
 <script>
 function update_unallotedPercentage() { 
@@ -92,7 +144,21 @@ function checkAllot() {
 </script>
 <form action="allotpost.php" name='form' method='post'>
 <table width=100% border=1 cellpadding=5 cellspacing=0>
-<tr bgcolor="#e0e0e0"><th>ID</th><th>Priority</th><th>Status</th><th>Project<br>Lead</th><th>Allotment</th><th>Bounty</th><th>Summary</th></tr>
+<tr bgcolor="#e0e0e0">
+<?
+foreach( $columns as $key => $title) {
+    print "<th>";
+    if( $sort_key !== $key) {
+        print "<a href='project.php?p=$parentid&tab=subprojects";
+        if( $key !== 'pri') print "&sort=$key";
+        print "'>$title";
+        print "</a>";
+    } else print $title;
+    print "</th>";
+}
+?>
+<th>Summary</th>
+</tr>
 <? foreach($subprojects as $subproject) { 
     $totalallotment+=$subproject['allotment']/10;
 ?>
@@ -101,8 +167,7 @@ function checkAllot() {
         <td valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?>
                 <select name="pri<?=$subproject['id']?>">
                 <?
-                    foreach( array_merge($GLOBALS["priorities"],
-                        array("subproject")) as $priority) {
+                    foreach(array_keys($GLOBALS["priorities"]) as $priority) {
                         print "<option value=\"".htmlentities($priority).
                             "\"";
                         if( $priority === $subproject['priority'])

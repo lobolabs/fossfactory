@@ -464,5 +464,5 @@ if( $_REQUEST["requser"] &&
     softexit();
 }
 
-$GLOBALS["priorities"] = array('enhancement','low','medium','high','critical','blocker');
+$GLOBALS["priorities"] = array('enhancement'=>1,'low'=>2,'medium'=>3,'high'=>4,'critical'=>5,'blocker'=>6,'subproject'=>0);
 ?>
