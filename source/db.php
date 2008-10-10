@@ -813,8 +813,8 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                     "projectname" => $projinfo["name"],
                 );
                 $url = "project.php?p=$project&post=$id";
-                $rc = al_triggerevent( "watch:$project-news", $url,
-                    "pnews-changeproposal", $macros, 2);
+                $rc = al_triggerevent( "watch:$project-news/".scrub($owner),
+                    $url, "pnews-changeproposal", $macros, 2);
                 if( $rc[0]) return $rc;
             } else {
                 // Trigger a project news event
@@ -822,8 +822,8 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                     "projectname" => $projinfo["name"],
                 );
                 $url = "project.php?p=$project&post=$id";
-                $rc = al_triggerevent( "watch:$project-news", $url,
-                    "pnews-newpost", $macros, 5);
+                $rc = al_triggerevent( "watch:$project-news/".scrub($owner),
+                    $url, "pnews-newpost", $macros, 5);
                 if( $rc[0]) return $rc;
             }
         }
@@ -1136,8 +1136,8 @@ function ff_createproject( $creator, $name,
             "requirements" => $reqmts,
         );
         $url = "project.php?p=$id";
-        $rc = al_triggerevent( "watch:$parent-news", $url,
-            "pnews-newsubproject", $macros, 3);
+        $rc = al_triggerevent( "watch:$parent-news/".scrub($creator),
+            $url, "pnews-newsubproject", $macros, 3);
         if($rc[0]) return $rc;
     } else {
         // Trigger a "top-level project created" event notification
@@ -1146,8 +1146,8 @@ function ff_createproject( $creator, $name,
             "requirements" => $reqmts,
         );
         $url = "project.php?p=$id";
-        $rc = al_triggerevent( "watch:news", $url,
-            "news-newproject", $macros, 3);
+        $rc = al_triggerevent( "watch:news/".scrub($creator),
+            $url, "news-newproject", $macros, 3);
         if($rc[0]) return $rc;
     }
 
@@ -1358,8 +1358,8 @@ function ff_rejectreqmtschange( $username, $id, $subject, $postid)
         "projectname" => $row["name"],
     );
     $url = "project.php?p=$id&post=".intval($postid);
-    $rc = al_triggerevent( "watch:$id-news", $url,
-        "pnews-changerejected", $macros, 3);
+    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+        $url, "pnews-changerejected", $macros, 3);
     if( $rc[0]) return $rc;
 
     return private_commit();
@@ -2250,8 +2250,8 @@ function ff_setprojectreqmts($username, $id, $oldseq, $newreqmts,
         "projectname" => $row["name"],
     );
     $url = "project.php?p=$id&post=".intval($postid);
-    $rc = al_triggerevent( "watch:$id-news", $url,
-        "pnews-changeaccepted", $macros);
+    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+        $url, "pnews-changeaccepted", $macros);
     if($rc[0]) return $rc;
 
     return private_commit($oldseq+1);
@@ -2325,8 +2325,8 @@ function ff_supplantlead( $id, $username)
         "newlead" => $username);
     $event = ($oldauth ? 'supplant' : 'nosupplant');
     $url = "project.php?p=p$nid";
-    $rc = al_triggerevent( "watch:$id-news", $url,
-        "pnews-$event", $macros);
+    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+        $url, "pnews-$event", $macros);
     if($rc[0]) return $rc;
 
     return private_commit();
@@ -3086,8 +3086,8 @@ function ff_createdispute( $projectid, $username, $type, $object, $body)
         "body" => $body,
     );
     $url = "dispute.php?id=d$did";
-    $rc = al_triggerevent( "watch:p$nid-news", $url,
-        "pnews-newdispute", $macros, 2);
+    $rc = al_triggerevent( "watch:p$nid-news/".scrub($username),
+        $url, "pnews-newdispute", $macros, 2);
     if( $rc[0]) return $rc;
 
     list($rc,$err) = private_commit();
@@ -3806,8 +3806,8 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         "submitter" => $username,
     );
     $url = "project.php?p=p$nid&tab=submissions";
-    $rc = al_triggerevent( "watch:p$nid-news", $url,
-        "pnews-submission", $macros);
+    $rc = al_triggerevent( "watch:p$nid-news/".scrub($submitter),
+        $url, "pnews-submission", $macros);
     if($rc[0]) return $rc;
 
     return private_commit($submissionID);
@@ -4078,7 +4078,7 @@ function ff_applydisputedecision( $username, $disputeid, $decision)
     if( $qu === false) return private_dberr(1);
 
     // Inform interested parties
-    $rc = al_triggerevent("watch:p$nid-news",
+    $rc = al_triggerevent("watch:p$nid-news/".scrub($username),
         "dispute.php?id=d$did", "dispute$decision", array(
             "subject" => $row["subject"],
             "projectname" => $projectname));
@@ -4554,7 +4554,7 @@ function ff_enforcedutydeadlines()
         if( $rc) return private_dberr($rc,$memberinfo);
 
         // Notify everybody that the lead was ousted
-        list($rc,$err) = al_triggerevent( "watch:p$nid-news",
+        list($rc,$err) = al_triggerevent( "watch:p$nid-news/$lead",
             "project.php?p=p$nid", "leadousted", array(
             "exlead" => $lead, "projectname" => $projectname));
 
@@ -4804,11 +4804,17 @@ function al_queuenotifications()
             }
         } else if( substr( $eventid, 0, 6) === 'watch:') {
             $watchid = substr($eventid,6);
+            $except = '';
+            if( ereg("^(.*)/([^/]*)$", $watchid, $regs)) {
+                $watchid = $regs[1];
+                $except = $regs[2];
+            }
             $qu2 =sql_exec("select * from watches where eventid='".
                 sql_escape($watchid)."'");
             if ($qu2===false) return private_dberr();
             for ($j=0;$j<sql_numrows($qu2);$j++) {
                 $row2=sql_fetch_array($qu2,$j);
+                if( $row2["username"] === $except) continue;
                 $rc = private_queuenotification( "$seq/$j",
                     $row2["username"],$url,$subject,$body,$row2["method"]);
                 if($rc[0]) return private_dberr($rc[0],$rc[1]);
