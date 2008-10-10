@@ -25,6 +25,12 @@ $fundgoal = str_replace( array( ' ', ',' ), '', $_REQUEST['fundgoal'] );
 
 if( !$p) exit;
 
+list($rc,$parent) = ff_getprojectinfo($p);
+if( $rc) {
+    print "System error: $rc $parent";
+    softexit();
+}
+
 if( trim($name) && trim($reqmts)) {
     if( $_REQUEST["stopspam"] !== 'yes') exit;
     $tempdir = "$GLOBALS[DATADIR]/tempattachments/$sid";
@@ -42,7 +48,11 @@ if( trim($name) && trim($reqmts)) {
 
     $reqmts = trim($reqmts);
 
-    list($rc,$id) = ff_createproject($username,$name,$reqmts,$p,$attachments);
+    $lead = $_REQUEST["makemelead"] ? $username :
+        ($parent['lead'] ? $parent['lead'] : '');
+
+    list($rc,$id) = ff_createproject($username, $name, $reqmts, $p,
+        $attachments, false, 'subproject', $lead);
     if( !$rc) {
         ff_setfundinggoal( $username, $id, (int)( $fundgoal * 100 ).$GLOBALS['pref_currency'] );
         header( "Location: project.php?p=$id");
@@ -59,11 +69,6 @@ if( $err) {
     print "<div class=error>".htmlentities($err)."</div>\n";
 }
 
-list($rc,$parent) = ff_getprojectinfo($p);
-if( $rc) {
-    print "System error: $rc $parent";
-    softexit();
-}
 ?>
 <h1>Create a New Subproject</h1>
 <? if( $username == '') { ?>
@@ -134,6 +139,7 @@ Use blank lines to separate paragraphs.)
 </tr><tr>
 <td valign="top" colspan="2" width="100%">
 <textarea name=reqmts style="width:100%" rows=16><?=htmlentities($reqmts)?></textarea>
+<input name=makemelead id=makemelead value=1 type=checkbox checked> <label for=makemelead>Make me the project lead for this subproject</label>
 </td><td valign=center width="0%">
 <div class=help>
 <b>Can the requirements be changed later?</b>

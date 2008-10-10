@@ -24,6 +24,12 @@ $allotment = floatval($_REQUEST["allotment"]);
 
 if( !$p) exit;
 
+list($rc,$parent) = ff_getprojectinfo($p);
+if( $rc) {
+    print "System error: $rc $parent";
+    softexit();
+}
+
 if( trim($reqmts)) {
     if( $_REQUEST["stopspam"] !== 'yes') exit;
     $tempdir = "$GLOBALS[DATADIR]/tempattachments/$sid";
@@ -41,8 +47,10 @@ if( trim($reqmts)) {
 
     $reqmts = trim($reqmts);
 
+    $lead = "$parent[lead]";
+
     list($rc,$id) = ff_createproject( $username,
-        '', $reqmts, $p, $attachments, false, $priority, '',
+        '', $reqmts, $p, $attachments, false, $priority, $lead,
         isset($_REQUEST["allotment"]) ? round($allotment * 10) : false);
     if( !$rc) {
         if( $username !== '') al_createwatch( "$id-news", $username);
@@ -59,12 +67,6 @@ apply_template("Report a Bug", array(
 
 if( $err) {
     print "<div class=error>".htmlentities($err)."</div>\n";
-}
-
-list($rc,$parent) = ff_getprojectinfo($p);
-if( $rc) {
-    print "System error: $rc $parent";
-    softexit();
 }
 ?>
 <h1>Report a Bug</h1>
