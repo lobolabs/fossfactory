@@ -96,7 +96,7 @@ USAGE
 
 function url_encode() {
     echo -n "$1" |
-        perl -e '$_=<>;s/([\W])/"%".uc(sprintf("%2.2x",ord($1)))/eg;print'
+        perl -e 'while(<>){s/([\W])/"%".uc(sprintf("%2.2x",ord($1)))/eg;print}'
 }
 
 function url_decode() {
