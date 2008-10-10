@@ -2825,6 +2825,17 @@ function ff_gettext( $textid, $macros)
             "You may still be able to reclaim the position at your ".
             "convenience.  In the meantime, the role of project lead ".
             "is open to any interested person.";
+    } else if( $textid == 'leadousted-subject') {
+        $text = "FOSS Factory project lead removed";
+    } else if( $textid == 'leadousted-body') {
+        $text = "Due to a missed duty deadline, FOSS Factory member %EXLEAD% ".
+            "has been removed from the position of project lead for project ".
+            "\"%PROJECTNAME%\".  The position is currently open to anyone ".
+            "interested.\n\n".
+            "Note that this action is not intended as punishment, but ".
+            "rather as a way of ensuring that projects can not be abandoned ".
+            "while there are interested parties.  As such, %EXLEAD% is not ".
+            "banned from the position.";
     } else if( $textid == 'disputedefendant-subject') {
         $text = "Dispute decided for project \"%PROJECTNAME%\"";
     } else if( $textid == 'disputedefendant-body') {
@@ -4541,6 +4552,11 @@ function ff_enforcedutydeadlines()
 
         list($rc,$memberinfo) = ff_getmemberinfo($lead);
         if( $rc) return private_dberr($rc,$memberinfo);
+
+        // Notify everybody that the lead was ousted
+        list($rc,$err) = al_triggerevent( "watch:p$nid-news",
+            "project.php?p=p$nid", "leadousted", array(
+            "exlead" => $lead, "projectname" => $projectname));
 
         // Notify the ex-lead that he missed the deadline
         list($rc,$err) = al_triggerevent( "member:$lead",
