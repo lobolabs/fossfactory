@@ -107,6 +107,6 @@ This member is not a project lead.
 </table><br><br>
 <? } else { ?>
 <p>
-This member is has no pending duties.
+This member has no pending duties.
 </p>
 <? } ?>
