@@ -121,15 +121,18 @@ function get_creds() {
         read USERNAME
         echo -n "FOSS Factory password: " >&2
         stty -echo; read PASSWORD; stty "$oldmodes"; echo
-        [ "$(curl -s -d p="$(url_encode "$PASSWORD")" "${SECURE_URL}ff-auth.php?u=$(url_encode "$USERNAME")")" = authorized ] && break
+        [ "$(echo p="$(url_encode "$PASSWORD")" | curl -s -d @- "${SECURE_URL}ff-auth.php?u=$(url_encode "$USERNAME")")" = authorized ] && break
         echo "Incorrect username or password."
     done
 
     # Write the credentials file
+    OLDMASK=`umask -p`
+    umask 0077
     cat > "$CREDFILE" <<EOF
 username=$USERNAME
 password=$PASSWORD
 EOF
+    $OLDMASK
 }
 
 function get_project_info() {
@@ -188,12 +191,12 @@ setup)
     fi
 
     # Send the public key to the server
-    curl -s -d p="$(url_encode "$PASSWORD")" "${SECURE_URL}ff-setpubkey.php?u=$(url_encode "$USERNAME")&k=$(url_encode "$(< $sendkey)")"
+    echo p="$(url_encode "$PASSWORD")" | curl -s -d k="$(url_encode "$(< $sendkey)")" -d @- "${SECURE_URL}ff-setpubkey.php?u=$(url_encode "$USERNAME")"
 
     ;;
 duties)
     get_creds
-    curl -s -d p="$(url_encode "$PASSWORD")" "${SECURE_URL}ff-duties.php?u=$(url_encode "$USERNAME")"
+    echo p="$(url_encode "$PASSWORD")" | curl -s -d @- "${SECURE_URL}ff-duties.php?u=$(url_encode "$USERNAME")"
     ;;
 
 init)
@@ -224,7 +227,7 @@ init)
         fi
     done
 
-    repo=$(curl -s -d p="$(url_encode "$PASSWORD")" "${SECURE_URL}ff-initrepo.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&c=$(url_encode "$SOURCE")&e=$use_dir")
+    repo=$(echo p="$(url_encode "$PASSWORD")" | curl -s -d @- "${SECURE_URL}ff-initrepo.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&c=$(url_encode "$SOURCE")&e=$use_dir")
 
     if [ $(expr "$repo" : "^git@") = 0 ]; then
         echo "$repo"
@@ -296,7 +299,7 @@ subproject)
     REQMTS="$(grep -v '^#' "$tmp")"
     rm "$tmp"
 
-    id="$(curl -s -d p="$(url_encode "$PASSWORD")" "${SECURE_URL}ff-newsubproject.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&name=$(url_encode "$NAME")&reqmts=$(url_encode "$REQMTS")")"
+    id="$(echo p="$(url_encode "$PASSWORD")" | curl -s -d @- "${SECURE_URL}ff-newsubproject.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&name=$(url_encode "$NAME")&reqmts=$(url_encode "$REQMTS")")"
 
     ;;
 
@@ -307,7 +310,8 @@ submit)
 
     get_project_info "$PROJECTID"
 
-    tmp=$(tempfile)
+    # We need mode 600 because we're going to store the password in there.
+    tmp=$(tempfile --mode 600)
 
     echo >> "$tmp"
     echo "# Please enter your submission comments." >> "$tmp"
@@ -330,14 +334,18 @@ submit)
     # Invoke the editor
     "$EDITOR" "$tmp"
     comments="$(grep -v '^#' "$tmp")"
-    rm "$tmp"
 
     if [ -z "$comments" ]; then
         echo "No comments given.  Aborting."
+        rm "$tmp"
         exit 1
     fi
 
-    repo="$(git diff origin/master HEAD | curl -s -d p="$(url_encode "$PASSWORD")" -F patch=@- "${SECURE_URL}ff-submit.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&origin=$(url_encode "$origin")&comments=$(url_encode "$comments")")"
+    echo p="$(url_encode "$PASSWORD")" > "$tmp"
+
+    repo="$(git diff origin/master HEAD | curl -s -d @"$tmp" -F patch=@- "${SECURE_URL}ff-submit.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&origin=$(url_encode "$origin")&comments=$(url_encode "$comments")")"
+
+    rm "$tmp"
 
     if [ ${repo:0:4} != git@ ]; then
         echo "Error preparing the submission: $repo"
