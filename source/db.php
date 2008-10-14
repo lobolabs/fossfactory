@@ -3829,7 +3829,7 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         "submitter" => $username,
     );
     $url = "project.php?p=p$nid&tab=submissions";
-    $rc = al_triggerevent( "watch:p$nid-news/".scrub($submitter),
+    $rc = al_triggerevent( "watch:p$nid-news/".scrub($username).",$lead",
         $url, "pnews-submission", $macros);
     if($rc[0]) return $rc;
 
@@ -4837,7 +4837,7 @@ function al_queuenotifications()
             if ($qu2===false) return private_dberr();
             for ($j=0;$j<sql_numrows($qu2);$j++) {
                 $row2=sql_fetch_array($qu2,$j);
-                if( $row2["username"] === $except) continue;
+                if(strpos(",$except,",",$row2[username],")!==false) continue;
                 $rc = private_queuenotification( "$seq/$j",
                     $row2["username"],$url,$subject,$body,$row2["method"]);
                 if($rc[0]) return private_dberr($rc[0],$rc[1]);
