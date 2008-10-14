@@ -2870,6 +2870,11 @@ function ff_gettext( $textid, $macros)
             "project requirements, the change that you are disputing is ".
             "no longer automatically revertible by the system.  You need ".
             "to show the system how to revert the change.";
+    } else if( $textid == 'withdrawalrequest-subject') {
+        $text = "[ADMIN] A withdrawal was requested";
+    } else if( $textid == 'withdrawalrequest-body') {
+        $text = "A funds withdrawal was requested by user %USERNAME%.  ".
+            "Please make sure that it gets paid within one business day.";
     } else {
         return array(2,"No such text ID: $textid");
     }
@@ -4824,6 +4829,15 @@ function al_queuenotifications()
             $rc = private_queuenotification( "$seq",
                 $username, $url, $subject, $body);
             if($rc[0]) return private_dberr($rc[0],$rc[1]);
+        } else if( substr( $eventid, 0, 6) === 'admin:') {
+            $qu2 = sql_exec("select username from members where auth='admin'");
+            if ($qu2===false) return private_dberr();
+            for ($j=0;$j<sql_numrows($qu2);$j++) {
+                $row2=sql_fetch_array($qu2,$j);
+                $rc = private_queuenotification( "$seq/$j",
+                    $row2["username"],$url,$subject,$body);
+                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+            }
         }
 
         $qu2 = sql_exec("update recent_events ".
@@ -5537,6 +5551,14 @@ function ff_requestwithdrawal( $username, $email, $amount)
         "($xid,".(++$split).",$now,'withdrawals:".sql_escape($email)."',".
         "'$amount','".sql_escape($desc)."')");
     if( $qu === false) return private_dberr(1);
+
+    // Inform the administrator of the withdrawal request
+    $macros = array(
+        "username" => $username,
+    );
+    $url = "withdrawals.php";
+    $rc = al_triggerevent( "admin:", $url, "withdrawalrequest", $macros, 1);
+    if( $rc[0]) return $rc;
 
     return private_commit();
 }
