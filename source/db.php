@@ -3760,6 +3760,7 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         return private_dberr(5,"Project already complete");
     $reqmts = $row["reqmts"];
     $bounty_portions = $row["bounty_portions"];
+    $lead = $row["lead"];
 
 	$i=0;
     foreach ($files as $key => $file) {
@@ -3816,7 +3817,7 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         "submitter" => $username,
         "deadline" => date("D F j, H:i:s T",$deadline)
     );
-    $url = "project.php?p=p$nid&tab=submissions&requser=$row[lead]";
+    $url = "project.php?p=p$nid&tab=submissions&requser=$lead";
     $tag = ($deadline?"newduty2":"newduty");
     $rc = al_triggerevent("lead:$nid",$url,"$tag-submission",$macros);
     if($rc[0]) return $rc;
