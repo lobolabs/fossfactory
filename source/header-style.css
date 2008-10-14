@@ -71,6 +71,18 @@ body {
 #logout:hover {
     text-decoration: underline;
 }
+#hasduties {
+    position: absolute;
+    right: 1.2em;
+    top: 2em;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 130%;
+    color: #eb5901;
+}
+#hasduties:hover {
+    text-decoration: underline;
+}
 #sign_up {
     float: left;
     height: 2em;

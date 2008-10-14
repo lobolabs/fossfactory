@@ -196,7 +196,7 @@ if( $styles === false) $styles = array(
     </div>
     <div id="mystuff">
         <div id="myfactory">
-            <a href="account.php">My Factory</a>
+            <a href="account.php?tab=projects">My Factory</a>
 <? if( strpos(getenv("HTTP_USER_AGENT"),"MSIE") === false &&
         strpos(getenv("HTTP_USER_AGENT"),"Internet Explorer") === false) { ?>
     
@@ -251,6 +251,14 @@ if( $styles === false) $styles = array(
 <? if( $GLOBALS["username"] !== '') { ?>
 <!--if username logged in (we check again)-->
     <a href="logout.php" id="logout">Logout</a>
+<?
+    list($rc,$duties) = ff_getduties( $GLOBALS["username"]);
+    if( !$rc && sizeof($duties)) {
+?>
+    <a href="account.php" id="hasduties" style="font-weight:bold">You have <?=sizeof($duties)?> <?=sizeof($duties)==1?"duty":"duties"?></a>
+<?
+    }
+?>
 <? } ?>
     <ul id='breadcrumbs'>
         <a id="new_project" href="newproject.php">New Project</a>
