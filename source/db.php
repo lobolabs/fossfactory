@@ -2870,6 +2870,12 @@ function ff_gettext( $textid, $macros)
             "project requirements, the change that you are disputing is ".
             "no longer automatically revertible by the system.  You need ".
             "to show the system how to revert the change.";
+    } else if( $textid == 'newactivedispute-subject') {
+        $text = "[ARBITER] New active dispute";
+    } else if( $textid == 'newactivedispute-body') {
+        $text = "Subject of complaint: %SUBJECT%\n\n".
+            "A dispute over project %PROJECTNAME% has been concluded ".
+            "and is awaiting a decision by an arbiter.";
     } else if( $textid == 'withdrawalrequest-subject') {
         $text = "[ADMIN] A withdrawal was requested";
     } else if( $textid == 'withdrawalrequest-body') {
@@ -3557,6 +3563,17 @@ function private_concludedispute( $projectid, $did, $username)
         // Remove any deadlines on change proposals, since it is now
         // impossible for the project lead to accept them.
         $rc = private_setdutydeadline( $projectid, $projectstatus);
+        if( $rc[0]) return $rc;
+    }
+
+    if( $status == 'deliberating') {
+        // Notify the arbiters that there's a new dispute pending
+        $macros = array(
+            "projectname" => $projectname,
+            "subject" => $row["subject"],
+        );
+        $url = "arbitration.php";
+        $rc = al_triggerevent( "arbiter:", $url, "newactivedispute", $macros);
         if( $rc[0]) return $rc;
     }
 
@@ -4831,6 +4848,16 @@ function al_queuenotifications()
             if($rc[0]) return private_dberr($rc[0],$rc[1]);
         } else if( substr( $eventid, 0, 6) === 'admin:') {
             $qu2 = sql_exec("select username from members where auth='admin'");
+            if ($qu2===false) return private_dberr();
+            for ($j=0;$j<sql_numrows($qu2);$j++) {
+                $row2=sql_fetch_array($qu2,$j);
+                $rc = private_queuenotification( "$seq/$j",
+                    $row2["username"],$url,$subject,$body);
+                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+            }
+        } else if( substr( $eventid, 0, 8) === 'arbiter:') {
+            $qu2 = sql_exec("select username from members ".
+                "where auth='admin' or auth='arbiter'");
             if ($qu2===false) return private_dberr();
             for ($j=0;$j<sql_numrows($qu2);$j++) {
                 $row2=sql_fetch_array($qu2,$j);
