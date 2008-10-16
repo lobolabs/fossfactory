@@ -125,73 +125,19 @@ body {
 }
 
 .featured {
+    position: absolute;
+    top: 1em;
+    right: 0.5em;
     background-color: #660099;
     padding: 0em;
-    margin: 3em 0.5em 0em 0em;
-    background-image: url(featured-l.gif);
-    background-repeat: repeat-y;
-    background-position: top left;
-    clear: both;
-    float: right;
-    width: 19em;
+    margin: 0em 0.5em 0em 0em;
+    padding-bottom: 0.4em;
+    width: 18em;
     font-size: 13px;
 }
 
 .withsidebar {
     margin-right: 20em;
-}
-
-.featured div {
-    background-image: url(featured-tl.gif);
-    background-repeat: no-repeat;
-    background-position: top left;
-}
-
-.featured div div {
-    background-image: url(featured-r.gif);
-    background-repeat: repeat-y;
-    background-position: top right;
-}
-
-.featured div div div {
-    background-image: url(featured-tr.gif);
-    background-repeat: no-repeat;
-    background-position: top right;
-}
-
-.featured div div div div {
-    background-image: none;
-}
-
-.featured .bottom {
-    background-image: url(featured-b.gif);
-    background-repeat: repeat-x;
-    background-position: bottom left;
-}
-
-.featured .bottom div {
-    background-image: url(featured-l.gif);
-    background-repeat: repeat-y;
-    background-position: top left;
-}
-
-.featured .bottom div div {
-    background-image: url(featured-r.gif);
-    background-repeat: repeat-y;
-    background-position: top right;
-}
-
-.featured .bottom div div div {
-    background-image: url(featured-bl.gif);
-    background-repeat: no-repeat;
-    background-position: bottom left;
-}
-
-.featured .bottom div div div div {
-    background-image: url(featured-br.gif);
-    background-repeat: no-repeat;
-    background-position: bottom right;
-    height: 16px;
 }
 
 .featured h2 {

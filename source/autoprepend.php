@@ -290,7 +290,7 @@ if( sizeof($breadcrumbs)) {
 <?php
     if( $showfeaturedprojects) {
 ?>
-<div class="featured"><div><div><div>
+<div class="featured">
 <h2>Featured Projects</h2>
 <?
         $i = 0;
@@ -308,7 +308,7 @@ if( sizeof($breadcrumbs)) {
             }
         }
 ?>
-</div></div></div><div class="bottom <?=$i&1?"oddbottom":"evenbottom"?>"><div><div><div><div></div></div></div></div></div></div>
+</div>
 <? //stallman's comment 
      if( basename($_SERVER['SCRIPT_NAME'])=='charities.php'  ) { ?>
 

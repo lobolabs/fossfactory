@@ -180,7 +180,7 @@ if(isset($_REQUEST['withdraw'])) {
 
 apply_template("My Factory",array(
     array("name"=>"My Factory", "href"=>"account.php"),
-));
+), '', false, true);
 
 include_once("tabs.php");
 
