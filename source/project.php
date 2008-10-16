@@ -242,13 +242,6 @@ if( $username && $username !== $projinfo["lead"]) {
 <?php } ?>
 
 <span class=abstract-content>
-<div style="float:right">
-<script type="text/javascript">
-digg_url = reddit_url = 'http://www.fossfactory.org/project.php?p=<?=$id?>';
-</script>
-<script src="http://digg.com/tools/diggthis.js" type="text/javascript"></script>
-<script type="text/javascript" src="http://reddit.com/button.js?t=2"></script>
-</div>
 <?=formatText(ereg_replace("\n.*","",$projinfo["reqmts"]))?>
 </span>
 <div id="actions"><?
