@@ -1107,3 +1107,7 @@ p.withdraw_funds {
 p.pr-summary {
     font-style: italic;
 }
+
+.allotted {
+    background-color: #ffa901;
+}

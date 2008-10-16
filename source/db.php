@@ -1183,6 +1183,7 @@ function private_makeprojectrecord( $row)
         "direct_bounty" => $row["direct_bounty"],
         "indirect_bounty" => $row["indirect_bounty"],
         "allotment" => intval($row["allotment"]),
+        "allotted" => ("$row[allotment]"===''?false:true),
         "bounty" => $row["bounty"],
         "creator" => $row["creator"],
         "created" => intval($row["time"]),

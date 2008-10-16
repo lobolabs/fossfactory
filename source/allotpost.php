@@ -30,7 +30,7 @@ foreach($subprojects as $subproject) {
     $allotment = round($_REQUEST["sub$subproject[id]"]*10);
     if( isset( $_REQUEST["sub$subproject[id]"]) &&
         $allotment >= 0 && $allotment <= 1000 &&
-        $allotment != $subproject["allotment"])
+        (!$subproject["allotted"] || $allotment != $subproject["allotment"]))
         ff_setallotment( $username, $parentid, $subproject['id'], $allotment);
 
     $priority = scrub($_REQUEST["pri$subproject[id]"]);

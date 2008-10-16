@@ -182,12 +182,15 @@ foreach( $columns as $key => $title) {
         </td>
         <td valign=top><?=$subproject['status']?></td>
         <td valign=top><? if($subproject["lead"] !== '') { ?><a href="member.php?id=<?=urlencode($subproject['lead'])?>"><?=htmlentities($subproject['lead'])?></a><? } else { ?>(none)<? } ?></td>
-        <td align=right valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
-            <input type='textfield' name='sub<?=$subproject['id']?>' size='4' onChange="return update_unallotedPercentage()" maxLength='4' value='<?=($subproject['allotment'])/10?>'>
+            <? if ($GLOBALS['username']==$projinfo['lead']) { ?>
+                <td align=right valign=top<?=$subproject['allotted']?"":" class='allotted'"?>>
+                <input type='textfield' name='sub<?=$subproject['id']?>' size='4' onChange="return update_unallotedPercentage()" maxLength='4' value='<?=($subproject['allotment'])/10?>'> %
+                </td>
             <? } else { ?>
-                <?=$subproject['allotment']/10?>
-            <? } ?>%
-        </td>
+                <td align=right valign=top>
+                <?=$subproject['allotment']/10?> %
+                </td>
+            <? } ?>
         <td align=right valign=top><?=htmlentities(convert_money($subproject['bounty']))?></td>
         <td valign=top><?=ereg("^Bug [a-z0-9]*$",$subproject["name"])?formatText(ereg_replace("\n.*","",$subproject['reqmts'])):htmlentities($subproject["name"])?></td>
     </tr>
