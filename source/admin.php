@@ -36,6 +36,9 @@ apply_template("Administration",array(
 ));
 ?>
 <h1>Administration</h1>
+<ul>
+<li><a href="updateemail.php">Corporate News Updates</a></li>
+</ul>
 
 <h1>Test Scripts</h1>
 <ul>

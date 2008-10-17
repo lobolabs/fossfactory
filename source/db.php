@@ -4657,6 +4657,36 @@ function ff_getduties( $username)
     return array(0,$duties);
 }
 
+function al_sendnewsupdate( $username, $subject, $body, $test=true)
+{
+    if( $test) {
+        $recipients = array($username);
+    } else {
+        $qu = sql_exec( "select username from watches where eventid='news'");
+        if( $qu === false) return private_dberr();
+        $recipients = array();
+        for( $i=0; $i < sql_numrows($qu); $i++) {
+            $row = sql_fetch_array($qu,$i);
+            $recipients[] = $row["username"];
+        }
+    }
+    if( sizeof($recipients) == 0) return array(0,"Sent 0 emails");
+
+    $unset = array();
+    foreach( $recipients as $recipient) {
+        list($rc,$err) = private_notify(
+            $recipient, '', $subject, $body, "default", 
+            "\"FOSS Factory\" <support@fossfactory.org>");
+        if( $rc) {
+            $unsent[] = $recipient;
+            $result = array($rc,$err);
+        }
+    }
+    if( sizeof($unsent) == sizeof($recipients)) return $result;
+    if( sizeof($unsent) > 0) return array(8,$unsent);
+
+    return array(0,"Sent ".sizeof($recipients)." emails");
+}
 
 /*Registers the given user to be notified of the particular specified event.  $method is a complete description of the alert type and contact information.  If 'default' is specified, then the member's default alert method is used instead.  Here are some examples of valid alert methods:
 
@@ -4695,6 +4725,13 @@ function al_createwatch( $eventid, $username, $method='default') {
     return array(0,$id);
 }
 
+function al_countwatches( $eventid) {
+    $qu = sql_exec("select count(*) from watches ".
+        "where eventid='".scrub($eventid)."'");
+    if( $qu === false) return private_dberr();
+    $row = sql_fetch_array($qu,0);
+    return array(0,intval($row["count"]));
+}
 
 /*
 Returns a list of all of the registered watches for the given user.  If eventid is not false, then the list is restricted to watches on that particular event.  Note that a user may be registered for more that one watch on a particular event.  Each watch is an associative array containing the following fields:
@@ -4939,8 +4976,15 @@ function al_sendnotifications()
     return array(0,"Sent ".sql_numrows($qu)." notifications.");
 }
 
-function private_notify( $username, $url, $subject, $body, $method)
+function private_notify( $username, $url, $subject, $body, $method,
+    $from = "\"FOSS Factory\" <notices@fossfactory.org>")
 {
+    list($rc,$memberinfo) = ff_getmemberinfo($username); 
+    if( $rc) return array($rc,$memberinfo);
+    $name = ereg_replace("[^ #$%&'()*+,-./0-9:;=@a-zA-Z\241-\377]",
+        "",$memberinfo["name"]);
+    $body = str_replace("%MEMBERNAME%",$name,$body);
+
     // If the debuguser config variable is set, then all notifications
     // should go to that user, and the message body should declare who
     // it was originally for.
@@ -4950,22 +4994,24 @@ function private_notify( $username, $url, $subject, $body, $method)
         $body = "debuguser email for $username\n$body";
         $username = $debuguser;
         if( $debuguser=='log') $method = 'log';
+        else {
+            list($rc,$memberinfo) = ff_getmemberinfo($username); 
+            if( $rc) return array($rc,$memberinfo);
+        }
     }
 
     if (substr($method,0,5)=='email' || $method=='default') {
         //send email
-        list($rc,$memberinfo) = ff_getmemberinfo($username); 
-        if( $rc) return array($rc,$username);
-
-        $emailurl = "$GLOBALS[SITE_URL]$url";
-        $body = str_replace("\n","\n\n",$body."\n    $emailurl");
+        $emailurl = "$url" !== '' ? "\n    $GLOBALS[SITE_URL]$url" : "";
+        $body = str_replace("\n","\n\n","$body$emailurl");
         $cmd = "echo -n ".escapeshellarg($body)." | fmt";
         $body = `$cmd`;
-        $rc = mail( $memberinfo['email'], $subject, $body,
-            "From: \"FOSS Factory\" <notices@fossfactory.org>"); 
+        $rc = mail( "\"$name\" <$memberinfo[email]>",
+            $subject, $body, "From: $from"); 
         if($rc === false) return array(1,"Can't send email");
     } elseif($method === 'log') {
-        error_log(date("Y-m-d H:i:s ")."$subject\n\n$body\n",3,
+        error_log(date("Y-m-d H:i:s ").
+            "$subject\nFrom: $from\nURL: $url\n\n$body\n",3,
             "$GLOBALS[DATADIR]/test-emails");
     } elseif(substr($method,0,3)=='MSN') {
         //send msn message
