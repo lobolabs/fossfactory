@@ -1187,6 +1187,7 @@ function private_makeprojectrecord( $row)
         "bounty" => $row["bounty"],
         "creator" => $row["creator"],
         "created" => intval($row["time"]),
+        "delete_time" => intval($row["delete_time"]),
         "lead" => $row["lead"],
         "status" => $row["status"],
         "numattachments" => intval($row['numattachments']),
@@ -1379,6 +1380,102 @@ function ff_renameproject( $username, $id, $newname)
     if( $qu === false) return private_dberr(1);
 
     unset($GLOBALS["PRIVATE_PROJECT_INFO"][$id]);
+
+    return private_commit();
+}
+
+// This function schedules the given project for deletion.
+// The deletion time is either in one hour or in four days, depending
+// on whether anybody other than the project lead is watching the project.
+function ff_deleteproject( $username, $id)
+{
+    $nid = intval(substr($id,1));
+    $id = "p$nid";
+
+    list($rc,$row) = private_begin_authorize( $username, $id);
+    if( $rc) return array($rc,$row);
+
+    // Make sure the project is in pending status
+    if( $row["status"] !== 'pending')
+        return private_dberr(8,"Only pending projects can be deleted");
+
+    // Make sure the project has no child projects
+    $qu = sql_exec("select id from projects where parent=$nid limit 1");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows($qu) > 0)
+        return private_dberr(8,"Can't delete.  Delete subprojects first");
+
+    // By default, delete the project in one hour.
+    $now = time();
+    $deltime = $now + 3600;  // In one hour by default
+
+    // If anyone is watching this project or if it has any direct sponsors
+    // then the deletion time should be in 4 days.
+    $qu = sql_exec("select eventid from watches ".
+        "where eventid='$id-news' and username != '".
+        sql_escape($username)."' limit 1");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows($qu) > 0) $deltime = $now + 3600*24*4;
+    else {
+        $qu = sql_exec("select member from member_donations ".
+            "where project=$nid and amount~'[1-9]' limit 1");
+        if( $qu === false) return private_dberr(1);
+        if( sql_numrows($qu) > 0) $deltime = $now + 3600*24*4;
+    }
+
+    // Mark the project for deletion
+    $qu = sql_exec("update projects set delete_time=$deltime where id=$nid");
+    if( $qu === false) return private_dberr(1);
+
+    // Inform anyone watching the project
+    $macros = array(
+        "projectname" => $row["name"],
+        "deltime" => date("D F j, H:i:s T",$deltime),
+    );
+    $url = "project.php?p=$id";
+    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+        $url, "pnews-deletingproject", $macros);
+    if($rc[0]) return $rc;
+
+    return private_commit();
+}
+
+// This function cancels the deletion of the given project.
+function ff_canceldeleteproject( $username, $id)
+{
+    $nid = intval(substr($id,1));
+    $id = "p$nid";
+
+    $qu = sql_exec("begin");
+    if( $qu === false) return private_dberr();
+
+    if( "$username" === '') {
+        return private_dberr(5,"You are not logged in.");
+    }
+
+    $qu = sql_exec( "select * from projects where id=$nid for update");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows( $qu) == 0) {
+        return private_dberr(2,"No such project: $id");
+    }
+    $row = sql_fetch_array( $qu, 0);
+
+    // Make sure the project is scheduled for deletion
+    if( !intval($row["delete_time"]))
+        return private_dberr(8,"Project not scheduled for deletion");
+
+    $qu = sql_exec("update projects set delete_time=null where id=$nid");
+    if( $qu === false) return private_dberr(1);
+
+    // Inform anyone watching the project
+    $macros = array(
+        "projectname" => $row["name"],
+        "canceller" => $username,
+    );
+    $url = "project.php?p=$id";
+    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+        $url, "pnews-canceldeletingproject", $macros);
+    if($rc[0]) return $rc;
 
     return private_commit();
 }
@@ -2787,6 +2884,18 @@ function ff_gettext( $textid, $macros)
     } else if( $textid == 'pnews-changeaccepted-body') {
         $text = "A requirements change proposal for project ".
             "'%PROJECTNAME%' has been accepted.";
+    } else if( $textid == 'pnews-deletingproject-subject') {
+        $text = "Deleting project '%PROJECTNAME%'";
+    } else if( $textid == 'pnews-deletingproject-body') {
+        $text = "The FOSS Factory project '%PROJECTNAME%' has been ".
+            "scheduled to be deleted on %DELTIME%.  In case you have any ".
+            "objections, you may prevent the deletion using the ".
+            "'Cancel Deletion' link on the project page.";
+    } else if( $textid == 'pnews-canceldeletingproject-subject') {
+        $text = "Cancelled deleting project '%PROJECTNAME%'";
+    } else if( $textid == 'pnews-canceldeletingproject-body') {
+        $text = "The scheduled deletion of FOSS Factory project ".
+            "'%PROJECTNAME%' has been cancelled by user '%CANCELLER%'.";
     } else if( $textid == 'pnews-changerejected-subject') {
         $text = "Requirement change for '%PROJECTNAME%' rejected";
     } else if( $textid == 'pnews-changerejected-body') {
@@ -5048,6 +5157,83 @@ function al_getrecentevents($eventid)
               "body"=>$row['body']);
     }
     return array(0,$events);
+}
+
+function ff_deleteprojects()
+{
+    $now = time();
+    $qu = sql_exec("select id from projects ".
+        "where delete_time < $now limit 100");
+    if( $qu === false) return private_dberr();
+
+    $count = 0;
+    for( $i=0; $i < sql_numrows( $qu); $i++) {
+        $row = sql_fetch_array( $qu, $i);
+        $nid = intval($row["id"]);
+
+        // Start by refunding all the sponsorships
+        $qu2 = sql_exec("select * from member_donations ".
+            "where project=$nid and amount~'[1-9]'");
+        if( $qu2 === false) return private_dberr(1);
+        for( $j=0; $j < sql_numrows( $qu2); $j++) {
+            $row2 = sql_fetch_array( $qu2, $j);
+            list($rc,$err) = private_setsponsorship($nid,$row2['member'],'');
+            if( $rc) return array($rc,$err);
+        }
+
+        $qu2 = sql_exec("begin");
+        if( $qu2 === false) return private_dberr();
+
+        // We need to lock all of the project's ancestors
+        $rc = private_lock_from_root( $nid);
+        if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+
+        // Make sure there are no remaining sponsorships
+        $qu2 = sql_exec("select * from member_donations ".
+            "where project=$nid and amount~'[1-9]' limit 1");
+        if( $qu2 === false) return private_dberr(1);
+        if( sql_numrows( $qu2) > 0)
+            return private_dberr(7,"There is still a sponsorship");
+
+        // Make sure the deletion hasn't been cancelled at the last minute
+        $qu2 = sql_exec("select delete_time from projects where id=$nid");
+        if( $qu2 === false) return private_dberr(1);
+        if( sql_numrows($qu2) != 1) {
+            $qu2 = sql_exec("rollback");
+            if( $qu2 === false) return private_dberr(1);
+            continue;
+        }
+        $row2 = sql_fetch_array( $qu2, 0);
+        $delete_time = intval($row2["delete_time"]);
+        if( $delete_time == 0 || $delete_time > $now) {
+            $qu2 = sql_exec("rollback");
+            if( $qu2 === false) return private_dberr(1);
+            continue;
+        }
+
+        // Delete a bunch of related stuff
+        $qu2 = sql_exec("delete from watches where eventid='p$nid-news'");
+        if( $qu2 === false) return private_dberr(1);
+        $qu2 = sql_exec("delete from duties where project=$nid");
+        if( $qu2 === false) return private_dberr(1);
+        $qu2 = sql_exec("delete from project_user_data where project=$nid");
+        if( $qu2 === false) return private_dberr(1);
+        $qu2 = sql_exec("delete from subscriptions where projectid=$nid");
+        if( $qu2 === false) return private_dberr(1);
+        $qu2 = sql_exec("delete from member_donations ".
+            "where project=$nid and amount!~'[1-9]'");
+        if( $qu2 === false) return private_dberr(1);
+
+        // Now delete the project
+        $qu2 = sql_exec("delete from projects where id=$nid");
+        if( $qu2 === false) return private_dberr(1);
+
+        $rc = private_commit();
+        if( $rc[0]) return $rc;
+
+        $count++;
+    }
+    return array(0,"Successfully deleted $count projects.");
 }
 
 // Send payment for all projects that have been in the 'accept' stage for

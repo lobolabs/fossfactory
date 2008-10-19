@@ -25,6 +25,14 @@ if( isset($_REQUEST["newname"])) {
     ff_renameproject( $username, $id, $_REQUEST["newname"]);
     header( "Location: project.php?p=$id&tab=".urlencode($tab));
     exit;
+} else if( isset($_REQUEST["delete"])) {
+    list($rc,$err) = ff_deleteproject( $username, $id);
+    header( "Location: project.php?p=$id&tab=".urlencode($tab));
+    exit;
+} else if( isset($_REQUEST["canceldel"])) {
+    list($rc,$err) = ff_canceldeleteproject( $username, $id);
+    header( "Location: project.php?p=$id&tab=".urlencode($tab));
+    exit;
 } else if( isset($_REQUEST["sponsor_amount"])) {
     if( !is_secure()) {
         header( "Location: $GLOBALS[SITE_URL]project.php?p=$id".
@@ -169,6 +177,41 @@ function rename() {
     }
 }
 </script>
+<?
+if( $projinfo["status"] === 'pending' && !$projinfo["delete_time"]) {
+    list($rc,$subprojects) = ff_getsubprojects( $id);
+    if( $rc == 0 && sizeof($subprojects) == 0) {
+?>
+<a href="javascript:deleteproj()" style="font-size:x-small">(delete)</a>
+<script>
+function deleteproj() {
+    if(confirm("Are you sure you want to delete this project?")) {
+        document.location = 'project.php?p=<?=$id?>&tab='+
+            '<?=urlencode($_REQUEST["tab"])?>&delete=1';
+    }
+}
+</script>
+<?
+    }
+}
+?>
+<? } ?>
+
+<? if( $projinfo["delete_time"]) { ?>
+<div class=deleting>This project is scheduled for deletion on <?=date("D F j, H:i T",$projinfo["delete_time"])?>.
+    <? if( $username !== '') { ?>
+    <a href="javascript:canceldel()">Cancel deletion</a>
+<script>
+function canceldel() {
+    if(confirm("Are you sure you want to stop "+
+        "this project from being deleted?")) {
+        document.location = 'project.php?p=<?=$id?>&tab='+
+            '<?=urlencode($_REQUEST["tab"])?>&canceldel=1';
+    }
+}
+</script>
+    <? } ?>
+    </div>
 <? } ?>
 
 <div id=projectlead><h1>Project Lead: </h1>

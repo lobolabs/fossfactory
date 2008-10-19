@@ -1111,3 +1111,18 @@ p.pr-summary {
 .allotted {
     background-color: #ffa901;
 }
+
+.deleting {
+    font-weight: bold;
+    font-size: 120%;
+    color: #eb5901
+}
+
+.deleting a:link {
+    padding: 0.2em 1em 0.2em 1em;
+    border: 2px outset;
+    background-color: #eb5901;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+}

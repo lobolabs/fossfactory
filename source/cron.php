@@ -41,6 +41,9 @@ print "Distributing the community pot: $rc[0]: $rc[1]<br>\n";
 $rc = ff_distributemonthlysponsorships();
 print "Distributing monthly sponsorships: $rc[0]: $rc[1]<br>\n";
 
+$rc = ff_deleteprojects();
+print "Deleting projects: $rc[0]: $rc[1]<br>\n";
+
 if( is_dir("$GLOBALS[DATADIR]/fake-paypal")) {
     list($rc,$currencies) = ff_currencies();
 

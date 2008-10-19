@@ -491,3 +491,6 @@ update version set version=107;
 alter table projects add column priority text;
 update projects set priority='subproject';
 update version set version=108;
+alter table projects add column delete_time integer;
+create index projects_delete_time on projects(delete_time);
+update version set version=109;
