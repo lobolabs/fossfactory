@@ -26,8 +26,15 @@ if( $GLOBALS["username"]) {
     list($rc,$watches) = al_getwatches( $GLOBALS["username"], "$id-news");
     if( !$rc) {
         if( $stop) {
-            foreach( $watches as $watch) {
-                al_destroywatch( $watch["watchid"]);
+            // Make sure the user isn't the project lead.
+            // This is just a sanity check since the project lead
+            // doesn't have any UI to stop watching.  It still doesn't
+            // prevent all possible race conditions, but it should be fine.
+            list($rc,$projinfo) = ff_getprojectinfo( $id);
+            if( !$rc && $projinfo['lead'] !== $GLOBALS["username"]) {
+                foreach( $watches as $watch) {
+                    al_destroywatch( $watch["watchid"]);
+                }
             }
         } else if( sizeof( $watches) == 0) {
             al_createwatch( "$id-news", $GLOBALS["username"]);

@@ -1104,6 +1104,16 @@ function ff_createproject( $creator, $name,
         "','pending',".(is_array($attachments)?sizeof($attachments):0).")");
     if( $qu === false) return private_dberr(1);
 
+    // Make sure the project lead is watching the project
+    $rc = al_createwatch( "p$nid-news", $lead);
+    if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+
+    if( $lead !== $creator) {
+        // The creator should be watching it too.
+        $rc = al_createwatch( "p$nid-news", $creator);
+        if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+    }
+
     if( $parent !== '') {
         list($rc,$projinfo)=ff_getprojectinfo($parent);
         if( $rc) return array($rc,$projinfo);
@@ -2409,12 +2419,9 @@ function ff_supplantlead( $id, $username)
 
     unset($GLOBALS["PRIVATE_PROJECT_INFO"][$id]);
 
-    if( $oldauth) {
-        // Let's make sure that the old lead is watching the project
-        // so he at least hears about the fact that he was ousted.
-        $rc = al_createwatch( "p$nid-news", $oldauth);
-        if( $rc[0]) return private_dberr($rc[0],$rc[1]);
-    }
+    // Make sure the new lead is watching the project
+    $rc = al_createwatch( "p$nid-news", $username);
+    if( $rc[0]) return private_dberr($rc[0],$rc[1]);
 
     // Trigger a notification event
     $macros = array(
