@@ -58,7 +58,7 @@ Steve Sutherland soon became its lead investor and advisor.
 <hr size="1">
 <h1>The Team</h1>
 <h1>John-Paul Gignac, BMath</h1>
-<h2>President and Founder, FOSS Factory Inc.</h2>
+<h2>Founder</h2>
 <img src="images/jp.jpg">
 
 <p>
@@ -154,7 +154,7 @@ two children he enjoys boating, skiing, and travel.
 
 <hr size="1">
 <h1>Abdullah Bakhach, BMath</h1>
-<h2>Director of Business Development</h2>
+<h2>President and Co-Founder</h2>
 <img src="images/abdullah.jpg">
 
 <p>
