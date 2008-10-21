@@ -804,7 +804,7 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                 $url = "project.php?p=$project&post=$id".
                     "&requser=$projinfo[lead]";
                 $tag = ($deadline?"newduty2":"newduty");
-                $rc = al_triggerevent( "lead:".substr($project,1), $url,
+                $rc = al_triggerevent( "lead:$project", $url,
                     "$tag-changeproposal", $macros);
                 if( $rc[0]) return $rc;
 
@@ -813,7 +813,8 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                     "projectname" => $projinfo["name"],
                 );
                 $url = "project.php?p=$project&post=$id";
-                $rc = al_triggerevent( "watch:$project-news/".scrub($owner),
+                $rc = al_triggerevent( "watch:$project-news\\".
+                    "member:".scrub($owner).",lead:$project",
                     $url, "pnews-changeproposal", $macros, 2);
                 if( $rc[0]) return $rc;
             } else {
@@ -822,7 +823,8 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                     "projectname" => $projinfo["name"],
                 );
                 $url = "project.php?p=$project&post=$id";
-                $rc = al_triggerevent( "watch:$project-news/".scrub($owner),
+                $rc = al_triggerevent(
+                    "watch:$project-news\\member:".scrub($owner),
                     $url, "pnews-newpost", $macros, 5);
                 if( $rc[0]) return $rc;
             }
@@ -1132,7 +1134,7 @@ function ff_createproject( $creator, $name,
             $url = "project.php?p=$parent&tab=subprojects&requser=".
                 $projinfo["lead"];
             $tag = ($deadline?"newduty2":"newduty");
-            $rc = al_triggerevent( "lead:".substr($parent,1), $url,
+            $rc = al_triggerevent( "lead:$parent", $url,
                 "$tag-newsubproject", $macros);
             if($rc[0]) return $rc;
         } else {
@@ -1146,7 +1148,8 @@ function ff_createproject( $creator, $name,
             "requirements" => $reqmts,
         );
         $url = "project.php?p=$id";
-        $rc = al_triggerevent( "watch:$parent-news/".scrub($creator),
+        $rc = al_triggerevent( "watch:$parent-news\\member:".scrub($creator).
+            ($allotment === false ? ",lead:$parent" : ""),
             $url, "pnews-newsubproject", $macros, 3);
         if($rc[0]) return $rc;
     } else {
@@ -1156,7 +1159,7 @@ function ff_createproject( $creator, $name,
             "requirements" => $reqmts,
         );
         $url = "project.php?p=$id";
-        $rc = al_triggerevent( "watch:news/".scrub($creator),
+        $rc = al_triggerevent( "watch:news\\member:".scrub($creator),
             $url, "news-newproject", $macros, 3);
         if($rc[0]) return $rc;
     }
@@ -1370,7 +1373,7 @@ function ff_rejectreqmtschange( $username, $id, $subject, $postid)
         "projectname" => $row["name"],
     );
     $url = "project.php?p=$id&post=".intval($postid);
-    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+    $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-changerejected", $macros, 3);
     if( $rc[0]) return $rc;
 
@@ -1443,7 +1446,7 @@ function ff_deleteproject( $username, $id)
         "deltime" => date("D F j, H:i:s T",$deltime),
     );
     $url = "project.php?p=$id";
-    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+    $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-deletingproject", $macros);
     if($rc[0]) return $rc;
 
@@ -1483,7 +1486,7 @@ function ff_canceldeleteproject( $username, $id)
         "canceller" => $username,
     );
     $url = "project.php?p=$id";
-    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+    $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-canceldeletingproject", $macros);
     if($rc[0]) return $rc;
 
@@ -2358,7 +2361,7 @@ function ff_setprojectreqmts($username, $id, $oldseq, $newreqmts,
         "projectname" => $row["name"],
     );
     $url = "project.php?p=$id&post=".intval($postid);
-    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+    $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-changeaccepted", $macros);
     if($rc[0]) return $rc;
 
@@ -2430,7 +2433,7 @@ function ff_supplantlead( $id, $username)
         "newlead" => $username);
     $event = ($oldauth ? 'supplant' : 'nosupplant');
     $url = "project.php?p=p$nid";
-    $rc = al_triggerevent( "watch:$id-news/".scrub($username),
+    $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-$event", $macros);
     if($rc[0]) return $rc;
 
@@ -3203,7 +3206,7 @@ function ff_createdispute( $projectid, $username, $type, $object, $body)
     );
     $url = "dispute.php?id=d$did&requser=$projinfo[lead]";
     $tag = ($deadline?"newduty2":"newduty");
-    $rc = al_triggerevent("lead:$nid",$url,"$tag-newdispute",$macros);
+    $rc = al_triggerevent("lead:p$nid",$url,"$tag-newdispute",$macros);
     if( $rc[0]) return $rc;
 
     //notify everyone else of this dispute
@@ -3214,7 +3217,8 @@ function ff_createdispute( $projectid, $username, $type, $object, $body)
         "body" => $body,
     );
     $url = "dispute.php?id=d$did";
-    $rc = al_triggerevent( "watch:p$nid-news/".scrub($username),
+    $rc = al_triggerevent( "watch:p$nid-news\\".
+        "member:".scrub($username).",lead:p$nid",
         $url, "pnews-newdispute", $macros, 2);
     if( $rc[0]) return $rc;
 
@@ -3463,7 +3467,7 @@ function ff_addargument( $disputeid, $username, $argument)
         );
         $url = "dispute.php?id=d$did&requser=$row[lead]";
         $tag = ($deadline?"newduty2":"newduty");
-        $rc = al_triggerevent( "lead:$projectid", $url,
+        $rc = al_triggerevent( "lead:p$projectid", $url,
             "$tag-dispute", $macros);
         if( $rc[0]) return private_dberr($rc[0],$rc[1]);
     } else {
@@ -3936,7 +3940,7 @@ function ff_submitcode($username, $files, $comments, $projectID) {
     );
     $url = "project.php?p=p$nid&tab=submissions&requser=$lead";
     $tag = ($deadline?"newduty2":"newduty");
-    $rc = al_triggerevent("lead:$nid",$url,"$tag-submission",$macros);
+    $rc = al_triggerevent("lead:p$nid",$url,"$tag-submission",$macros);
     if($rc[0]) return $rc;
 
     // Notify anyone watching the project
@@ -3946,7 +3950,8 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         "submitter" => $username,
     );
     $url = "project.php?p=p$nid&tab=submissions";
-    $rc = al_triggerevent( "watch:p$nid-news/".scrub($username).",$lead",
+    $rc = al_triggerevent( "watch:p$nid-news\\".
+        "member:".scrub($username).",member:$lead",
         $url, "pnews-submission", $macros);
     if($rc[0]) return $rc;
 
@@ -4218,7 +4223,7 @@ function ff_applydisputedecision( $username, $disputeid, $decision)
     if( $qu === false) return private_dberr(1);
 
     // Inform interested parties
-    $rc = al_triggerevent("watch:p$nid-news/".scrub($username),
+    $rc = al_triggerevent("watch:p$nid-news\\member:".scrub($username),
         "dispute.php?id=d$did", "dispute$decision", array(
             "subject" => $row["subject"],
             "projectname" => $projectname));
@@ -4694,7 +4699,7 @@ function ff_enforcedutydeadlines()
         if( $rc) return private_dberr($rc,$memberinfo);
 
         // Notify everybody that the lead was ousted
-        list($rc,$err) = al_triggerevent( "watch:p$nid-news/$lead",
+        list($rc,$err) = al_triggerevent( "watch:p$nid-news\\member:$lead",
             "project.php?p=p$nid", "leadousted", array(
             "exlead" => $lead, "projectname" => $projectname));
 
@@ -4970,56 +4975,31 @@ function al_queuenotifications()
         $subject = $row2["subject"];
         $body = $row2["body"];
 
-        if( substr( $eventid, 0, 5) === 'lead:') {
-            $nid = intval(substr($eventid,5));
-            list($rc,$projectinfo) = ff_getprojectinfo("p$nid");
-            if( $rc) return private_dberr($rc,$projectinfo);
-            if( "$projectinfo[lead]" !== "") {
-                $rc = private_queuenotification( "$seq",
-                    $projectinfo["lead"], $url, $subject, $body);
-                if($rc[0]) return private_dberr($rc[0],$rc[1]);
-            }
-        } else if( substr( $eventid, 0, 6) === 'watch:') {
-            $watchid = substr($eventid,6);
-            $except = '';
-            if( ereg("^(.*)/([^/]*)$", $watchid, $regs)) {
-                $watchid = $regs[1];
-                $except = $regs[2];
-            }
-            $qu2 =sql_exec("select * from watches where eventid='".
-                sql_escape($watchid)."'");
-            if ($qu2===false) return private_dberr();
-            for ($j=0;$j<sql_numrows($qu2);$j++) {
-                $row2=sql_fetch_array($qu2,$j);
-                if(strpos(",$except,",",$row2[username],")!==false) continue;
-                $rc = private_queuenotification( "$seq/$j",
-                    $row2["username"],$url,$subject,$body,$row2["method"]);
-                if($rc[0]) return private_dberr($rc[0],$rc[1]);
-            }
-        } else if( substr( $eventid, 0, 7) === 'member:') {
-            $username = scrub(substr($eventid,7));
-            $rc = private_queuenotification( "$seq",
-                $username, $url, $subject, $body);
-            if($rc[0]) return private_dberr($rc[0],$rc[1]);
-        } else if( substr( $eventid, 0, 6) === 'admin:') {
-            $qu2 = sql_exec("select username from members where auth='admin'");
-            if ($qu2===false) return private_dberr();
-            for ($j=0;$j<sql_numrows($qu2);$j++) {
-                $row2=sql_fetch_array($qu2,$j);
-                $rc = private_queuenotification( "$seq/$j",
-                    $row2["username"],$url,$subject,$body);
-                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
-            }
-        } else if( substr( $eventid, 0, 8) === 'arbiter:') {
-            $qu2 = sql_exec("select username from members ".
-                "where auth='admin' or auth='arbiter'");
-            if ($qu2===false) return private_dberr();
-            for ($j=0;$j<sql_numrows($qu2);$j++) {
-                $row2=sql_fetch_array($qu2,$j);
-                $rc = private_queuenotification( "$seq/$j",
-                    $row2["username"],$url,$subject,$body);
-                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
-            }
+        if( ereg("^(.*)\\\\(.*)$", $eventid, $regs)) {
+            $recipient_groups = explode(",",$regs[1]);
+            $exclusion_groups = explode(",",$regs[2]);
+        } else {
+            $recipient_groups = explode(",",$eventid);
+            $exclusion_groups = array();
+        }
+        $recipients = array();
+        foreach( $recipient_groups as $group) {
+            list($rc,$add_recipients) = private_expand_group( $group);
+            if( $rc) return array($rc,$add_recipients);
+            $recipients = array_merge( $recipients, $add_recipients);
+        }
+        foreach( $exclusion_groups as $group) {
+            list($rc,$del_recipients) = private_expand_group( $group);
+            if( $rc) return array($rc,$del_recipients);
+            $recipients = array_diff_key( $recipients, $del_recipients);
+        }
+
+        $j=0;
+        foreach( $recipients as $username => $method) {
+            $rc = private_queuenotification( "$seq/$j",
+                $username, $url, $subject, $body, $method);
+            if( $rc[0]) return private_dberr($rc[0],$rc[1]);
+            $j++;
         }
 
         $qu2 = sql_exec("update recent_events ".
@@ -5031,6 +5011,46 @@ function al_queuenotifications()
     }
 
     return array(0,"Queued notifications for ".sql_numrows($qu)." events");
+}
+
+function private_expand_group( $group)
+{
+    $usernames = array();
+    if( substr( $group, 0, 5) === 'lead:') {
+        list($rc,$projectinfo) = ff_getprojectinfo(substr($group,5));
+        if( $rc) return private_dberr($rc,$projectinfo);
+        if( "$projectinfo[lead]" !== "")
+            $usernames[$projectinfo["lead"]] = 'default';
+    } else if( substr( $group, 0, 6) === 'watch:') {
+        $watchid = substr($group,6);
+        $qu =sql_exec("select * from watches ".
+            "where eventid='".sql_escape($watchid)."'");
+        if ($qu===false) return private_dberr();
+        for($i=0; $i < sql_numrows($qu); $i++) {
+            $row = sql_fetch_array($qu,$i);
+            $usernames[$row["username"]] = $row["method"];
+        }
+    } else if( substr( $group, 0, 7) === 'member:') {
+        $usernames[scrub(substr($group,7))] = 'default';
+    } else if( substr( $group, 0, 6) === 'admin:') {
+        $qu = sql_exec("select username from members where auth='admin'");
+        if ($qu===false) return private_dberr();
+        for($i=0; $i < sql_numrows($qu); $i++) {
+            $row = sql_fetch_array($qu,$i);
+            $usernames[$row["username"]] = 'default';
+        }
+    } else if( substr( $group, 0, 8) === 'arbiter:') {
+        $qu = sql_exec("select username from members ".
+            "where auth='admin' or auth='arbiter'");
+        if ($qu===false) return private_dberr();
+        for($i=0; $i < sql_numrows($qu); $i++) {
+            $row = sql_fetch_array($qu,$i);
+            $usernames[$row["username"]] = 'default';
+        }
+    } else {
+        return array(4,"Unknown group type: $group");
+    }
+    return array(0,$usernames);
 }
 
 // Expects to be called from within a transaction.
