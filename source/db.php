@@ -733,7 +733,7 @@ function private_createattachments( $attachments, $postid=0, $projectid=0) {
 // <duties>
 //
 function ff_createpost( $topicid, $subject, $body, $parent='',
-    $owner='', $name='',$attachments=false)
+    $owner='', $name='',$attachments=false, $watchthread=1, $url='')
 {
     $id = sql_nextval("posts_id_seq");
     if( $id === false) return private_dberr();
@@ -768,6 +768,18 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
     list($rc,$err) = private_createattachments( $attachments, $id);
     if( $rc) return private_dberr( $rc, $err);
 
+    $thread = ereg_replace("^([^/]*/[^/]*)/.*$","\\1","$ancestry$id/");
+
+    if( $owner !== '') {
+        if( $watchthread) {
+            list($rc,$err) = al_createwatch("thread-$thread", $owner);
+            if( $rc) return private_dberr($rc,$err);
+        } else {
+            list($rc,$err) = al_destroywatch2("thread-$thread", $owner);
+            if( $rc) return private_dberr($rc,$err);
+        }
+    }
+
     // Update all of the ancestors' descendant counts
     while( ereg("^(.*/)([^/]*)/$",$ancestry,$args)) {
         $qu = sql_exec("update posts set descendants=descendants+1 ".
@@ -791,6 +803,8 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
         if( $rc) return private_dberr($rc,$deadline);
     }
 
+    $url .= (strpos($url,"?") !== false ? "&" : "?")."post=$id";
+
     if( substr($topicid,0,6) == 'reqmts') {
         $project = substr($topicid,6);
         list($rc,$projinfo) = ff_getprojectinfo($project);
@@ -801,34 +815,38 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                     "projectname" => $projinfo["name"],
                     "deadline" => date("D F j, H:i:s T",$deadline),
                 );
-                $url = "project.php?p=$project&post=$id".
-                    "&requser=$projinfo[lead]";
                 $tag = ($deadline?"newduty2":"newduty");
-                $rc = al_triggerevent( "lead:$project", $url,
+                $rc = al_triggerevent( "lead:$project",
+                    "$url&requser=$projinfo[lead]",
                     "$tag-changeproposal", $macros);
-                if( $rc[0]) return $rc;
+                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
 
                 // Trigger a project news event
                 $macros = array(
                     "projectname" => $projinfo["name"],
                 );
-                $url = "project.php?p=$project&post=$id";
-                $rc = al_triggerevent( "watch:$project-news\\".
+                $rc = al_triggerevent(
+                    "watch:$project-news,watch:thread-$thread\\".
                     "member:".scrub($owner).",lead:$project",
                     $url, "pnews-changeproposal", $macros, 2);
-                if( $rc[0]) return $rc;
+                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
             } else {
                 // Trigger a project news event
                 $macros = array(
                     "projectname" => $projinfo["name"],
                 );
-                $url = "project.php?p=$project&post=$id";
                 $rc = al_triggerevent(
-                    "watch:$project-news\\member:".scrub($owner),
+                    "watch:$project-news,watch:thread-$thread\\".
+                    "member:".scrub($owner),
                     $url, "pnews-newpost", $macros, 5);
-                if( $rc[0]) return $rc;
+                if( $rc[0]) return private_dberr($rc[0],$rc[1]);
             }
         }
+    } else {
+        // Inform anybody who is watching the thread
+        $rc = al_triggerevent( "watch:thread-$thread\\member:".scrub($owner),
+            $url, "forumpost", array(), 5);
+        if( $rc[0]) return private_dberr($rc[0],$rc[1]);
     }
 
     return private_commit($id);
@@ -2911,6 +2929,10 @@ function ff_gettext( $textid, $macros)
     } else if( $textid == 'pnews-changerejected-body') {
         $text = "A requirements change proposal for project ".
             "'%PROJECTNAME%' has been rejected.";
+    } else if( $textid == 'forumpost-subject') {
+        $text = "Forum discussion";
+    } else if( $textid == 'forumpost-body') {
+        $text = "Somebody has posted to a forum that you are watching.";
     } else if( $textid == 'pnews-newpost-subject') {
         $text = "Discussion of project '%PROJECTNAME%'";
     } else if( $textid == 'pnews-newpost-body') {
@@ -4888,6 +4910,14 @@ function al_destroywatch( $watchid) {
     $qu = sql_exec("delete from watches where watchid =".intval($watchid));
     if ($qu===false) return private_dberr();
     return array(0,"successfully deleted watch");
+}
+
+// Destroys the watch with the given username and eventid
+function al_destroywatch2( $eventid, $username) {
+    $qu = sql_exec("delete from watches where eventid='".
+        sql_escape($eventid)."' and username='".sql_escape($username)."'");
+    if( $qu === false) return private_dberr();
+    return array(0,"Success");
 }
 
 // This function creates a new event.

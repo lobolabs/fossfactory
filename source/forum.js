@@ -139,8 +139,18 @@ function inlinepost(topicid,parent,divid,subject,username) {
     html+='<td width="0%" valign=top><nobr>';
     html+='&nbsp;<a href="" onClick="return clearpost(\''+divid+'\')" class="normal-button">Cancel</a>';
     html+='&nbsp;<a href="" class="normal-button" onClick="document.getElementById(\''+tmpid+'_postcomment\').submit();return false">Submit Comment</a>';
-    html+='</td></tr></table></td></tr>';
-    html+='</div>';
+    html+='</td></tr></table></div></td></tr>';
+    if( username != '') {
+        html+='<tr><td>&nbsp;</td>';
+        html+='<td><input type=checkbox name=watchthread id='+tmpid+'_watchthread value=1 checked>';
+        html+='&nbsp;<label for='+tmpid+'_watchthread>Notify me of replies to this thread.</label></td></tr>';
+        // offerwatch is a global variable
+        if( typeof(offerwatch) != 'undefined') {
+            html+='<tr><td>&nbsp;</td>';
+            html+='<td><input type=checkbox name=watchproject id='+tmpid+'_watchproject value=1 checked>';
+            html+='&nbsp;<label for='+tmpid+'_watchproject>Watch this project.</label></td></tr>';
+        }
+    }
     html+='</table></form>';
     if( openpost == tmpid) {
         openpost = null;

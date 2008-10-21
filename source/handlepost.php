@@ -37,6 +37,8 @@ foreach( $_REQUEST as $key => $filename) {
 
 if (substr($topicid,0,6)=='reqmts') { 
     $id =substr($topicid,6);
+    if( $username !== '' && $_REQUEST["watchproject"])
+        al_createwatch("$id-news",$username);
     while( isset( $_REQUEST["subject"])) {
         $body = "$_REQUEST[body]";
 
@@ -51,11 +53,12 @@ if (substr($topicid,0,6)=='reqmts') {
             }
         }
 
-        ff_createpost( "$topicid",
+        list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", $body, $parent,
-            $_REQUEST["anonymous"]?'':$username,'',$attachments);
-
-        header("Location: project.php?p=$id".
+            $_REQUEST["anonymous"]?'':$username,'',$attachments,
+            $_REQUEST["watchthread"]?1:0,
+            "project.php?p=$id");
+        header("Location: project.php?p=$id&post=$postid".
             ($parent?"#p$parent":""));
         exit;
     }
@@ -66,43 +69,50 @@ elseif(substr($topicid,0,5)=='spect') {
     if( isset( $_REQUEST["subject"])) {
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", "$_REQUEST[body]", $parent,
-            $_REQUEST["anonymous"]?'':$username,'',$attachments);
-        header("Location: dispute.php?id=$disputeid".
+            $_REQUEST["anonymous"]?'':$username,'',$attachments,
+            $_REQUEST["watchthread"]?1:0, "dispute.php?id=$disputeid");
+        header("Location: dispute.php?id=$disputeid&post=$postid".
             ($parent?"#p$parent":""));
         exit;
     }
 } 
 elseif(substr($topicid,0,4)=='proj') {
     $id = substr($topicid,4);
+    if( $username !== '' && $_REQUEST["watchproject"])
+        al_createwatch('$id-news',$username);
     if( isset( $_REQUEST["subject"])) {
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", "$_REQUEST[body]", $parent,
-            $_REQUEST["anonymous"]?'':$username,'',$attachments);
-        header("Location: project.php?p=$id".
-         ($parent?"#p$parent":""));
+            $_REQUEST["anonymous"]?'':$username,'',$attachments,
+            $_REQUEST["watchthread"]?1:0, "project.php?p=$id");
+        header("Location: project.php?p=$id&post=$postid".
+            ($parent?"#p$parent":""));
         exit;
     }
 }
 elseif(substr($topicid,0,8)=='feedback') {
     if( isset( $_REQUEST["subject"])) {
+        $tab = substr($topicid,8);
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", "$_REQUEST[body]", $parent,
-            $_REQUEST["anonymous"]?'':$username,'',$attachments);
-        $tab = substr($topicid,8);
-        header("Location: feedback.php".
-            ($tab?"?tab=$tab":"").($parent?"#p$parent":""));
+            $_REQUEST["anonymous"]?'':$username,'',$attachments,
+            $_REQUEST["watchthread"]?1:0,
+            "feedback.php".($tab?"?tab=$tab":""));
+        header("Location: feedback.php?post=$postid".
+            ($tab?"&tab=$tab":"").($parent?"#p$parent":""));
         exit;
     }
 }
 elseif(substr($topicid,0,4)=='subm') {
-    ereg("^subm(.*)s([^s]*)$",$topicid,$parts);
+    $id = substr($topicid,4);
     if( isset( $_REQUEST["subject"])) {
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", "$_REQUEST[body]", $parent,
-            $_REQUEST["anonymous"]?'':$username,'',$attachments);
-        $p = $parts[1];
-        header("Location: project.php?p=$parts[1]&".
-            "tab=submissions#subm$parts[2]");
+            $_REQUEST["anonymous"]?'':$username,'',$attachments,
+            $_REQUEST["watchthread"]?1:0,
+            "project.php?p=$id&tab=submissions");
+        header("Location: project.php?p=$id&".
+            "tab=submissions&post=$postid".($parent?"#p$parent":""));
         exit;
     }
 }

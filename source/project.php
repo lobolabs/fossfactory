@@ -102,7 +102,8 @@ if( $post) {
         $ancestry = $postinfo['ancestors'];
         $ancestry[] = $post;
         $ancestry = implode("/",$ancestry);
-        $onload = "fold3('reqmts$id','$ancestry')";
+        $onload = "fold3('".
+            ($tab==='submissions'?'subm':'reqmts')."$id','$ancestry')";
     }
 }
 
@@ -292,7 +293,11 @@ if( $username) {
     if( $username !== $projinfo["lead"]) {
         list($rc,$watches) = al_getwatches( $username, "$id-news");
         if( !$rc) {
-?><a title='<?=sizeof($watches)?"Click to stop watching this project.":"Click to start watching this project."?>' class="first-child" href="watchproject.php?id=<?=$id?>&tab=<?=urlencode($_REQUEST["tab"])?><?=sizeof($watches)?"&stop=1":""?>"><?=sizeof($watches)?"You are watching this project.":"watch"?></a><?
+            if( sizeof($watches)) {
+?><a title='Click to stop watching this project.' class="first-child" href="watchproject.php?id=<?=$id?>&tab=<?=urlencode($_REQUEST["tab"])?>&stop=1">You are watching this project.</a><?
+            } else {
+?><a title='Click to start watching this project.' class="first-child" href="watchproject.php?id=<?=$id?>&tab=<?=urlencode($_REQUEST["tab"])?>">watch</a><script>offerwatch=1;</script><?
+            }
         }
     }
     
