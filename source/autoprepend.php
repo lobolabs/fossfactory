@@ -303,7 +303,7 @@ if( sizeof($breadcrumbs)) {
             foreach( $features as $feature) {
                 $i++;
 ?>
-<div class=<?=$i&1?"oddrow":"evenrow"?>><div class=money><?=convert_money($feature["bounty"])?></div><a href="project.php?p=<?=$feature["id"]?>"><?=htmlentities($feature["name"])?></a></div>
+<div class=<?=$i&1?"oddrow":"evenrow"?>><div class=money><?=convert_money($feature["bounty"])?></div><a href="<?=projurl($feature["id"])?>"><?=htmlentities($feature["name"])?></a></div>
 <?php
             }
         }
@@ -464,6 +464,13 @@ function jsencode($s) {
     $s = preg_replace( "/([\001-\011\013-\037\177-\377])/e",
         "'\\\\\\\\'.substr('000'.decoct(ord('\\1')),-3)", $s);
     return $s;
+}
+
+function projurl($id,$parms='') {
+    $url = "project.php?p=$id";
+    if( substr($parms,0,1) === '#') $url .= $parms;
+    else if( $parms !== '') $url .= "&$parms";
+    return $url;
 }
 
 if( $_REQUEST["requser"] &&

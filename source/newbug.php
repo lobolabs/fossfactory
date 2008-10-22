@@ -55,7 +55,7 @@ if( trim($reqmts)) {
     if( !$rc) {
         if( $username !== '') al_createwatch( "$id-news", $username);
 
-        header( "Location: project.php?p=$p&tab=subprojects");
+        header( "Location: ".projurl($p,"tab=subprojects"));
         exit;
     }
     $err = $id;
@@ -88,7 +88,7 @@ function checkAllot() {
 <table border=0 cellpadding=0 cellspacing=0 width="100%"><tr>
 <td valign="top" colspan="2" width="100%">
 
-<b>Project:</b> <a href="project.php?p=<?=$parent["id"]?>&tab=subprojects"><?=htmlentities($parent["name"])?></a><br><br>
+<b>Project:</b> <a href="<?=projurl($parent["id"],"tab=subprojects")?>"><?=htmlentities($parent["name"])?></a><br><br>
 </td>
 </tr><tr><td valign="bottom" width="50%">
 <h2>Bug Priority</h2>

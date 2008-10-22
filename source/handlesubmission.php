@@ -28,6 +28,6 @@ elseif($accept=='false')
 elseif($accept=='prejudice')
     list($rc,$err) = ff_rejectsubmission($username,$submissionid,'',1);
     
-    header("Location: project.php?p=$id&tab=submissions");
+    header("Location: ".projurl($id,"tab=submissions"));
 ?>
 

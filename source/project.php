@@ -23,20 +23,20 @@ $tab = scrub($_REQUEST["tab"]);
 
 if( isset($_REQUEST["newname"])) {
     ff_renameproject( $username, $id, $_REQUEST["newname"]);
-    header( "Location: project.php?p=$id&tab=".urlencode($tab));
+    header( "Location: ".projurl($id,"tab=".urlencode($tab)));
     exit;
 } else if( isset($_REQUEST["delete"])) {
     list($rc,$err) = ff_deleteproject( $username, $id);
-    header( "Location: project.php?p=$id&tab=".urlencode($tab));
+    header( "Location: ".projurl($id,"tab=".urlencode($tab)));
     exit;
 } else if( isset($_REQUEST["canceldel"])) {
     list($rc,$err) = ff_canceldeleteproject( $username, $id);
-    header( "Location: project.php?p=$id&tab=".urlencode($tab));
+    header( "Location: ".projurl($id,"tab=".urlencode($tab)));
     exit;
 } else if( isset($_REQUEST["sponsor_amount"])) {
     if( !is_secure()) {
-        header( "Location: $GLOBALS[SITE_URL]project.php?p=$id".
-            "&tab=".urlencode($tab)."&sp_err=1");
+        header( "Location: $GLOBALS[SITE_URL]".
+            projurl($id,"tab=".urlencode($tab)."&sp_err=1"));
         exit;
     }
 
@@ -53,8 +53,8 @@ if( isset($_REQUEST["newname"])) {
         list($rc,$err) = ff_setsponsorship( $id, $username, $amount, true);
     }
 
-    header( "Location: $GLOBALS[SITE_URL]project.php?p=$id".
-        "&tab=".urlencode($tab)."&sp_err=$rc&amount=$amount");
+    header( "Location: $GLOBALS[SITE_URL]".
+        projurl($id,"tab=".urlencode($tab)."&sp_err=$rc&amount=$amount"));
     exit;
 } else if( isset($_REQUEST["remove_amount"])) {
     $amount = '';
@@ -70,8 +70,8 @@ if( isset($_REQUEST["newname"])) {
         list($rc,$err) = ff_setsponsorship( $id, $username, "-$amount", true);
     }
 
-    header( "Location: project.php?p=$id".
-        "&tab=".urlencode($tab)."&r_err=$rc&amount=$amount");
+    header( "Location: ".
+        projurl($id,"tab=".urlencode($tab)."&r_err=$rc&amount=$amount"));
     exit;
 } else if( $_POST['init_goal'] && $GLOBALS['username'] ) {
     // Assume English numbers: 1,000,000.01 OR 1 000 000.01 -> 1000000.01
@@ -79,7 +79,7 @@ if( isset($_REQUEST["newname"])) {
     $amount = (int)( $amount * 100 );
     list( $rc, $msg ) = ff_setfundinggoal( $GLOBALS['username'], $id, $amount.$GLOBALS['pref_currency'] );
     if( $rc == 0 )
-        header( 'Location: project.php?p='.$id.'&tab='.urlencode( $tab ) );
+        header( "Location: ".projurl($id,"tab=".urlencode( $tab )));
 }
 
 $parent = scrub($_REQUEST["parent"]);
@@ -109,7 +109,7 @@ if( $post) {
 
 apply_template($projinfo["name"],array(
     array("name"=>"Projects", "href"=>"browse.php"),
-    array("name"=>$projinfo["name"], "href"=>"project.php?p=$id"),
+    array("name"=>$projinfo["name"], "href"=>projurl($id)),
     ),$onload);
 ?>
 <div class="relatedprojects">
@@ -172,8 +172,7 @@ function rename() {
     if( newname != null && newname != '<?=jsencode($projinfo["name"])?>') {
         if( confirm("Are you sure you want to rename "+
             "the project to '"+newname+"'?")) {
-            document.location = 'project.php?p=<?=$id?>&tab='+
-                '<?=urlencode($_REQUEST["tab"])?>&newname='+encodeURI(newname);
+            document.location = '<?=projurl($id,"tab=".urlencode($_REQUEST["tab"])."&newname=")?>'+encodeURI(newname);
         }
     }
 }
@@ -187,8 +186,7 @@ if( $projinfo["status"] === 'pending' && !$projinfo["delete_time"]) {
 <script>
 function deleteproj() {
     if(confirm("Are you sure you want to delete this project?")) {
-        document.location = 'project.php?p=<?=$id?>&tab='+
-            '<?=urlencode($_REQUEST["tab"])?>&delete=1';
+        document.location = '<?=projurl($id,"tab=".urlencode($_REQUEST["tab"])."&delete=1")?>';
     }
 }
 </script>
@@ -206,8 +204,7 @@ function deleteproj() {
 function canceldel() {
     if(confirm("Are you sure you want to stop "+
         "this project from being deleted?")) {
-        document.location = 'project.php?p=<?=$id?>&tab='+
-            '<?=urlencode($_REQUEST["tab"])?>&canceldel=1';
+        document.location = '<?=projurl($id,"tab=".urlencode($_REQUEST["tab"])."&canceldel=1")?>';
     }
 }
 </script>
@@ -314,7 +311,7 @@ if (strtolower($projinfo['status'])!='pending') {
 ?><div id=status class=<?=$projinfo['status']?>><h1>Status: </h1><?
     list($rc,$relcodeinfo) = ff_getrelcodeinfo($id,$projinfo['status']);
     if( !$rc) {
-?><em><a href='project.php?p=<?=$id?>&tab=submissions#submission<?=$relcodeinfo["submissionid"]?>'><?
+?><em><a href='<?=projurl($id,"tab=submissions#submission$relcodeinfo[submissionid]")?>'><?
     }
 
     if( $projinfo['status'] == 'submitted') {
@@ -357,7 +354,7 @@ Now is your last chance to evaluate the code and raise any questions or concerns
 <?         include("sponsor.php"); ?>
 <?     } else { ?>
     <p>
-    You currently need to <a href="login.php?url=<?=urlencode("project.php?p=$id")?>">log in</a> to
+    You currently need to <a href="login.php?url=<?=urlencode(projurl($id))?>">log in</a> to
     sponsor a project.  We apologize for the inconvenience.
     </p>
 <?     } ?>
@@ -385,7 +382,7 @@ $tabs = array(
 list($rc,$disputes) = ff_getprojectdisputes($id);
 if (!$rc && sizeof($disputes)) $tabs["disputes"] = "Disputes";
 
-tab_header( $tabs, "project.php?p=$id", $tab, "requirements");
+tab_header( $tabs, projurl($id), $tab, "requirements");
 
 include_once("forum.php");
 if( $tab =='requirements') {
@@ -427,7 +424,7 @@ if( $tab =='requirements') {
             } else if( $history[$i]["action"] == 'reject') {
                 print "<span class=rejected>[REJECTED]</span> ";
             }
-            print "<a href='project.php?p=$id&post=".$history[$i]['postid'].
+            print "<a href='".projurl($id,"post=".$history[$i]['postid']).
                 "' onClick='return fold3(\"reqmts$id\",\"".$ancestry."\")'>";
             print htmlentities($history[$i]['subject'])."</a>";
             print "</li>\n";

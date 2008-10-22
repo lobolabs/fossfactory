@@ -65,13 +65,13 @@ if( $rc) {
 apply_template("Dispute",array(
     array("name"=>"Projects", "href"=>"browse.php"),
     array("name"=>$projectinfo["name"],
-        "href"=>"project.php?p=$disputeinfo[projectid]".($parent?"#p$parent":"")),
+        "href"=>projurl($disputeinfo["projectid"],($parent?"#p$parent":""))),
     array("name"=>"Dispute",
         "href"=>"dispute.php?id=$id"),
 ));
 ?>
 <table border=0 cellpadding=0 cellspacing=8>
-    <tr><td valign=top width="0%"><b>Project:</b></td><td width="50%"><a href="project.php?p=<?=$projectinfo["id"]?>"><?=htmlentities($projectinfo["name"])?></a></td>
+    <tr><td valign=top width="0%"><b>Project:</b></td><td width="50%"><a href="<?=projurl($projectinfo["id"])?>"><?=htmlentities($projectinfo["name"])?></a></td>
     <td width="50%" rowspan=4 valign=top>
         <p class="help">
 <? if( $GLOBALS["username"] === $disputeinfo["plaintiff"]) { ?>
@@ -103,7 +103,7 @@ apply_template("Dispute",array(
             intval($disputeinfo["object"]));
         if(!$rc) {
 ?>
-    <br><a href="project.php?p=<?=$projectinfo["id"]?>&tab=submissions&s=<?=$submission["submissionid"]?>#tabs"><?=date("M j, Y g:ia",$submission["date"])?> by <?=htmlentities($submission["username"])?></a>
+    <br><a href="<?=projurl($projectinfo["id"],"tab=submissions&s=$submission[submissionid]#tabs")?>"><?=date("M j, Y g:ia",$submission["date"])?> by <?=htmlentities($submission["username"])?></a>
 <?
         }
     } else if( $disputeinfo["type"]==='badchange') {
@@ -115,7 +115,7 @@ apply_template("Dispute",array(
                     $post=scrub(ereg_replace(":.$","",$disputeinfo["object"]));
                     $patch=ereg_replace("^[^:]*:","",$disputeinfo["object"]);
 ?>
-    <br><a href="project.php?p=<?=$projectinfo["id"]?>&post=<?=$post?>"><?=date("M j, Y g:ia",$reqmtschange["time"])?> - <?=htmlentities($reqmtschange["subject"])?></a>
+    <br><a href="<?=projurl($projectinfo["id"],"post=$post")?>"><?=date("M j, Y g:ia",$reqmtschange["time"])?> - <?=htmlentities($reqmtschange["subject"])?></a>
     </td></tr>
     <tr><td valign=top width="0%"><b>Disputed Change:</b></td><td width="100%" colspan=2>
         <div style="border:1px solid #808080;padding:1em"><?=formatDiff($patch)?></div>
@@ -196,7 +196,7 @@ else
 <i>Waiting for the project lead to respond...</i>
 <? } else if($disputeinfo['status']=='waiting') { ?>
 <td colspan='4'>
-<i>This debate has been concluded, but has not yet been sent for arbitration.  One or more <a href="project.php?p=<?=$disputeinfo["projectid"]?>&tab=disputes#tabs">other disputes</a> must be decided before this one can proceed.</i>
+<i>This debate has been concluded, but has not yet been sent for arbitration.  One or more <a href="<?=projurl($disputeinfo["projectid"],"tab=disputes#tabs")?>">other disputes</a> must be decided before this one can proceed.</i>
 <? } else if($disputeinfo['status']=='conflict') { ?>
 <td colspan='4'>
 <i>Waiting for the plaintiff to resolve a merge conflict...</i>

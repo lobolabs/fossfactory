@@ -1149,8 +1149,8 @@ function ff_createproject( $creator, $name,
                 "parentname" => $projinfo["name"],
                 "deadline" => date("D F j, H:i:s T",$deadline),
             );
-            $url = "project.php?p=$parent&tab=subprojects&requser=".
-                $projinfo["lead"];
+            $url = projurl($parent,"tab=subprojects&requser=".
+                $projinfo["lead"]);
             $tag = ($deadline?"newduty2":"newduty");
             $rc = al_triggerevent( "lead:$parent", $url,
                 "$tag-newsubproject", $macros);
@@ -1165,7 +1165,7 @@ function ff_createproject( $creator, $name,
             "parentname" => $projinfo["name"],
             "requirements" => $reqmts,
         );
-        $url = "project.php?p=$id";
+        $url = projurl($id);
         $rc = al_triggerevent( "watch:$parent-news\\member:".scrub($creator).
             ($allotment === false ? ",lead:$parent" : ""),
             $url, "pnews-newsubproject", $macros, 3);
@@ -1176,7 +1176,7 @@ function ff_createproject( $creator, $name,
             "projectname" => $name,
             "requirements" => $reqmts,
         );
-        $url = "project.php?p=$id";
+        $url = projurl($id);
         $rc = al_triggerevent( "watch:news\\member:".scrub($creator),
             $url, "news-newproject", $macros, 3);
         if($rc[0]) return $rc;
@@ -1390,7 +1390,7 @@ function ff_rejectreqmtschange( $username, $id, $subject, $postid)
     $macros = array(
         "projectname" => $row["name"],
     );
-    $url = "project.php?p=$id&post=".intval($postid);
+    $url = projurl($id,"post=".intval($postid));
     $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-changerejected", $macros, 3);
     if( $rc[0]) return $rc;
@@ -1463,7 +1463,7 @@ function ff_deleteproject( $username, $id)
         "projectname" => $row["name"],
         "deltime" => date("D F j, H:i:s T",$deltime),
     );
-    $url = "project.php?p=$id";
+    $url = projurl($id);
     $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-deletingproject", $macros);
     if($rc[0]) return $rc;
@@ -1503,7 +1503,7 @@ function ff_canceldeleteproject( $username, $id)
         "projectname" => $row["name"],
         "canceller" => $username,
     );
-    $url = "project.php?p=$id";
+    $url = projurl($id);
     $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-canceldeletingproject", $macros);
     if($rc[0]) return $rc;
@@ -2378,7 +2378,7 @@ function ff_setprojectreqmts($username, $id, $oldseq, $newreqmts,
     $macros = array(
         "projectname" => $row["name"],
     );
-    $url = "project.php?p=$id&post=".intval($postid);
+    $url = projurl($id,"post=".intval($postid));
     $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-changeaccepted", $macros);
     if($rc[0]) return $rc;
@@ -2450,7 +2450,7 @@ function ff_supplantlead( $id, $username)
         "oldlead" => $oldauth,
         "newlead" => $username);
     $event = ($oldauth ? 'supplant' : 'nosupplant');
-    $url = "project.php?p=p$nid";
+    $url = projurl("p$nid");
     $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
         $url, "pnews-$event", $macros);
     if($rc[0]) return $rc;
@@ -3960,7 +3960,7 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         "submitter" => $username,
         "deadline" => date("D F j, H:i:s T",$deadline)
     );
-    $url = "project.php?p=p$nid&tab=submissions&requser=$lead";
+    $url = projurl("p$nid","tab=submissions&requser=$lead");
     $tag = ($deadline?"newduty2":"newduty");
     $rc = al_triggerevent("lead:p$nid",$url,"$tag-submission",$macros);
     if($rc[0]) return $rc;
@@ -3971,7 +3971,7 @@ function ff_submitcode($username, $files, $comments, $projectID) {
         "projectname" => $projectname,
         "submitter" => $username,
     );
-    $url = "project.php?p=p$nid&tab=submissions";
+    $url = projurl("p$nid","tab=submissions");
     $rc = al_triggerevent( "watch:p$nid-news\\".
         "member:".scrub($username).",member:$lead",
         $url, "pnews-submission", $macros);
@@ -4435,8 +4435,7 @@ function ff_rejectsubmission($username,$submissionid,$reason,$withprejudice=0)
     $rc = private_rejectsubmission($nid,$submissionid,$reason,$withprejudice);
     if( $rc[0]) return private_dberr($rc[0],$rc[1]);
 
-    $url = $withprejudice ?
-        "project.php?p=p$nid" : "project.php?p=p$nid&tab=submissions#tabs";
+    $url = projurl("p$nid", $withprejudice ? '' : "tab=submissions#tabs");
 
     $rc = al_triggerevent("member:$submitter",
         $url, $withprejudice?"prejudice":"rejected",
@@ -4722,12 +4721,12 @@ function ff_enforcedutydeadlines()
 
         // Notify everybody that the lead was ousted
         list($rc,$err) = al_triggerevent( "watch:p$nid-news\\member:$lead",
-            "project.php?p=p$nid", "leadousted", array(
+            projurl("p$nid"), "leadousted", array(
             "exlead" => $lead, "projectname" => $projectname));
 
         // Notify the ex-lead that he missed the deadline
         list($rc,$err) = al_triggerevent( "member:$lead",
-            "project.php?p=p$nid", "misseddeadline", array(
+            projurl("p$nid"), "misseddeadline", array(
             "name" => $memberinfo["name"],
             "projectname" => $projectname,
             "deadline" => date("D F j, H:i:s T", $deadline)));

@@ -85,7 +85,7 @@ $custom = explode("/",$info["custom"]);
 
 if( $info["txn_type"] === 'subscr_payment') {
     if( $custom[4]) {
-        header( "Location: project.php?p=".urlencode($custom[4]));
+        header( "Location: ".projurl(urlencode($custom[4])));
     } else {
         header( "Location: account.php?tab=subscription");
     }
@@ -116,6 +116,6 @@ if( sizeof($custom) == 1) {
     exit;
 }
 
-header("Location: project.php?p=$custom[1]&pp_err=$no_transfer".
-    "&currency=$code&gross=$gross&fee=$fee");
+header("Location: ".projurl($custom[1],"pp_err=$no_transfer".
+    "&currency=$code&gross=$gross&fee=$fee"));
 exit;

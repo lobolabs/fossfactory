@@ -458,7 +458,7 @@ if( !$rc && sizeof($features) > 0) {
     foreach( $features as $feature) {
 ?>
         <li>
-            <a href="project.php?p=<?=$feature["id"]?>">
+            <a href="<?=projurl($feature["id"])?>">
             <h2><?=htmlentities($feature["name"])?></h2>
             <p><?=htmlentities($feature["abstract"])?></p>
             <h3>Bounty: <em><?=convert_money($feature["bounty"])?></em></h3>

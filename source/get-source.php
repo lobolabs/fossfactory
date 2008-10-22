@@ -96,6 +96,6 @@ version of the software.
 ?>
 <p>
 If you'd like to help improve FOSS Factory, start by checking out our list of <a
-href="http://www.fossfactory.org/project.php?p=p30&tab=subprojects">requested
+href="http://www.fossfactory.org/project/p30?tab=subprojects">requested
 improvements</a> and feel free to add your own ideas to the list.
 </p>

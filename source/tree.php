@@ -54,7 +54,7 @@ function showtree( $graph, $path='', $ancestry='') {
         }
         $cur = (substr($path,-strlen($id)-1) === "/$id");
         if( $cur) print "<b";
-        else print "<a href='project.php?p=$id' target='_parent' onclick=\"return treesel('$anc')\"";
+        else print "<a href='".projurl($id)."' target='_parent' onclick=\"return treesel('$anc')\"";
         if( $node["status"] != 'pending') print " class=bg$node[status]";
         print ">";
         print htmlentities($node["name"]);

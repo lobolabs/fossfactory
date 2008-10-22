@@ -56,10 +56,9 @@ if (substr($topicid,0,6)=='reqmts') {
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", $body, $parent,
             $_REQUEST["anonymous"]?'':$username,'',$attachments,
-            $_REQUEST["watchthread"]?1:0,
-            "project.php?p=$id");
-        header("Location: project.php?p=$id&post=$postid".
-            ($parent?"#p$parent":""));
+            $_REQUEST["watchthread"]?1:0, projurl($id));
+        header("Location: ".projurl($id,
+            "post=$postid".($parent?"#p$parent":"")));
         exit;
     }
 }
@@ -84,9 +83,9 @@ elseif(substr($topicid,0,4)=='proj') {
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", "$_REQUEST[body]", $parent,
             $_REQUEST["anonymous"]?'':$username,'',$attachments,
-            $_REQUEST["watchthread"]?1:0, "project.php?p=$id");
-        header("Location: project.php?p=$id&post=$postid".
-            ($parent?"#p$parent":""));
+            $_REQUEST["watchthread"]?1:0, projurl($id));
+        header("Location: ".projurl($id,
+            "post=$postid".($parent?"#p$parent":"")));
         exit;
     }
 }
@@ -109,10 +108,9 @@ elseif(substr($topicid,0,4)=='subm') {
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", "$_REQUEST[body]", $parent,
             $_REQUEST["anonymous"]?'':$username,'',$attachments,
-            $_REQUEST["watchthread"]?1:0,
-            "project.php?p=$id&tab=submissions");
-        header("Location: project.php?p=$id&".
-            "tab=submissions&post=$postid".($parent?"#p$parent":""));
+            $_REQUEST["watchthread"]?1:0, projurl($id,"tab=submissions"));
+        header("Location: ".projurl($id,
+            "tab=submissions&post=$postid".($parent?"#p$parent":"")));
         exit;
     }
 }

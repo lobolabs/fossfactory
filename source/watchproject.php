@@ -42,5 +42,5 @@ if( $GLOBALS["username"]) {
     }
 }
 
-header( "Location: project.php?p=$id".($tab?"&tab=$tab":""));
+header( "Location: ".projurl($id,($tab?"tab=$tab":"")));
 ?>

@@ -22,8 +22,8 @@ $post = scrub( $_REQUEST["post"]);
 $accept = intval( $_REQUEST["accept"]);
 
 function error($rc,$err) {
-    header( "Location: project.php?p=".
-        "$GLOBALS[project]&err=".urlencode("$rc $err"));
+    header( "Location: ".
+        projurl($GLOBALS["project"],"err=".urlencode("$rc $err")));
     exit;
 }
 
@@ -67,5 +67,5 @@ if( $accept) {
     if( $rc) error($rc,$err);
 }
 
-header( "Location: project.php?p=$GLOBALS[project]");
+header( "Location: ".projurl($GLOBALS["project"]));
 ?>

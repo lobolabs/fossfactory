@@ -20,15 +20,15 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 $id = scrub($_REQUEST["id"]);
 
 if( $username === '') {
-    header( "Location: project.php?p=$id&err=1");
+    header( "Location: ".projurl($id,"err=1"));
     exit;
 }
 
 list($rc,$info) = ff_supplantlead( $id, $username);
 if( $rc) {
-    header( "Location: project.php?p=$id&err=1");
+    header( "Location: ".projurl($id,"err=1"));
     exit;
 }
 
-header( "Location: project.php?p=$id");
+header( "Location: ".projurl($id));
 ?>

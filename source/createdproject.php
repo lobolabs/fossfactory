@@ -34,5 +34,5 @@ has been emailed to you.  You may log into your account at
 the transaction.
 
 <p>
-<a href="project.php?p=<?=$p?>">Continue to Project Page</a>
+<a href="<?=projurl($p)?>">Continue to Project Page</a>
 </p>

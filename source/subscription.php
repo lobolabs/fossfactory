@@ -219,7 +219,7 @@ include_once("formattext.php");
     ?>
     <tr <?=$background?>>
         <td valign=top width="0%"><img class=arrow id="proj-<?=$myproject["id"]?>-arrow" src="arrow-right.gif" onClick="folder('proj-<?=$myproject["id"]?>')"></td>
-        <td valign=top width="100%"><a class=folder href="javascript:folder('proj-<?=$myproject["id"]?>')"><?=htmlentities($myproject['name'])?></a>&nbsp;&nbsp;<a href="project.php?p=<?=$myproject["id"]?>" style="text-decoration:none">[go]</a>
+        <td valign=top width="100%"><a class=folder href="javascript:folder('proj-<?=$myproject["id"]?>')"><?=htmlentities($myproject['name'])?></a>&nbsp;&nbsp;<a href="<?=projurl($myproject["id"])?>" style="text-decoration:none">[go]</a>
         <div id="proj-<?=$myproject["id"]?>-div" class=folded>
 	<p style="font-size:small">
         <b>Project Lead:</b> <?=htmlentities($myproject["lead"])?><br>

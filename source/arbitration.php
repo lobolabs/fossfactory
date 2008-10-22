@@ -95,7 +95,7 @@ foreach( $disputes as $dispute) {
 <? } else { ?>
 <td><a href="member.php?id=<?=$assignee?>"><?=$assignee?></a></td>
 <? } ?>
-<td><a href="project.php?p=<?=$projectinfo["id"]?>"><?=$projectinfo["id"]?></a></td>
+<td><a href="<?=projurl($projectinfo["id"])?>"><?=$projectinfo["id"]?></a></td>
 <td><a href="member.php?id=<?=$projectinfo["lead"]?>"><?=$projectinfo["lead"]?></a></td>
 <td><a href="member.php?id=<?=$dispute["plaintiff"]?>"><?=$dispute["plaintiff"]?></a></td>
 <td><a href="dispute.php?id=<?=$dispute["disputeid"]?>"><?=htmlentities($dispute["subject"])?></a></td>

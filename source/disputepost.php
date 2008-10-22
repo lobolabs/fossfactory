@@ -54,7 +54,7 @@ if( $rc == 2) {
 apply_template("File a Complaint",array(
     array("name"=>"Projects", "href"=>"browse.php"),
     array("name"=>$projinfo["name"],
-        "href"=>"project.php?p=$id"),
+        "href"=>projurl($id),
     array("name"=>"Post a Complaint",
         "href"=>"disputepost.php?id=$id"),
 ));
@@ -73,7 +73,7 @@ if($rc) {
 
 ?>
 <h1>File a Complaint</h1>
-<b>Project:</b> <a href="project.php?p=<?=$projinfo["id"]?>"><?=htmlentities($projinfo["name"])?></a></br>
+<b>Project:</b> <a href="<?=projurl($projinfo["id"])?>"><?=htmlentities($projinfo["name"])?></a></br>
 <p>
 Use this form to file a complaint regarding the management of the above
 project.

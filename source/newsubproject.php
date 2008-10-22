@@ -55,7 +55,7 @@ if( trim($name) && trim($reqmts)) {
         $attachments, false, 'subproject', $lead);
     if( !$rc) {
         ff_setfundinggoal( $username, $id, (int)( $fundgoal * 100 ).$GLOBALS['pref_currency'] );
-        header( "Location: project.php?p=$id");
+        header( "Location: ".projurl($id));
         exit;
     }
     $err = $id;
@@ -113,7 +113,7 @@ be made based on the subproject's quality, clarity, scope and relevance.
 <a href="overview.php#subprojects">Learn more about subprojects.</a>
 </p>
 
-<b>Parent Project:</b> <a href="project.php?p=<?=$parent["id"]?>"><?=htmlentities($parent["name"])?></a><br><br>
+<b>Parent Project:</b> <a href="<?=projurl($parent["id"])?>"><?=htmlentities($parent["name"])?></a><br><br>
 <input type=hidden name=p value="<?=$p?>">
 </td><td valign="top" rowspan="3" width="0%">
 <div class=important>

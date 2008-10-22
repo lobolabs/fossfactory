@@ -72,14 +72,14 @@ No projects match your search criteria.
         <td><img class=arrow id="browse-<?=$project["id"]?>-arrow" src="arrow-right.gif" onClick="folder('browse-<?=$project["id"]?>')"></td>
         <td class=project>
             <span>
-                <nobr><b onClick="folder('browse-<?=$project["id"]?>')"><?=htmlentities($project['name'])?></b> <a href="project.php?p=<?=$project["id"]?>">[go]</a></nobr>
+                <nobr><b onClick="folder('browse-<?=$project["id"]?>')"><?=htmlentities($project['name'])?></b> <a href="<?=projurl($project["id"])?>">[go]</a></nobr>
                 <div id="browse-<?=$project["id"]?>-div" class=folded>
                     <?=formatText(ereg_replace("\n.*","",$project["reqmts"]))?>
                     <p>
                     <b>Bounty:</b> <nobr><?=htmlentities(format_money($project["bounty"]))?></nobr>
                     <? if( ereg("[1-9]",$project["bounty"]) && !ereg("^[0-9]*$GLOBALS[pref_currency]$",$project["bounty"])) { ?><nobr>(Approx. <?=htmlentities(convert_money($project["bounty"]))?>)</nobr><?}?>
                     </p>
-                    <a href="project.php?p=<?=$project["id"]?>">project&nbsp;page</a>
+                    <a href="<?=projurl($project["id"])?>">project&nbsp;page</a>
                 </div>
             </span></td>
         <td class=lead><?=$project['lead']===''?"<i>&lt;none&gt;</i>":htmlentities($project['lead'])?></td>

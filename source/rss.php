@@ -64,7 +64,7 @@ if( $_GET['src'] == 'projects' ) {
         foreach( $projects as $p ) {
             $item = new FeedItem();
             $item->title = $p['name'];
-            $item->link = $GLOBALS['SITE_URL'].'project.php?p='.$p['id'];
+            $item->link = $GLOBALS['SITE_URL'].projurl($p['id']);
             $item->guid = $item->link;
             $item->date = (int)$p['created'];
             $item->author = $p['creator'];
@@ -123,7 +123,7 @@ if( $_GET['src'] == 'projects' ) {
     
     $rss->title = '[FF] '.$pname;
     $rss->description = 'Recent events affecting FOSS Factory project \''.$pname.'\'';
-    $rss->link = $GLOBALS['SITE_URL'].'project.php?p='.$pid;
+    $rss->link = $GLOBALS['SITE_URL'].projurl($pid);
 } else if( $_GET['src'] == 'userevents' ) {
     include_once("formattext.php");
     

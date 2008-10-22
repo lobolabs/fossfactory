@@ -70,7 +70,7 @@ its Git repository as follows:
 ?>
 <p>
 This project currently has no Git repository, but
-<a href="project.php?p=<?=$repoproject?>">this related project</a> has one.
+<a href="<?=projurl($repoproject)?>">this related project</a> has one.
 To work on this project, you will probably want to start by downloading
 the related Git repository as follows:
 </p>

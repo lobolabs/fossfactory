@@ -90,8 +90,7 @@ function checkRetractForm() {
 }
 </script>
 
-<form method=post action="project.php" onSubmit="return checkRetractForm()" id="retract-form">
-    <input type=hidden name=p value=<?=$id?>>
+<form method=post action="<?=projurl($id)?>" onSubmit="return checkRetractForm()" id="retract-form">
     <input type=hidden name=tab value="<?=scrub($_REQUEST["tab"])?>">
 <p>
 Current sponsorship: <?=format_money($sponsorship)?>

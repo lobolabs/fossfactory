@@ -23,5 +23,5 @@ if( $username !== '') {
     ff_resignlead( $id, $username);
 }
 
-header( "Location: project.php?p=$id");
+header( "Location: ".projurl($id));
 ?>

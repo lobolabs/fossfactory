@@ -66,7 +66,7 @@ if( !$err && isset($_REQUEST["name"])) {
     list($rc,$id) = ff_createproject($username, $name, $reqmts, '', false, empty ($draftid) ? false : $draftid);
     if( !$rc) {
         ff_setfundinggoal( $username, $id, $fundgoal2.$GLOBALS['pref_currency'] );
-        header( "Location: project.php?p=$id");
+        header( "Location: ".projurl($id));
         exit;
     }
 

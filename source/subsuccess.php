@@ -32,7 +32,7 @@ if( $rc == 2) {
 
 apply_template($projinfo["name"],array(
     array("name"=>"Projects", "href"=>"browse.php"),
-    array("name"=>$projinfo["name"], "href"=>"project.php?p=$id"),
+    array("name"=>$projinfo["name"], "href"=>projurl($id),
     array("name"=>"submit code","href"=>"submission.php?id=$id")
 ));
 ?>
@@ -42,5 +42,5 @@ apply_template($projinfo["name"],array(
 Thank you for submitting the code.  The project lead will be notified immediately of your submission.
     </td>
 </tr>
-<tr><td align='center'><a href="project.php?p=<?=$id?>">go back to project</a></td></tr>
+<tr><td align='center'><a href="<?=projurl($id)?>">go back to project</a></td></tr>
 </table>

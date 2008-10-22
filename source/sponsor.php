@@ -99,9 +99,8 @@ function checkReserveSponsorshipForm() {
 }
 </script>
 
-<form method=post action="<?=$GLOBALS["SECURE_URL"]?>project.php" onSubmit="return checkReserveSponsorshipForm()" id="reserve-form">
+<form method=post action="<?=$GLOBALS["SECURE_URL"].projurl($id)?>" onSubmit="return checkReserveSponsorshipForm()" id="reserve-form">
 <h2 class="title">Sponsor from Your Reserve</h2>
-    <input type=hidden name=p value=<?=$id?>>
     <input type=hidden name=tab value="<?=scrub($_REQUEST["tab"])?>">
 <? if( $num_currencies > 1) { ?>
     <div class="reserve-sponsorship">
@@ -164,7 +163,7 @@ function checkPayPalSponsorshipForm() {
     <input type="hidden" name="tax" value="0">
     <input type="hidden" name="bn" value="PP-SponsorshipsBF">
     <input type="hidden" name="return" value="<?=htmlentities($GLOBALS["SITE_URL"])?>paypal-return.php">
-    <input type="hidden" name="cancel_return" value="<?=htmlentities($GLOBALS["SITE_URL"])?>project.php?p=<?=$id?>&tab=<?=scrub($_REQUEST["tab"])?>">
+    <input type="hidden" name="cancel_return" value="<?=htmlentities($GLOBALS["SITE_URL"]).projurl($id,"tab=".scrub($_REQUEST["tab"]))?>">
     <input type="hidden" name="notify_url" value="<?=htmlentities($GLOBALS["SITE_URL"])?>paypal-ipn.php">
     <input type="hidden" name="custom" value="<?=htmlentities($username)?>/<?=$id?>">
     <div>

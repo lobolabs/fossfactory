@@ -38,6 +38,6 @@ foreach($subprojects as $subproject) {
         ff_setpriority( $username, $parentid, $subproject['id'], $priority);
 }
 
-header( "Location: project.php?p=$parentid&tab=subprojects");
+header( "Location: ".projurl($parentid,"tab=subprojects"));
 exit;
 ?>

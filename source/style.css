@@ -1047,7 +1047,7 @@ h2.title {
   font-size: 11px;
   width: 5em;
 }
-form[action="project.php"] {    
+#retract-form {
     margin:0em;padding:0em;
     height:9em;
     background-color:#f7f7f7;

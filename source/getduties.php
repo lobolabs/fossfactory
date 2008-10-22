@@ -65,8 +65,8 @@ function getduties( $username) {
             list($rc,$pinfo) = ff_getprojectinfo( $duty["id"]);
             if( $rc) return array($rc,$pinfo);
 
-            $link = "project.php?p=$duty[projectid]".
-                "&tab=subprojects&requser=$username";
+            $link = projurl($duty["projectid"],
+                "tab=subprojects&requser=$username");
 
             $macros = array(
                 "projectname" => $pinfo["name"],
@@ -82,8 +82,8 @@ function getduties( $username) {
             list($rc,$sinfo) = ff_getsubmissioninfo( $duty["id"]);
             if( $rc) return array($rc,$sinfo);
 
-            $link = "project.php?p=$duty[projectid]".
-                "&tab=submissions&requser=$username#submission$duty[id]";
+            $link = projurl($duty["projectid"],
+                "tab=submissions&requser=$username#submission$duty[id]");
 
             $macros = array(
                 "projectname" => $projectinfo["name"],
@@ -96,8 +96,8 @@ function getduties( $username) {
             list($rc,$postinfo) = ff_getpostinfo( $duty["id"]);
             if( $rc) return array($rc,$postinfo);
 
-            $link = "project.php?p=$duty[projectid]".
-                "&requser=$username&post=$duty[id]";
+            $link = projurl($duty["projectid"],
+                "requser=$username&post=$duty[id]");
 
             $macros = array(
                 "projectname" => $projectinfo["name"],

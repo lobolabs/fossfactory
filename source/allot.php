@@ -149,8 +149,9 @@ function checkAllot() {
 foreach( $columns as $key => $title) {
     print "<th>";
     if( $sort_key !== $key) {
-        print "<a href='project.php?p=$parentid&tab=subprojects";
-        if( $key !== 'pri') print "&sort=$key";
+        print "<a href='".
+            projurl($parentid,"tab=subprojects".
+                ($key !== 'pri' ? "&sort=$key" : ""));
         print "'>$title";
         print "</a>";
     } else print $title;
@@ -163,7 +164,7 @@ foreach( $columns as $key => $title) {
     $totalallotment+=$subproject['allotment']/10;
 ?>
     <tr<?=$subproject['status']==='complete'?" bgcolor='#c0c0c0'":""?>>
-        <td align=right valign=top><?=$subproject['status']==='complete'?"<del style='color:#000'>":''?><a href="project.php?p=<?=$subproject['id']?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
+        <td align=right valign=top><?=$subproject['status']==='complete'?"<del style='color:#000'>":''?><a href="<?=projurl($subproject["id"])?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
         <td valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?>
                 <select name="pri<?=$subproject['id']?>">
                 <?

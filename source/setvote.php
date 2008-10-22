@@ -33,5 +33,5 @@ if( $_GET['type'] == 'funding' && ( $_GET['vote'] == 'more' || $_GET['vote'] == 
         ff_setfundingvote( $GLOBALS['username'], $id, $_GET['vote'] == 'more' );
 }
 
-header( "Location: project.php?p=$id".($tab?"&tab=$tab":""));
+header( "Location: ".projurl($id,($tab?"tab=$tab":"")));
 ?>

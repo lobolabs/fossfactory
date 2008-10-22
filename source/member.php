@@ -71,7 +71,7 @@ Name: <b><?=htmlentities($memberinfo["name"])?></b><br>
 ?>
         <tr <?=$background?>>
             <td valign=top><img class=arrow id="proj-<?=$project["id"]?>-arrow" src="arrow-right.gif" onClick="folder('proj-<?=$project["id"]?>')"></td>
-            <td valign=top><a class=folder href="javascript:folder('proj-<?=$project["id"]?>')"><?=htmlentities($project["name"])?></a>&nbsp;&nbsp;<a href="project.php?p=<?=$project["id"]?>" style="text-decoration:none">[go]</a>
+            <td valign=top><a class=folder href="javascript:folder('proj-<?=$project["id"]?>')"><?=htmlentities($project["name"])?></a>&nbsp;&nbsp;<a href="<?=projurl($project["id"])?>" style="text-decoration:none">[go]</a>
                 <div id="proj-<?=$project["id"]?>-div" class=folded>
                     <p><?=formatText(ereg_replace("\n.*","",$project["reqmts"]))?></p>
                 </div>
@@ -98,7 +98,7 @@ This member is not a project lead.
             else $background='';
     ?>
     <tr <?=$background?>>
-        <td valign=top><a class=folder href="project.php?p=<?=$duty["projectid"]?>"><?=htmlentities($duty['subject'])?></a></td>
+        <td valign=top><a class=folder href="<?=projurl($duty["projectid"])?>"><?=htmlentities($duty['subject'])?></a></td>
         <td align=center valign=top><nobr>&nbsp;&nbsp;<tt><?=$duty["deadline"]?date('M d, H:i:s&\\n\\b\\s\\p;T',$duty['deadline']):"-"?></tt></nobr></td>
     </tr>
 <?
