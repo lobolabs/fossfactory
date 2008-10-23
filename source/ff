@@ -343,7 +343,7 @@ submit)
 
     echo -n "$PASSWORD" > "$tmp"
 
-    repo="$(git diff origin/master HEAD | curl -s -F p="<$tmp" -F patch=@- "${SECURE_URL}ff-submit.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&origin=$(url_encode "$origin")&comments=$(url_encode "$comments")")"
+    repo="$(git diff --binary origin/master HEAD | curl -s -F p="<$tmp" -F patch=@- "${SECURE_URL}ff-submit.php?u=$(url_encode "$USERNAME")&id=$(url_encode "$PROJECTID")&origin=$(url_encode "$origin")&comments=$(url_encode "$comments")")"
 
     rm "$tmp"
 
