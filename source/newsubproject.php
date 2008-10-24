@@ -31,6 +31,8 @@ if( $rc) {
     softexit();
 }
 
+$islead = ($parent["lead"] !== '' && $parent["lead"] === $GLOBALS["username"]);
+
 if( trim($name) && trim($reqmts)) {
     if( $_REQUEST["stopspam"] !== 'yes') exit;
     $tempdir = "$GLOBALS[DATADIR]/tempattachments/$sid";
@@ -52,7 +54,9 @@ if( trim($name) && trim($reqmts)) {
         ($parent['lead'] ? $parent['lead'] : '');
 
     list($rc,$id) = ff_createproject($username, $name, $reqmts, $p,
-        $attachments, false, 'subproject', $lead);
+        $attachments, false, 'subproject', $lead,
+        isset($_REQUEST["allotment"]) ?
+            round(floatval($_REQUEST["allotment"]) * 10) : false);
     if( !$rc) {
         ff_setfundinggoal( $username, $id, (int)( $fundgoal * 100 ).$GLOBALS['pref_currency'] );
         header( "Location: ".projurl($id));
@@ -95,7 +99,7 @@ function checkAllot() {
 <input type=hidden id=stopspam name=stopspam value="no">
 <script>document.getElementById('stopspam').value='yes';</script>
 <table border=0 cellpadding=0 cellspacing=0 width="100%"><tr>
-<td valign="top" colspan="2" width="100%">
+<td valign="top" colspan="<?=$islead?3:2?>" width="100%">
 <p>
 The goal of every subproject is to tackle one portion of its parent
 project, and to further specify and/or clarify the requirements of
@@ -122,13 +126,20 @@ interface descriptions.  (Eg. function prototypes, class interfaces,
 command-line specs, etc.)  This will ensure code-compatibility with the rest
 of the system.
 </div>
-</td></tr><tr><td valign="bottom" width="50%">
+</td></tr><tr><td valign="bottom" width="<?=$islead?33:50?>%">
 <h2>Subproject Name</h2>
 <input name=name value="<?=htmlentities($name)?>" style="width:22em">
-</td><td valign="bottom" width="50%">
+</td><td valign="bottom" width="<?=$islead?33:50?>%">
 <h2>Initial Subproject Funding Goal</h2>
 <?php echo $GLOBALS['pref_currency']; ?> <input name="fundgoal" value="<?=htmlentities(number_format ($fundgoal, 2))?>" size="7" />
-</td></tr><tr><td valign="bottom" colspan="2" width="100%">
+</td>
+<? if( $islead) { ?>
+<td valign="bottom" width="34%">
+<h2>Bounty Allotment</h2>
+<input name="allotment" value="0" size=5>&nbsp;% of <?=convert_money($parent["bounty"])?>
+</td>
+<? } ?>
+</tr><tr><td valign="bottom" colspan="<?=$islead?3:2?>" width="100%">
 <br>
 <h2>Subproject Requirements</h2>
 <div style="font-size:small">
@@ -137,7 +148,7 @@ Use blank lines to separate paragraphs.)
 </div>
 </td>
 </tr><tr>
-<td valign="top" colspan="2" width="100%">
+<td valign="top" colspan="<?=$islead?3:2?>" width="100%">
 <textarea name=reqmts style="width:100%" rows=16><?=htmlentities($reqmts)?></textarea>
 <input name=makemelead id=makemelead value=1 type=checkbox checked> <label for=makemelead>Make me the project lead for this subproject</label>
 </td><td valign=center width="0%">
@@ -146,7 +157,7 @@ Use blank lines to separate paragraphs.)
 Once the project is created, anyone can propose requirements changes.  The project lead will be responsible for accepting or rejecting change proposals.
 </div><br><br><br>
 </td>
-</tr><tr><td width="0%" colspan="2" align=right>
+</tr><tr><td width="0%" colspan="<?=$islead?3:2?>" align=right>
 <div id=filelist style="margin-bottom:0.3em"></div>
 <table width="100%" cellpadding=0 cellspacing=0><tr>
 <td width="100%" align=right valign=top id="atchbtn"></td>
