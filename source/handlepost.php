@@ -42,6 +42,8 @@ if (substr($topicid,0,6)=='reqmts') {
     while( isset( $_REQUEST["subject"])) {
         $body = "$_REQUEST[body]";
 
+        $quiet = false;
+
         if( $_REQUEST["revision"]) {
             include_once("diff.php");
             list($rc,$diff) = diffText( $_REQUEST["before"],
@@ -51,12 +53,27 @@ if (substr($topicid,0,6)=='reqmts') {
             if( $diff !== '') {
                 $body .= "\n/-/-/-/-/-begin-diff-/-/-/-/-/\n$diff";
             }
+
+            // If this user is the project lead then we will suppress all
+            // notifications about this post, then we will automatically
+            // accept the change proposal.
+            list($rc,$projinfo) = ff_getprojectinfo($id);
+            if( $rc == 0 && $projinfo['lead'] !== '' &&
+                $projinfo['lead'] === $username) $quiet = true;
         }
 
         list($rc,$postid) = ff_createpost( "$topicid",
             "$_REQUEST[subject]", $body, $parent,
             $_REQUEST["anonymous"]?'':$username,'',$attachments,
-            $_REQUEST["watchthread"]?1:0, projurl($id));
+            $_REQUEST["watchthread"]?1:0, projurl($id), $quiet);
+
+        if( $rc == 0 && $quiet) {
+            // Automatically accept the change proposal
+            header( "Location: handlechange.php?".
+                "project=$id&post=$postid&accept=1");
+            exit;
+        }
+
         header("Location: ".projurl($id,
             "post=$postid".($parent?"#p$parent":"")));
         exit;

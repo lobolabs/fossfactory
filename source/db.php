@@ -733,7 +733,8 @@ function private_createattachments( $attachments, $postid=0, $projectid=0) {
 // <duties>
 //
 function ff_createpost( $topicid, $subject, $body, $parent='',
-    $owner='', $name='',$attachments=false, $watchthread=1, $url='')
+    $owner='', $name='',$attachments=false, $watchthread=1, $url='',
+    $quiet=false)
 {
     $id = sql_nextval("posts_id_seq");
     if( $id === false) return private_dberr();
@@ -804,6 +805,13 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
     }
 
     $url .= (strpos($url,"?") !== false ? "&" : "?")."post=$id";
+
+    // If we were asked to be quiet, then don't send out any notifications.
+    // This is useful in the case where the project lead created the
+    // requirements change proposal, and it's going to be accepted
+    // automatically.  The people watching the project will be informed
+    // during the accept phase.
+    if( $quiet) return private_commit($id);
 
     if( substr($topicid,0,6) == 'reqmts') {
         $project = substr($topicid,6);
