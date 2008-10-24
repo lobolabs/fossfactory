@@ -1095,7 +1095,7 @@ function ff_createproject( $creator, $name,
     $root = $nid;
     $zeroes = "";
     if( $parent !== '') {
-        $qu = sql_exec("select root,bounty_portions ".
+        $qu = sql_exec("select root,bounty_portions,lead ".
             "from projects where id=$pnid for update");
         if( $qu === false) return private_dberr(1);
         if( sql_numrows($qu) != 1)
@@ -1103,6 +1103,11 @@ function ff_createproject( $creator, $name,
         $row = sql_fetch_array( $qu, 0);
         $root = intval($row["root"]);
         $zeroes = ereg_replace("[^,]+","",$row["bounty_portions"]).",";
+        $parentlead = $row["lead"];
+
+        // If the creator is not the parent project's lead, then make sure
+        // there's no allotment.
+        if( $creator === '' || $creator !== $parentlead) $allotment = false;
     }
 
     list($rc,$err) = private_createattachments( $attachments, 0, $nid);
