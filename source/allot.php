@@ -165,7 +165,7 @@ foreach( $columns as $key => $title) {
 ?>
     <tr<?=$subproject['status']==='complete'?" bgcolor='#c0c0c0'":""?>>
         <td align=right valign=top><?=$subproject['status']==='complete'?"<del style='color:#000'>":''?><a href="<?=projurl($subproject["id"])?>"><?=$subproject['id']?></a><?=$subproject['status']=='complete'?'</del>':''?></td>
-        <td valign=top><? if ($GLOBALS['username']==$projinfo['lead']) { ?>
+        <td valign=top><? if ($GLOBALS['username'] !== '' && $GLOBALS['username']==$projinfo['lead']) { ?>
                 <select name="pri<?=$subproject['id']?>">
                 <?
                     foreach(array_keys($GLOBALS["priorities"]) as $priority) {
@@ -183,7 +183,7 @@ foreach( $columns as $key => $title) {
         </td>
         <td valign=top><?=$subproject['status']?></td>
         <td valign=top><? if($subproject["lead"] !== '') { ?><a href="member.php?id=<?=urlencode($subproject['lead'])?>"><?=htmlentities($subproject['lead'])?></a><? } else { ?>(none)<? } ?></td>
-            <? if ($GLOBALS['username']==$projinfo['lead']) { ?>
+            <? if ($GLOBALS['username'] !== '' && $GLOBALS['username']==$projinfo['lead']) { ?>
                 <td align=right valign=top<?=$subproject['allotted']?"":" class='allotted'"?>>
                 <input type='textfield' name='sub<?=$subproject['id']?>' size='4' onChange="return update_unallotedPercentage()" maxLength='4' value='<?=($subproject['allotment'])/10?>'> %
                 </td>
@@ -199,7 +199,7 @@ foreach( $columns as $key => $title) {
 }
 ?>
 </tr></table>
-<? if ($GLOBALS['username']==$projinfo['lead']) { ?> 
+<? if ($GLOBALS['username'] !== '' && $GLOBALS['username']==$projinfo['lead']) { ?> 
 <input type='hidden' name='id' value=<?=$parentid?>>
 <input type='hidden' name='tab' value='subprojects'>
 <p align='right'><input type='submit' name='submit' value='Update' onClick='return checkAllot()'></p>
