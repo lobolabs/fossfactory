@@ -70,7 +70,7 @@ foreach ($submissions as $key => $submission) {
         $unfolded = ($submission["id"] == intval($_REQUEST["s"]));
     else $unfolded = $current;
 ?>
-<tr<?=($rownum&1)?" class=oddrow":""?>><td width="0%" valign="top"><img class=arrow id="sbm<?=$submission['id']?>-arrow" src="<?=$unfolded?"arrow-down.gif":"arrow-right.gif"?>" onClick="folder('sbm<?=$submission['id']?>')"></td><td width="100%" style="padding-right:1em"><a name=subm<?=$submission['id']?>></a><a class=folder href="#" onClick="folder('sbm<?=$submission['id']?>')"><span class=postdate>&nbsp;<?=htmlentities(date("M j, Y g:ia",$submission['date']))?></span> <i>Submitted by <?=htmlentities($submission['username'])?></i></a> <? 
+<tr<?=($rownum&1)?" class=oddrow":""?>><td width="0%" valign="top"><img class=arrow id="sbm<?=$submission['id']?>-arrow" src="<?=$unfolded?"arrow-down.gif":"arrow-right.gif"?>" onClick="folder('sbm<?=$submission['id']?>')"></td><td width="100%" style="padding-right:1em"><a name=subm<?=$submission['id']?>></a><a class=folder href="#" onClick="folder('sbm<?=$submission['id']?>');return false"><span class=postdate>&nbsp;<?=htmlentities(date("M j, Y g:ia",$submission['date']))?></span> <i>Submitted by <?=htmlentities($submission['username'])?></i></a> <? 
             if ($submission['status']=='complete') {
                 print "<span class=accepted>[COMPLETE]</span>";
             } elseif($submission['status']=='accept') {
