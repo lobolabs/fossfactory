@@ -83,10 +83,8 @@ function fold3(topicid,ancestry) {
 function clearpost(divid) {
     if (confirm('Are you sure you want to cancel your post?')==true) {
         document.getElementById(divid).innerHTML = '';
-        return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 function attach_event(tmpid,filename) {
