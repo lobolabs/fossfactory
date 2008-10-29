@@ -34,11 +34,11 @@ if( isset($_REQUEST["url"])) {
         foreach( $_GET as $key => $value) {
             if( $key !== 'requser') {
                 if( $url) $url .= "&";
-                else $url = basename($_SERVER["SCRIPT_NAME"])."?";
+                else $url = $GLOBALS['BASENAME'].getenv("PATH_INFO")."?";
                 $url .= urlencode($key)."=".urlencode($value);
             }
         }
-        if( !$url) $url = basename($_SERVER["SCRIPT_NAME"]);
+        if(!$url) $url = $GLOBALS['BASENAME'].getenv("PATH_INFO");
     }
 }
 

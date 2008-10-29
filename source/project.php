@@ -18,8 +18,21 @@ You should have received a copy of the GNU Affero General Public License
 along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 */ ?>
 <?php
-$id = scrub($_REQUEST["p"]);
 $tab = scrub($_REQUEST["tab"]);
+
+if( isset($_REQUEST["p"])) {
+    $id = scrub($_REQUEST["p"]);
+    list($rc,$niceurls) = ff_config( "niceurls", "");
+    if( $rc == 0 && $niceurls) {
+        $query = substr(ereg_replace(
+            "&p=[^&]*","","&".trim($_SERVER["QUERY_STRING"])),1);
+        header( "HTTP/1.1 301 Moved Permanently");
+        header( "Location: ".projurl($id,"$query"));
+        exit;
+    }
+} else {
+    $id = scrub(substr(getenv("PATH_INFO"),1));
+}
 
 if( isset($_REQUEST["newname"])) {
     ff_renameproject( $username, $id, $_REQUEST["newname"]);

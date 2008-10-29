@@ -21,7 +21,7 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 if( isset($_GET["trk"])) {
     // The trk variable is only used for analytics, to help determine
     // where people are clicking.  We don't want it to show up in the URL.
-    header("Location: $_SERVER[SCRIPT_NAME]");
+    header("Location: $_SERVER[SCRIPT_NAME]".getenv("PATH_INFO"));
     exit;
 }
 
@@ -40,6 +40,11 @@ if( get_cfg_var('register_globals')) {
 
 $GLOBALS['IS_PRODUCTION'] = ($_SERVER["HTTP_HOST"] === 'www.fossfactory.org'
     && substr($_SERVER["SCRIPT_NAME"],1,1) !== '~');
+
+$GLOBALS['BASENAME'] = basename($_SERVER['SCRIPT_NAME']);
+if( $GLOBALS['BASENAME'] === 'project.php' && getenv('PATH_INFO')) {
+    $GLOBALS['BASENAME'] = 'project';
+}
 
 $GLOBALS['SITE_URL'] = "http://$_SERVER[HTTP_HOST]".dirname($_SERVER["SCRIPT_NAME"]);
 $GLOBALS['SECURE_URL'] = ($_SERVER["HTTP_HOST"]==='www.fossfactory.org'?"https://$_SERVER[HTTP_HOST]".dirname($_SERVER["SCRIPT_NAME"]):"http://$_SERVER[HTTP_HOST]/////".dirname($_SERVER["SCRIPT_NAME"]));
@@ -149,10 +154,10 @@ if( $styles === false) $styles = array(
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<base href="http://<?="$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]"?>" />
 <? foreach( $styles as $style) { ?>
 <link rel="stylesheet" type="text/css" href="<?=htmlentities($style)?>.css" />
 <? } ?>
-<base href="http://<?="$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]".($_SERVER["QUERY_STRING"]?"?".$_SERVER["QUERY_STRING"]:"")?>" />
 <title><?=htmlentities($title)?></title>
 <script>
     function currency_ul_toggle() {
@@ -231,8 +236,8 @@ if( $styles === false) $styles = array(
     </script>
     <form method=post action="<?=$GLOBALS["SECURE_URL"]?>login.php" id="login_form"> <label for="loginuserid">Username</label><input type="text" id="loginuserid" name=userid><label for="password">Password</label><input  name="password" type="password" onKeyPress='return submitenter(this,event)'><label for="remember">Remember?</label><input type="checkbox" id="remember" name="remember">
         <a href="login" onClick="document.getElementById('login_form').submit();return false">Login</a>
-<? if( $_SERVER["QUERY_STRING"] || basename($_SERVER["SCRIPT_NAME"]) === 'newproject.php') { ?>
-        <input type=hidden name=url value="<?=htmlentities(basename($_SERVER["SCRIPT_NAME"]).($_SERVER["QUERY_STRING"]?"?".$_SERVER["QUERY_STRING"]:""))?>">
+<? if( $_SERVER["QUERY_STRING"] || basename($_SERVER["SCRIPT_NAME"]) === 'newproject.php' || basename($_SERVER["SCRIPT_NAME"]) === 'project.php') { ?>
+        <input type=hidden name=url value="<?=htmlentities($GLOBALS["BASENAME"].getenv("PATH_INFO").($_SERVER["QUERY_STRING"]?"?".$_SERVER["QUERY_STRING"]:""))?>">
 <? } ?>
     </form>
 <? } ?>
@@ -467,9 +472,16 @@ function jsencode($s) {
 }
 
 function projurl($id,$parms='') {
-    $url = "project.php?p=$id";
-    if( substr($parms,0,1) === '#') $url .= $parms;
-    else if( $parms !== '') $url .= "&$parms";
+    list($rc,$niceurls) = ff_config("niceurls","");
+    if( $rc == 0 && $niceurls) {
+        $url = "project/$id";
+        if( substr($parms,0,1) === '#') $url .= $parms;
+        else if( "$parms" !== "") $url .= "?$parms";
+    } else {
+        $url = "project.php?p=$id";
+        if( substr($parms,0,1) === '#') $url .= $parms;
+        else if( "$parms" !== "") $url .= "&$parms";
+    }
     return $url;
 }
 
