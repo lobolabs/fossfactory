@@ -27,7 +27,7 @@ if( isset($_REQUEST["p"])) {
         $query = substr(ereg_replace(
             "&p=[^&]*","","&".trim($_SERVER["QUERY_STRING"])),1);
         header( "HTTP/1.1 301 Moved Permanently");
-        header( "Location: ".projurl($id,"$query"));
+        header( "Location: $GLOBALS[SITE_URL]".projurl($id,"$query"));
         exit;
     }
 } else {
@@ -36,15 +36,18 @@ if( isset($_REQUEST["p"])) {
 
 if( isset($_REQUEST["newname"])) {
     ff_renameproject( $username, $id, $_REQUEST["newname"]);
-    header( "Location: ".projurl($id,"tab=".urlencode($tab)));
+    header( "Location: $GLOBALS[SITE_URL]".
+        projurl($id,"tab=".urlencode($tab)));
     exit;
 } else if( isset($_REQUEST["delete"])) {
     list($rc,$err) = ff_deleteproject( $username, $id);
-    header( "Location: ".projurl($id,"tab=".urlencode($tab)));
+    header( "Location: $GLOBALS[SITE_URL]".
+        projurl($id,"tab=".urlencode($tab)));
     exit;
 } else if( isset($_REQUEST["canceldel"])) {
     list($rc,$err) = ff_canceldeleteproject( $username, $id);
-    header( "Location: ".projurl($id,"tab=".urlencode($tab)));
+    header( "Location: $GLOBALS[SITE_URL]".
+        projurl($id,"tab=".urlencode($tab)));
     exit;
 } else if( isset($_REQUEST["sponsor_amount"])) {
     if( !is_secure()) {
@@ -83,7 +86,7 @@ if( isset($_REQUEST["newname"])) {
         list($rc,$err) = ff_setsponsorship( $id, $username, "-$amount", true);
     }
 
-    header( "Location: ".
+    header( "Location: $GLOBALS[SITE_URL]".
         projurl($id,"tab=".urlencode($tab)."&r_err=$rc&amount=$amount"));
     exit;
 } else if( $_POST['init_goal'] && $GLOBALS['username'] ) {
@@ -92,7 +95,8 @@ if( isset($_REQUEST["newname"])) {
     $amount = (int)( $amount * 100 );
     list( $rc, $msg ) = ff_setfundinggoal( $GLOBALS['username'], $id, $amount.$GLOBALS['pref_currency'] );
     if( $rc == 0 )
-        header( "Location: ".projurl($id,"tab=".urlencode( $tab )));
+        header( "Location: $GLOBALS[SITE_URL]".
+            projurl($id,"tab=".urlencode( $tab )));
 }
 
 $parent = scrub($_REQUEST["parent"]);
