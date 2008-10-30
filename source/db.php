@@ -1293,11 +1293,7 @@ function ff_getleadprojects($username) {
 	return array(0,$projects);
 }
 
-function ff_getsponsors( $project, $min_usd_value="1") {
-    $min_usd_value = "$min_usd_value";
-    if( $min_usd_value === '' || ereg("[^0-9]",$min_usd_value))
-        return array(4,"Invalid min_usd_value: $min_usd_value");
-
+function ff_getsponsors( $project) {
     list($rc,$currencies) = ff_currencies();
     if( $rc) return array($rc,$currencies);
 
@@ -1312,7 +1308,7 @@ function ff_getsponsors( $project, $min_usd_value="1") {
     $qu = sql_exec("select member,amount,".
         "round(credits*0.01) as credits,assignee ".
         "from member_donations where project=$nid ".
-        "and $usd_value >= $min_usd_value order by $usd_value desc");
+        "and amount~'[1-9]' order by $usd_value desc,member");
     if( $qu === false) return private_dberr();
 
     $sponsors = array();
