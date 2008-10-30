@@ -236,7 +236,7 @@ if( $styles === false) $styles = array(
     </script>
     <form method=post action="<?=$GLOBALS["SECURE_URL"]?>login.php" id="login_form"> <label for="loginuserid">Username</label><input type="text" id="loginuserid" name=userid><label for="password">Password</label><input  name="password" type="password" onKeyPress='return submitenter(this,event)'><label for="remember">Remember?</label><input type="checkbox" id="remember" name="remember">
         <a href="login" onClick="document.getElementById('login_form').submit();return false">Login</a>
-<? if( $_SERVER["QUERY_STRING"] || basename($_SERVER["SCRIPT_NAME"]) === 'newproject.php' || basename($_SERVER["SCRIPT_NAME"]) === 'project.php') { ?>
+<? if( $_SERVER["QUERY_STRING"] || $GLOBALS["BASENAME"] === 'newproject.php' || $GLOBALS["BASENAME"] === 'project') { ?>
         <input type=hidden name=url value="<?=htmlentities($GLOBALS["BASENAME"].getenv("PATH_INFO").($_SERVER["QUERY_STRING"]?"?".$_SERVER["QUERY_STRING"]:""))?>">
 <? } ?>
     </form>
