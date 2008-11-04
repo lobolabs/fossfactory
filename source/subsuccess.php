@@ -32,7 +32,7 @@ if( $rc == 2) {
 
 apply_template($projinfo["name"],array(
     array("name"=>"Projects", "href"=>"browse.php"),
-    array("name"=>$projinfo["name"], "href"=>projurl($id),
+    array("name"=>$projinfo["name"], "href"=>projurl($id)),
     array("name"=>"submit code","href"=>"submission.php?id=$id")
 ));
 ?>
