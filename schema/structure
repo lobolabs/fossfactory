@@ -498,3 +498,6 @@ insert into watches (watchid,eventid,username,method) select nextval('watches_id
 update version set version=110;
 insert into watches (watchid,eventid,username,method) select nextval('watches_id_seq'),* from (select distinct regexp_replace(ancestry,'^reqmts([^/]*)/.*$',E'\\1')||'-news',owner,'default' from posts where ancestry like 'reqmts%' and owner != '' and regexp_replace(ancestry,'^reqmts([^/]*)/.*$',E'\\1')||'-news' not in (select eventid from watches where username=owner)) as foo;
 update version set version=111;
+alter table watches add column auto boolean;
+update watches set auto=false;
+update version set version=112;

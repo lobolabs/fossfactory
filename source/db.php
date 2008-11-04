@@ -1148,6 +1148,17 @@ function ff_createproject( $creator, $name,
     }
 
     if( $parent !== '') {
+        // Make sure that anybody watching the parent project is also
+        // watching this one.
+        $qu = sql_exec("insert into watches ".
+            "(watchid,eventid,username,method,auto) ".
+            "select nextval('watches_id_seq'),'p$nid-news',".
+            "username,method,true from watches ".
+            "where eventid='$parent-news' ".
+            "and username != '".sql_escape($lead).
+            "' and username != '".sql_escape($creator)."'");
+        if( $qu === false) return private_dberr(1);
+
         list($rc,$projinfo)=ff_getprojectinfo($parent);
         if( $rc) return array($rc,$projinfo);
 
@@ -4868,9 +4879,10 @@ function al_createwatch( $eventid, $username, $method='default') {
 
     $id = sql_nextval('watches_id_seq');
     if ($id===false) return private_dberr();
-    $qu = sql_exec("insert into watches (watchid,eventid,username,method)".
+    $qu = sql_exec("insert into watches ".
+        "(watchid,eventid,username,method,auto)".
         "values (".intval($id).", '".sql_escape($eventid)."','".
-        sql_escape($username)."','".sql_escape($method)."')");  
+        sql_escape($username)."','".sql_escape($method)."',false)");  
     if ($qu===false) return private_dberr();
 
     return array(0,$id);
