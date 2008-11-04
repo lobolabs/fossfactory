@@ -54,7 +54,7 @@ if( $rc == 2) {
 apply_template("File a Complaint",array(
     array("name"=>"Projects", "href"=>"browse.php"),
     array("name"=>$projinfo["name"],
-        "href"=>projurl($id),
+        "href"=>projurl($id)),
     array("name"=>"Post a Complaint",
         "href"=>"disputepost.php?id=$id"),
 ));
