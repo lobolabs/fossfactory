@@ -294,6 +294,7 @@ if( sizeof($breadcrumbs)) {
 <div id="content_body">
 <?php
     if( $showfeaturedprojects) {
+        if( basename($_SERVER['SCRIPT_NAME'])!='charities.php') {
 ?>
 <div class="featured">
 <h2>Featured Projects</h2>
@@ -315,7 +316,7 @@ if( sizeof($breadcrumbs)) {
 ?>
 </div>
 <? //stallman's comment 
-     if( basename($_SERVER['SCRIPT_NAME'])=='charities.php'  ) { ?>
+        } else { ?>
 
 <div class=sidenote1>
 "This is a good initiative for supporting free software projects.
