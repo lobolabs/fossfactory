@@ -186,6 +186,13 @@ If you plan to participate as a developer, we highly recommend that
 you become a monthly sponsor to avoid the community deduction.
 </p>
 
+<a name="refunds"></a>
+<h2>Refunds</h2>
+<p>
+Project sponsorships can be withdrawn at any time to the
+member's reserve, except for amounts held due to pending submissions.
+</p>
+
 <a name="projectcredits"></a>
 <h2>Project credits</h2>
 <p>
