@@ -1432,6 +1432,12 @@ function ff_renameproject( $username, $id, $newname)
 
     unset($GLOBALS["PRIVATE_PROJECT_INFO"][$id]);
 
+    if( file_exists( "/home/git/$id.git/description")) {
+        system("echo ".escapeshellarg($newname).
+	    " | sudo -u git tee /home/git/$id.git/description ".
+	    "> /dev/null");
+    }
+
     return private_commit();
 }
 

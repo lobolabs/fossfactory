@@ -60,10 +60,6 @@ if( $use_dir === 1) {
     // Create an empty git repository
     system("sudo -u git mkdir /home/git/$projectinfo[id].git");
     system("sudo -u git git --bare --git-dir=/home/git/$projectinfo[id].git init >/dev/null");
-    system("sudo -u git ln -sf ".escapeshellarg(realpath("update-hook")).
-        " /home/git/$projectinfo[id].git/hooks/update");
-
-    print "git@$hostname:$projectinfo[id]\n";
 } else {
     // Handle local repos using the local protocol.
     $origin = ereg_replace( '^git@[-._a-z]+:([-_a-z0-9]+)(\.git)?$',
@@ -75,11 +71,14 @@ if( $use_dir === 1) {
         print "Git clone returned with error code $rc\n";
         exit;
     }
-
-    system("sudo -u git ln -sf ".escapeshellarg(realpath("update-hook")).
-        " /home/git/$projectinfo[id].git/hooks/update");
-
-    print "git@$hostname:$projectinfo[id]\n";
 }
+
+system("sudo -u git ln -sf ".escapeshellarg(realpath("update-hook")).
+    " /home/git/$projectinfo[id].git/hooks/update");
+system("echo ".escapeshellarg($projectinfo["name"]).
+    " | sudo -u git tee /home/git/$projectinfo[id].git/description ".
+    "> /dev/null");
+
+print "git@$hostname:$projectinfo[id]\n";
 
 ?>
