@@ -72,6 +72,10 @@ if( ereg( '^git@[-._a-z]+:([-_a-z0-9]+)(\.git)?$', $origin, $regs)) {
 }
 system("sudo -u git ln -sf ".escapeshellarg(realpath("update-hook")).
     " /home/git/s$subid.git/hooks/update");
+system("echo ".
+    escapeshellarg("Submission to $projectinfo[id] by $memberinfo[username]").
+    " | sudo -u git tee /home/git/s$subid.git/description ".
+    "> /dev/null");
 
 print "git@$hostname:s$subid\n";
 ?>
