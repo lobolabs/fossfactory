@@ -50,6 +50,6 @@ $keyfile = "/home/git/.ssh/authorized_keys";
 if( !is_dir(dirname($keyfile))) {
     system("sudo -u git mkdir -p '".dirname($keyfile)."'");
 }
-system("grep -q ' $key$' '$keyfile' || echo 'environment=\"FFMEMBER=$userid\" $key' | sudo -u git tee -a '$keyfile' >/dev/null");
+system("grep -q ' $key$' '$keyfile' || echo 'environment=\"FFMEMBER=$memberinfo[username]\" $key' | sudo -u git tee -a '$keyfile' >/dev/null");
 
 ?>
