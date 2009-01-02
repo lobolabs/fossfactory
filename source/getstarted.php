@@ -5,7 +5,7 @@ if($hostname === "www.fossfactory.org") $hostname = "git.fossfactory.org";
 // Figure out which code repo to use, if any
 $repoproject = $id;
 $repoprojinfo = $projinfo;
-while( $projinfo["parent"] != 0 &&
+while( $repoprojinfo["parent"] != 0 &&
         !file_exists("/home/git/$repoproject.git")) {
     $repoproject = "p$repoprojinfo[parent]";
     list($rc,$repoprojinfo) = ff_getprojectinfo( $repoproject);
