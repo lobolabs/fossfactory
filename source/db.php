@@ -2631,7 +2631,7 @@ function private_updatechildbounties( $parent, $bounty_portions=false)
             "mult_round_money_list(held_amounts,".
             "10000000000000000/allotment) end as priority,".
         "id,allotment,direct_bounty,held_amounts,bounty_portions ".
-        "from projects where parent=$parent for update");
+        "from projects where parent=$parent order by id for update");
     if( $qu === false) return private_dberr();
     if( sql_numrows($qu) == 0) return array(0,"Success");
     for( $i=0; $i < sql_numrows($qu); $i++) {
@@ -5499,7 +5499,7 @@ function private_clear_holds( $nid, $held_amounts, $levels)
 
     // Clear the holds of all descendants.
     $qu = sql_exec("select id,held_amounts from projects ".
-        "where parent=$nid for update");
+        "where parent=$nid order by id for update");
     if( $qu === false) return private_dberr();
     for( $i=0; $i < sql_numrows( $qu); $i++) {
         $row = sql_fetch_array( $qu, $i);
