@@ -2,30 +2,31 @@ Sandbox Installation Part 1 (requires root)
 -------------------------------------------
 
 1. apt-get update
-2. apt-get install apg subversion apache2 php5 postgresql-8.2 php5-pgsql php5-gd git-core
-3. Make sure that /etc/apache2/mods-available/userdir.* are linked to
-   from /etc/apache2/mods-enabled/
-4. Set "AllowOverride All" and "FollowSymLinks" in
+2. apt-get install apg subversion apache2 php5 postgresql php5-pgsql php5-gd git-core
+3. PSQL_VER=`cd /etc/postgresql; ls -td *.?|head -1`
+4. a2enmod userdir
+5. Set "AllowOverride All" and "FollowSymLinks" in
    /etc/apache2/mods-enabled/userdir.conf (for public_html directories)
-5. /etc/init.d/apache2 reload
-6. Set postgres permissions to "local all postgres trust" in
-   /etc/postgresql/8.2/main/pg_hba.conf
-7. Make sure that port=5432 and unix_socket_directory='/var/run/postgresql'
-   in /etc/postgresql/8.2/main/postgresql.conf
-8. /etc/init.d/postgresql-8.2 restart
-9. adduser git --shell /usr/bin/git-shell
-10. Use visudo to add the following line to the sudoers file:
+6. /etc/init.d/apache2 reload
+7. Set postgres permissions to "local all postgres trust" in
+   /etc/postgresql/$PSQL_VER/main/pg_hba.conf
+8. Make sure that port=5432 and unix_socket_directory='/var/run/postgresql'
+   in /etc/postgresql/$PSQL_VER/main/postgresql.conf
+9. /etc/init.d/postgresql-$PSQL_VER restart
+10. adduser git --shell /usr/bin/git-shell
+11. Use visudo to add the following line to the sudoers file:
       www-data ALL=(git) NOPASSWD: ALL
-11. Make sure that PermitUserEnvironment is set to yes in /etc/ssh/sshd_config
-12. /etc/init.d/ssh reload
-13. echo 'FFURL=http://localhost/~YOURUSERNAME/fossfactory/' | su - git tee .ssh/environment
-14. chown git.git ~/.ssh/environment
+12. Make sure that PermitUserEnvironment is set to yes in /etc/ssh/sshd_config
+13. /etc/init.d/ssh reload
+14. mkdir -p ~git/.ssh
+15. echo 'FFURL=http://localhost/~YOURUSERNAME/fossfactory/' >> ~git/.ssh/environment
+16. chown -R git.git ~git/.ssh/
 
 Sandbox Installation Part 2 (as regular user)
 ---------------------------------------------
 
 1. cd into the fossfactory-src directory.
-2. createdb -U postgres -E LATIN1 fossfactory
+2. createdb -U postgres fossfactory
 3. psql -U postgres fossfactory < schema/structure
 4. echo "update config set value='`apg -x40 -n1`' where name='secret'" |
     psql -U postgres fossfactory
