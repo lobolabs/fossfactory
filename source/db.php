@@ -2570,12 +2570,9 @@ function ff_getprojectgraph( $root)
 
     $children = array();
 
-    // Ordering by descending ID ensures that children will be processed
-    // before their parents.  This is necessary to make sure the graph
-    // comes together correctly.  This guarantee may go away in the future
-    // if we ever allow project adoption.
     $qu = sql_exec( "select id,parent,name,status from projects ".
-        "where root=$nroot order by id desc");
+        "where root=$nroot order by length(regexp_replace(".
+	"held_amounts,'[^,]','','g')) desc,id desc");
     if( $qu === false) return private_dberr();
     for( $i=0; $i < sql_numrows( $qu); $i++) {
         $row = sql_fetch_array( $qu, $i);
