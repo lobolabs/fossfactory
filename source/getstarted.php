@@ -53,6 +53,7 @@ the related Git repository as follows:
 <b><tt>git clone git@<?=$hostname?>:<?=$repoproject?></tt></b>
 </p>
 <p>
+If it asks you for a password, enter "<b>guest</b>".
 If you are the project lead for this project, consider creating its own
 Git repository using the <b><tt>ff init</tt></b> command.
 </p>
