@@ -13,7 +13,7 @@ Sandbox Installation Part 1 (requires root)
 8. Make sure that port=5432 and unix_socket_directory='/var/run/postgresql'
    in /etc/postgresql/$PSQL_VER/main/postgresql.conf
 9. /etc/init.d/postgresql-$PSQL_VER restart
-10. adduser git --shell /usr/bin/git-shell
+10. adduser git --shell /usr/bin/git-shell  (Set the password to 'guest')
 11. Use visudo to add the following line to the sudoers file:
       www-data ALL=(git) NOPASSWD: ALL
 12. Make sure that PermitUserEnvironment is set to yes in /etc/ssh/sshd_config
