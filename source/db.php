@@ -5228,6 +5228,7 @@ function al_getrecentevents($eventid)
 {
     $qu = sql_exec("select * from recent_events where eventid='".sql_escape($eventid)."' or eventid like '".sql_escape("$eventid\\\\%")."'");
     if ($qu===false) return private_dberr();
+    $events = array();
     for($i=0;$i<sql_numrows($qu);$i++) {
         $row = sql_fetch_array($qu,$i);
         $events[] = array("eventid"=>$row['eventid'],
