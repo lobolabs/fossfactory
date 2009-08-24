@@ -5226,7 +5226,7 @@ function private_notify( $username, $url, $subject, $body, $method,
 - "body" - The body of the event*/
 function al_getrecentevents($eventid)
 {
-    $qu = sql_exec("select * from recent_events where eventid='".sql_escape($eventid)."' or eventid like '".sql_escape($eventid)."/%'");
+    $qu = sql_exec("select * from recent_events where eventid='".sql_escape($eventid)."' or eventid like '".sql_escape("$eventid\\\\%")."'");
     if ($qu===false) return private_dberr();
     for($i=0;$i<sql_numrows($qu);$i++) {
         $row = sql_fetch_array($qu,$i);
