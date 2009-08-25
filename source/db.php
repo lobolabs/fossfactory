@@ -438,19 +438,21 @@ function ff_updateexchangerates()
 {
     list($rc,$currencies) = ff_currencies();
     if( $rc) return array($rc,$currencies);
+
+    $url = "http://www.ecb.int/stats/eurofxref/eurofxref-daily.xml";
+    $xml = file_get_contents( $url);
+    if( $xml === false) return array(1,"Read error: $url");
+
+    $eur = ereg_replace(".*'USD'[^>]*rate='([0-9.]+)'.*", "\\1", $xml);
+
     foreach( $currencies as $name => $details) {
         if( $name === "USD" || $name === "FFC") continue;
 
-        $url = "http://www.newyorkfed.org/rss/feeds/fxrates12_$name.xml";
-        $xml = file_get_contents( $url);
-        if( $xml === false) return array(1,"Read error: $url");
-
-        if( ereg("([0-9.]+) *$name *= *1 *USD",$xml,$regs)) {
-            $rate = "round(1.0/".$regs[1].",8)";
-        } else if( ereg("([0-9.]+) *USD *= *1 *$name",$xml,$regs)) {
-            $rate = $regs[1];
-        } else {
-            return array(1,"Parse error: $url");
+        if( $name === "EUR") $rate = "round($eur,8)";
+        else {
+            if( !ereg(".*'$name'[^>]*rate='([0-9.]+)'.*", $xml, $regs))
+                return array(1,"Can't parse $name currency: $url");
+            $rate = "round($eur/$regs[1],8)";
         }
 
         $qu = sql_exec("update currencies ".
