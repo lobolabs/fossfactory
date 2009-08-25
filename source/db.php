@@ -4999,7 +4999,17 @@ function al_getwatches( $username, $eventid=false) {
     return array(0,$watches);
 }
 
-	
+function al_getwatchers( $eventid) {
+    $qu = sql_exec("select username from watches ".
+        "where eventid='".sql_escape($eventid)."' order by username");
+    if( $qu === false) return private_dberr();
+    $watchers = array();
+    for( $i=0; $i < sql_numrows($qu); $i++) {
+        $row = sql_fetch_array($qu,$i);
+        $watchers[] = "$row[username]";
+    }
+    return array(0,$watchers);
+}
 
 //Destroys the watch with the given ID.
 function al_destroywatch( $watchid) { 

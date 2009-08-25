@@ -477,6 +477,23 @@ if( $tab =='requirements') {
         print "<br><b>There has been no recent activity on this project.</b>";
         print "<br><br>";
     }
+
+    list($rc,$watchers) = al_getwatchers( "$id-news");
+    if( $rc == 0 && sizeof($watchers) > 0) {
+        if( sizeof($watchers) == 1)
+            print "<b>One member is watching this project:</b>\n";
+        else
+            print "<b>".sizeof($watchers).
+                " members are watching this project:</b>\n";
+        print "<blockquote>\n";
+        for( $i=0; $i < sizeof($watchers); $i++) {
+            $watcher = $watchers[$i];
+            print "<a href=\"member.php?id=".urlencode($watcher)."\">";
+            print htmlentities($watcher)."</a>";
+            if( $i < sizeof($watchers)-1) print ", ";
+        }
+        print "</blockquote>\n";
+    }
 }
 
 tab_footer();
