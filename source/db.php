@@ -1921,10 +1921,24 @@ function private_setsponsorship($nid, $username, $amount,
     if( $qu === false) return private_dberr();
 
     // Lock the project record
-    $qu = sql_exec("select id from projects where id=$nid for update");
+    $qu = sql_exec("select funding_notice_time ".
+        "from projects where id=$nid for update");
     if( $qu === false) return private_dberr(1);
     if( sql_numrows( $qu) == 0)
     	return private_dberr(2,"No such project: p$nid");
+
+    $row = sql_fetch_array($qu,0);
+    $last_notice = intval($row["funding_notice_time"]);
+    if( $last_notice <= 0) {
+        // Schedule the notice about increased funding.  A negative time
+        // value indicates that the previous notice was already sent, and
+        // its absolute value is the time at which it was sent.
+        // The new notice will be sent either in 4 hours, or 7 days after
+        // the previous notice was sent, whichever is later.
+        $next_notice = max( -$last_notice + 7*24*3600, time() + 4*3600);
+        $qu = sql_exec("update projects set ".
+            "funding_notice_time=$next_notice where id=$nid");
+    }
 
     // Figure out the delta and the net sponsorship amounts.
     $qu = sql_exec("select ".($is_delta?
@@ -1977,6 +1991,10 @@ function private_setsponsorship($nid, $username, $amount,
         "($xid,".(++$split).",$now,'reserve:$username',".
         "subtract_money('','$delta'),'".sql_escape($desc)."')");
     if( $qu === false) return private_dberr(1);
+
+    $qu = sql_exec("insert into recent_funding_changes ".
+        "(username,project,change) values ".
+        "('".sql_escape($username)."',$nid,'$delta')");
 
     unset($GLOBALS["PRIVATE_MEMBER_CACHE"][$username]);
     unset($GLOBALS["PRIVATE_MEMBER_CACHE"][strtolower($row["email"])]);
@@ -3046,6 +3064,23 @@ function ff_gettext( $textid, $macros)
     } else if( $textid == 'withdrawalrequest-body') {
         $text = "A funds withdrawal was requested by user %USERNAME%.  ".
             "Please make sure that it gets paid within one business day.";
+    } else if( $textid == 'fundingnotice-subject') {
+        $text = "Increased funding for \"%PROJECTNAME\"";
+    } else if( $textid == 'fundingnotice-body') {
+        $text = "The following sponsors have increased their funding ".
+            "for \"%PROJECTNAME%\":\n\n%CHANGES%\n\n".
+            "The current bounty on this project is %BOUNTY%.\n\n".
+            "This project has %NUMMONTHLY% monthly sponsor(s) for ".
+            "a total of %AMTMONTHLY% of new funds every month.";
+    } else if( $textid == 'fundingnotice2-subject') {
+        $text = "Increased funding for \"%PROJECTNAME%\"";
+    } else if( $textid == 'fundingnotice2-body') {
+        $text = "The following sponsors have increased their funding ".
+            "for \"%PROJECTNAME%\":\n\n%CHANGES%\n\n".
+            "The current bounty on this project is %BOUNTY%.\n\n".
+            "If you like this project, please consider setting up an ".
+            "automatic monthly sponsorship.  It's a great way to show ".
+            "your support and to attract talent.";
     } else {
         return array(2,"No such text ID: $textid");
     }
@@ -5304,6 +5339,9 @@ function ff_deleteprojects()
         $qu2 = sql_exec("delete from member_donations ".
             "where project=$nid and amount!~'[1-9]'");
         if( $qu2 === false) return private_dberr(1);
+        $qu2 = sql_exec("delete from recent_funding_changes ".
+            "where project=$nid");
+        if( $qu2 === false) return private_dberr(1);
 
         // Now delete the project
         $qu2 = sql_exec("delete from projects where id=$nid");
@@ -5315,6 +5353,108 @@ function ff_deleteprojects()
         $count++;
     }
     return array(0,"Successfully deleted $count projects.");
+}
+
+function ff_sendfundingnotices() {
+    $qu = sql_exec("select id from projects where ".
+        "funding_notice_time > 0 and funding_notice_time <= ".time().
+        " order by funding_notice_time limit 100");
+    if( $qu===false) return private_dberr();
+
+    $count = 0;
+    for( $i=0; $i < sql_numrows($qu); $i++) {
+        $row=sql_fetch_array($qu,$i);
+        $nid = intval($row["id"]);
+
+        $qu2 = sql_exec("begin");
+        if( $qu2 === false) return private_dberr();
+
+        // Lock the project
+        $qu2 = sql_exec("select funding_notice_time,name,bounty ".
+            "from projects where id=$nid for update");
+        if( $qu2 === false) return private_dberr(1);
+
+        $row = sql_fetch_array($qu2, 0);
+        if( intval($row["funding_notice_time"]) <= 0 ||
+            intval($row["funding_notice_time"]) > time()) {
+            // This notice has already been sent, or it is not yet scheduled.
+            $qu2 = sql_exec("rollback");
+            if( $qu2 === false) return private_dberr(1);
+            continue;
+        }
+        $projectname = $row["name"];
+        $bounty = $row["bounty"];
+
+        // Get a list of the funding changes
+        $qu2 = sql_exec("select username,sum_money(change) as change ".
+            "from recent_funding_changes where project=$nid ".
+            "group by username order by username");
+        if( $qu2 === false) return private_dberr(1);
+        $sponsors = array();
+        $changestext = "";
+        for( $j=0; $j < sql_numrows($qu2); $j++) {
+            $row = sql_fetch_array($qu2, $j);
+            $username = $row["username"];
+            $change = $row["change"];
+
+            // Eliminate negatives and zeros
+            $change = ereg_replace("-[0-9]+[A-Z]+","",$change);
+            $change = substr(ereg_replace("\+0[A-Z]+","","+$change"),1);
+            if( $change == '') continue;
+
+            $sponsors[] = $username;
+            $changestext .= "    $username (".format_money($change).")\n";
+        }
+
+        $qu2 = sql_exec("delete from recent_funding_changes ".
+            "where project=$nid");
+        if( $qu2 === false) return private_dberr(1);
+
+        if( sizeof($sponsors) == 0) {
+            // There's nothing to report.  Cancel the notice.
+            $qu2 = sql_exec("update projects ".
+                "set funding_notice_time=0 where id=$nid");
+            if( $qu2 === false) return private_dberr(1);
+
+            $rc = private_commit();
+            if( $rc[0]) return $rc;
+
+            continue;
+        }
+
+        // Get some stats about monthly sponsorships.
+        $qu2 = sql_exec("select count(username),sum_money(amount) ".
+            "from subscriptions where projectid=$nid");
+        if( $qu2 === false) return private_dberr(1);
+        $row = sql_fetch_array($qu2,0);
+        $nummonthly = intval($row["count"]);
+        $amtmonthly = $row["sum_money"];
+
+        // Prepare the email.
+        $macros = array(
+            "projectname" => $projectname,
+            "changes" => $changestext,
+            "nummonthly" => "$nummonthly",
+            "amtmonthly" => format_money($amtmonthly),
+            "bounty" => format_money($bounty),
+        );
+        $url = projurl("p$nid","tab=sponsors");
+        $emailname = $nummonthly > 0 ? "fundingnotice" : "fundingnotice2";
+
+        $event = "watch:p$nid-news";
+        if(sizeof($sponsors)==1) $event .= "\\member:".scrub($sponsors[0]);
+
+        $rc = al_triggerevent( $event, $url, $emailname, $macros, 1);
+        if( $rc[0]) return private_dberr($rc[0], $rc[1]);
+
+        // Indicate that the notice has been sent
+        $qu2 = sql_exec("update projects ".
+            "set funding_notice_time=-".time()." where id=$nid");
+        if( $qu2 === false) return private_dberr(1);
+
+        $rc = private_commit();
+        if( $rc[0]) return $rc;
+    }
 }
 
 // Send payment for all projects that have been in the 'accept' stage for

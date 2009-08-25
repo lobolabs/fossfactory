@@ -501,3 +501,8 @@ update version set version=111;
 alter table watches add column auto boolean;
 update watches set auto=false;
 update version set version=112;
+create table recent_funding_changes (username text,project integer,change text);
+create index recent_funding_changes_project on recent_funding_changes(project);
+alter table projects add column funding_notice_time integer;
+create index projects_funding_notice_time on projects(funding_notice_time);
+update version set version=113;

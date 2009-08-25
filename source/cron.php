@@ -20,6 +20,9 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 $rc = ff_fixfactors();
 print "Fixing credit factors: $rc[0]: $rc[1]<br>\n";
 
+$rc = ff_sendfundingnotices();
+print "Sending funding notices: $rc[0]: $rc[1]<br>\n";
+
 $rc = al_queuenotifications();
 print "Queueing notifications: $rc[0]: $rc[1]<br>\n";
 
