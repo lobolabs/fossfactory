@@ -783,6 +783,10 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
         }
     }
 
+    // If there's a diff then delete it from the message body.
+    // Maybe we could consider including it later if we switch to HTML emails.
+    $body = ereg_replace("\n/-/-/-/-/-begin-diff-/-/-/-/-/\n.*","",$body);
+
     // Update all of the ancestors' descendant counts
     while( ereg("^(.*/)([^/]*)/$",$ancestry,$args)) {
         $qu = sql_exec("update posts set descendants=descendants+1 ".
@@ -824,6 +828,9 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                 $macros = array(
                     "projectname" => $projinfo["name"],
                     "deadline" => date("D F j, H:i:s T",$deadline),
+                    "author" => ($owner === '' ? "anonymous" : $owner),
+                    "subject" => $subject,
+                    "body" => $body,
                 );
                 $tag = ($deadline?"newduty2":"newduty");
                 $rc = al_triggerevent( "lead:$project",
@@ -834,6 +841,9 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                 // Trigger a project news event
                 $macros = array(
                     "projectname" => $projinfo["name"],
+                    "author" => ($owner === '' ? "anonymous" : $owner),
+                    "subject" => $subject,
+                    "body" => $body,
                 );
                 $rc = al_triggerevent(
                     "watch:$project-news,watch:thread-$thread\\".
@@ -844,6 +854,9 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
                 // Trigger a project news event
                 $macros = array(
                     "projectname" => $projinfo["name"],
+                    "author" => ($owner === '' ? "anonymous" : $owner),
+                    "subject" => $subject,
+                    "body" => $body,
                 );
                 $rc = al_triggerevent(
                     "watch:$project-news,watch:thread-$thread\\".
@@ -854,8 +867,13 @@ function ff_createpost( $topicid, $subject, $body, $parent='',
         }
     } else {
         // Inform anybody who is watching the thread
+        $macros = array(
+            "author" => ($owner === '' ? "anonymous" : $owner),
+            "subject" => $subject,
+            "body" => $body,
+        );
         $rc = al_triggerevent( "watch:thread-$thread\\member:".scrub($owner),
-            $url, "forumpost", array(), 5);
+            $url, "forumpost", $macros, 5);
         if( $rc[0]) return private_dberr($rc[0],$rc[1]);
     }
 
@@ -2415,6 +2433,15 @@ function ff_setprojectreqmts($username, $id, $oldseq, $newreqmts,
         "where id=".intval($postid));
     if( $qu === false) return private_dberr(1);
 
+    $qu = sql_exec( "select owner,subject,body from posts ".
+        "where id=".intval($postid));
+    if( $qu === false || sql_numrows($qu) != 1) return private_dberr(1);
+    $row2 = sql_fetch_array($qu,0);
+    $owner = "$row2[owner]";
+    $subject = "$row2[subject]";
+    $body = "$row2[body]";
+    $body = ereg_replace("\n/-/-/-/-/-begin-diff-/-/-/-/-/\n.*","",$body);
+
     // Delete the corresponding duty if there is one.
     $rc = private_destroyduty( $nid, "change proposal", intval($postid));
     if( $rc[0]) return private_dberr($rc[0],$rc[1]);
@@ -2423,6 +2450,9 @@ function ff_setprojectreqmts($username, $id, $oldseq, $newreqmts,
 
     $macros = array(
         "projectname" => $row["name"],
+        "author" => ($owner === '' ? "anonymous" : $owner),
+        "subject" => $subject,
+        "body" => $body,
     );
     $url = projurl($id,"post=".intval($postid));
     $rc = al_triggerevent( "watch:$id-news\\member:".scrub($username),
@@ -2937,24 +2967,28 @@ function ff_gettext( $textid, $macros)
         $text = "A requirements change has been proposed for project ".
             "'%PROJECTNAME%'.  As the project lead, you must ".
             "decide whether to accept or reject the proposal.  The ".
-            "deadline for this task has not yet been assigned.";
+            "deadline for this task has not yet been assigned.\n\n".
+            "Posted by: %AUTHOR%\nSubject: %SUBJECT%\n\n%BODY%";
     } else if( $textid == 'newduty2-changeproposal-subject') {
         $text = "[NEW DUTY] Proposed requirements change for '%PROJECTNAME%'";
     } else if( $textid == 'newduty2-changeproposal-body') {
         $text = "A requirements change has been proposed for project ".
             "'%PROJECTNAME%'.  As the project lead, you must ".
             "decide whether to accept or reject the proposal.  You have ".
-            "until %DEADLINE% to make your decision.";
+            "until %DEADLINE% to make your decision.\n\n".
+            "Posted by: %AUTHOR%\nSubject: %SUBJECT%\n\n%BODY%";
     } else if( $textid == 'pnews-changeproposal-subject') {
         $text = "Proposed requirements change for '%PROJECTNAME%'";
     } else if( $textid == 'pnews-changeproposal-body') {
         $text = "A requirements change has been proposed for project ".
-            "'%PROJECTNAME%'.";
+            "'%PROJECTNAME%'.\n\n".
+            "Posted by: %AUTHOR%\nSubject: %SUBJECT%\n\n%BODY%";
     } else if( $textid == 'pnews-changeaccepted-subject') {
         $text = "Requirements changed for '%PROJECTNAME%'";
     } else if( $textid == 'pnews-changeaccepted-body') {
         $text = "A requirements change proposal for project ".
-            "'%PROJECTNAME%' has been accepted.";
+            "'%PROJECTNAME%' has been accepted.\n\n".
+            "Posted by: %AUTHOR%\nSubject: %SUBJECT%\n\n%BODY%";
     } else if( $textid == 'pnews-deletingproject-subject') {
         $text = "Deleting project '%PROJECTNAME%'";
     } else if( $textid == 'pnews-deletingproject-body') {
@@ -2975,12 +3009,14 @@ function ff_gettext( $textid, $macros)
     } else if( $textid == 'forumpost-subject') {
         $text = "Forum discussion";
     } else if( $textid == 'forumpost-body') {
-        $text = "Somebody has posted to a forum that you are watching.";
+        $text = "Somebody has posted to a forum that you are watching.\n\n".
+            "Posted by: %AUTHOR%\nSubject: %SUBJECT%\n\n%BODY%";
     } else if( $textid == 'pnews-newpost-subject') {
         $text = "Discussion of project '%PROJECTNAME%'";
     } else if( $textid == 'pnews-newpost-body') {
         $text = "Somebody has made a post to discuss project ".
-            "'%PROJECTNAME%'.";
+            "'%PROJECTNAME%'.\n\n".
+            "Posted by: %AUTHOR%\nSubject: %SUBJECT%\n\n%BODY%";
     } else if( $textid == 'pnews-supplant-subject') {
         $text = "New project lead for project '%PROJECTNAME%'";
     } else if( $textid == 'pnews-supplant-body') {
