@@ -326,7 +326,7 @@ if( $username) {
 
 if (strtolower($projinfo['status'])!='pending') {
 ?><div id=status class=<?=$projinfo['status']?>><h1>Status: </h1><?
-    list($rc,$relcodeinfo) = ff_getrelcodeinfo($id,$projinfo['status']);
+    list($rc,$relcodeinfo) = ff_getrelcodeinfo($id,'pending');
     if( !$rc) {
 ?><em><a href='<?=projurl($id,"tab=submissions#submission$relcodeinfo[submissionid]")?>'><?
     }
@@ -348,9 +348,9 @@ if (strtolower($projinfo['status'])!='pending') {
     if( $projinfo['status'] == 'submitted') {
 ?><?=htmlentities($relcodeinfo["username"])?>'s submission is under review by the project lead.<?
         if( $relcodeinfo['numothersubmissions'] == 1) {
-?>There is one other submission in the queue.<?
+?> There is one other submission in the queue.<?
         } else if( $relcodeinfo["numothersubmissions"] > 1) {
-?>There are <?=$relcodeinfo["numothersubmissions"]?> other submissions in the queue.<?
+?> There are <?=$relcodeinfo["numothersubmissions"]?> other submissions in the queue.<?
         }
     } else if( $projinfo['status'] == 'accept') {
 ?>Payment will occur on <?=date("D, M j, Y @ H:i T",$projinfo['payout_time'])?>.
