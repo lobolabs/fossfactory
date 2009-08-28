@@ -5833,7 +5833,7 @@ function private_extractbounty( $xid, &$split, $now, $desc, $nid,
             "from member_donations where project=$nid ".
             "order by (currency_value(amount,'$name')*".
                 "currency_value('$targetamt','$name'))%".
-                "currency_value('$direct_bounty','$name'),random() ".
+                "currency_value('$direct_bounty','$name') desc,random() ".
             "for update");
         if( $qu === false) return private_dberr();
         // Sanity check

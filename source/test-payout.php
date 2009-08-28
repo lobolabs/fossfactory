@@ -299,6 +299,92 @@ if( $total != 100000) checkerr(1,"Some money got lost.  $total");
 if( get_FFC($sponsor_info["reserve"]) != 13000)
     checkerr(1,"Incorrect reserve: $sponsor_info[reserve]");
 
+// We need 10 sponsors for this test
+list($rc,$sponsor1) = ff_createmember( '', $secret,
+    "Sponsor 1 $now", "sponsor1-$now@gignac.org");
+checkerr($rc,$sponsor1);
+list($rc,$sponsor2) = ff_createmember( '', $secret,
+    "Sponsor 2 $now", "sponsor2-$now@gignac.org");
+checkerr($rc,$sponsor2);
+list($rc,$sponsor3) = ff_createmember( '', $secret,
+    "Sponsor 3 $now", "sponsor3-$now@gignac.org");
+checkerr($rc,$sponsor3);
+list($rc,$sponsor4) = ff_createmember( '', $secret,
+    "Sponsor 4 $now", "sponsor4-$now@gignac.org");
+checkerr($rc,$sponsor4);
+list($rc,$sponsor5) = ff_createmember( '', $secret,
+    "Sponsor 5 $now", "sponsor5-$now@gignac.org");
+checkerr($rc,$sponsor5);
+list($rc,$sponsor6) = ff_createmember( '', $secret,
+    "Sponsor 6 $now", "sponsor6-$now@gignac.org");
+checkerr($rc,$sponsor6);
+list($rc,$sponsor7) = ff_createmember( '', $secret,
+    "Sponsor 7 $now", "sponsor7-$now@gignac.org");
+checkerr($rc,$sponsor7);
+list($rc,$sponsor8) = ff_createmember( '', $secret,
+    "Sponsor 8 $now", "sponsor8-$now@gignac.org");
+checkerr($rc,$sponsor8);
+list($rc,$sponsor9) = ff_createmember( '', $secret,
+    "Sponsor 9 $now", "sponsor9-$now@gignac.org");
+checkerr($rc,$sponsor9);
+list($rc,$sponsor10) = ff_createmember( '', $secret,
+    "Sponsor 10 $now", "sponsor10-$now@gignac.org");
+checkerr($rc,$sponsor10);
+
+// Create a test project
+list($rc,$E) = ff_createproject( $sponsor1,
+    "E-$now", "This project is for testing purposes only.  ".
+        "Do not submit a solution unless you are a test script.");
+checkerr($rc,$E);
+
+// Put money in the sponsors' reserves
+checkerr(ff_receivefunds( $sponsor1, "1000000CAD"));
+checkerr(ff_receivefunds( $sponsor2, "1000000CAD"));
+checkerr(ff_receivefunds( $sponsor3, "1000000CAD"));
+checkerr(ff_receivefunds( $sponsor4, "1000000EUR"));
+checkerr(ff_receivefunds( $sponsor5, "1000000EUR"));
+checkerr(ff_receivefunds( $sponsor6, "1000000USD"));
+checkerr(ff_receivefunds( $sponsor7, "1000000USD"));
+checkerr(ff_receivefunds( $sponsor8, "1000000USD"));
+checkerr(ff_receivefunds( $sponsor9, "1000000USD"));
+checkerr(ff_receivefunds( $sponsor10, "1000000USD"));
+
+// Now set up sponsorships
+checkerr(ff_setsponsorship($E, $sponsor1, "535801CAD"));
+checkerr(ff_setsponsorship($E, $sponsor2, "1882CAD"));
+checkerr(ff_setsponsorship($E, $sponsor3, "3105CAD"));
+checkerr(ff_setsponsorship($E, $sponsor4, "1887EUR"));
+checkerr(ff_setsponsorship($E, $sponsor5, "111EUR"));
+checkerr(ff_setsponsorship($E, $sponsor6, "450USD"));
+checkerr(ff_setsponsorship($E, $sponsor7, "11538USD"));
+checkerr(ff_setsponsorship($E, $sponsor8, "7191USD"));
+checkerr(ff_setsponsorship($E, $sponsor9, "3854USD"));
+checkerr(ff_setsponsorship($E, $sponsor10, "67USD"));
+
+// Create a subproject
+list($rc,$F) = ff_createproject( $sponsor1,
+    "F-$now", "This project is for testing purposes only.  ".
+        "Do not submit a solution unless you are a test script.", $E);
+checkerr($rc,$F);
+
+// Allot funds to the subproject
+checkerr(ff_setallotment($sponsor1, $E, $F, 700));
+
+// Create a submission
+list($rc,$sub_F1) = ff_submitcode($developer,
+    array(array("pathname"=>realpath("./test-payout.php"),
+                "filename"=>"test-payout.php",
+                "description"=>"")), "", $F);
+checkerr($rc,$sub_F1);
+
+// Accept the submission
+checkerr(ff_acceptsubmission($sponsor1,$sub_F1));
+
+// Set the payout time to be immediately and execute the payout.
+checkerr(admin_expedite_payout( $F));
+
+
+/*
 // Set up a monthly sponsorship
 checkerr(ff_setsubscription($sponsor,"1000FFC","monthly",
     array($A => "100FFC", $D => "50000FFC")));
@@ -322,5 +408,6 @@ list($rc,$A_info) = ff_getprojectinfo($A);
 checkerr($rc,$A_info);
 if( get_FFC($A_info["bounty"]) != 23420)
     checkerr(1,"Bounty on A: $A_info[bounty]");
+*/
 ?>
 All tests succeeded.
