@@ -20,6 +20,83 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 apply_template('Press Releases',array(
     array("name"=>"Press Releases","href"=>"press.php")),'',false,true);
 ?>
+
+<h1>Grass-Roots Funding Accelerates the Advancement of Free Software</h1>
+
+<p class="pr-summary">
+Thanks to collaborative funding, a popular free chat client is finally picking
+up some long-awaited features.
+</p>
+
+<p>
+<b>LaSalle, Ontario (PRWEB) September 3, 2009</b> --
+Shared funding is helping to bring voice and video messaging to Pidgin,
+a free chat client used by millions.  Last week, Mike Ruprecht, the main
+developer of the feature, earned just over $3,500 CAD, collected from
+10 different sponsors.
+</p>
+
+<p>
+The bounty was made possible by FOSS Factory
+(http://www.fossfactory.org/), a website designed to help accelerate the
+advancement of free/open source software.
+</p>
+
+<p>
+Pidgin users have been asking for voice and video for several years, but
+it was beyond what the developers could promise.  According to Pidgin's
+FAQ, "We plan to implement these features, but it is a daunting task...
+It could be tomorrow, or it could be in 2099".  Thanks to Ruprecht's hard
+work, Pidgin 2.6 has shipped with voice and video support for the XMPP
+(Google Talk) protocol.  He is now working on Yahoo chat, and he intends
+to complete at least MSN and AIM support.
+</p>
+
+<p>
+"Free Software developers have a reputation for contributing purely
+as a hobby", said John-Paul Gignac, founder of FOSS Factory, "but it
+eventually gets hard to justify spending too much time on it.  The money
+that Mike earned is a great proof of concept, but we need to scale up
+the effort.  If more users contributed a few bucks a month, I know that
+developers could sink a lot more time into their favourite projects."
+</p>
+
+<p>
+The FOSS Factory website enables either one-time donations or monthly
+sponsorship.  Its unique funding structure allows bounties to be shared
+among many developers without discouraging collaboration.  This makes it
+ideal for large projects like Pidgin voice and video.
+</p>
+
+<p>
+When asked about the bounty, Ruprecht said "... it helped me feel
+more comfortable putting more time in for it."  Ruprecht is a recent
+graduate of ITT Technical Institute and is currently employed part-time.
+</p>
+
+<p>
+The funding for Pidgin Voice and Video is down to just over $1,700 CAD.
+But FOSS Factory Inc. has promised up to $10,000 CAD of matching funds
+to help attract more sponsors and developers to the project.
+</p>
+
+<p>
+About FOSS Factory:<br>
+FOSS Factory's mission is to accelerate the advancement of free/open
+source software by helping people collaborate on the design, funding,
+and development of innovative software ideas.
+</p>
+
+<p>
+Contact:<br>
+John-Paul Gignac, Founder<br>
+FOSS Factory Inc.<br>
+519-967-9665<br>
+http://www.fossfactory.org/<br>
+</p>
+
+<hr />
+
 <h1>$25,000 Prize for Free/Open Source Software Development</h1>
 
 <p class="pr-summary">
