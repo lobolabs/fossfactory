@@ -3103,7 +3103,7 @@ function ff_gettext( $textid, $macros)
         $text = "A funds withdrawal was requested by user %USERNAME%.  ".
             "Please make sure that it gets paid within one business day.";
     } else if( $textid == 'fundingnotice-subject') {
-        $text = "Increased funding for \"%PROJECTNAME\"";
+        $text = "Increased funding for \"%PROJECTNAME%\"";
     } else if( $textid == 'fundingnotice-body') {
         $text = "The following sponsors have increased their funding ".
             "for \"%PROJECTNAME%\":\n\n%CHANGES%\n\n".
