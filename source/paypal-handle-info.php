@@ -146,7 +146,7 @@ function paypal_handle_info( $info)
     // Compute the net amount after deducting the transaction fee.
     $netamount = $amount - $fee;
 
-    $projectid = $custom[1];
+    $projectid = "$custom[1]";
 
     if( $username !== '') {
         list($rc,$err) = ff_receivefunds( $username,
