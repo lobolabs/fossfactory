@@ -113,6 +113,7 @@ if( isset($_REQUEST["really_do_it"])) {
                 "item_name" => $_REQUEST["item_name"],
                 "item_number" => $_REQUEST["item_number"],
                 "subscr_date" => date("H:i:s M d, Y T",$now),
+                "delay" => isset($_REQUEST["delay"])?'yes':'no',
                 "due" => $now);
 
             $PDT = array(
@@ -253,10 +254,12 @@ if( isset($_REQUEST["really_do_it"])) {
 <head>
 </head>
 <body>
+<form>
 <? if( $_REQUEST["cmd"] === "_xclick-subscriptions" &&
     $_REQUEST["modify"] == 2) { ?>
 Are you sure you want to modify your subscription?
 <? } else if( $_REQUEST["cmd"] === "_xclick-subscriptions") { ?>
+<input type=checkbox name="delay" value="1"> Delay payment (delayed by 10 days in real life, 10 minutes in this simulation)<br />
 Are you sure you want to create a subscription for <?=$_REQUEST["a3"]?>
 <?=$_REQUEST["currency_code"]?> per month?
 <? } else if( $_REQUEST["cmd"] === "_subscr-find") { ?>
@@ -265,7 +268,6 @@ Are you sure you want to cancel your subscription?
 Are you sure you want to transfer <?=$_REQUEST["amount"]?>
 <?=$_REQUEST["currency_code"]?> from your fake PayPal account?
 <? } ?>
-<form>
 <? foreach( $_REQUEST as $key => $value) { ?>
 <input type=hidden name="<?=htmlentities($key)?>" value="<?=htmlentities($value)?>">
 <? } ?>

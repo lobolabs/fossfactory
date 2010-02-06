@@ -86,7 +86,7 @@ if( is_dir("$GLOBALS[DATADIR]/fake-paypal")) {
                 "txn_id" => $txn_id,
                 "receiver_email" => $details["business"],
                 "first_name" => $details["first_name"],
-                "payment_status" => "Cleared",
+                "payment_status" => "Completed",
                 "mc_gross" => $details["amount"],
                 "mc_fee" => format_for_entryfield( max(100,
                     round($details["amount"]*0.05*$currency["multiplier"])),
@@ -95,6 +95,15 @@ if( is_dir("$GLOBALS[DATADIR]/fake-paypal")) {
                 "charset" => "windows-1252",
                 "notify_version" => 2.4,
                 );
+            if( $details["delay"] === 'yes') {
+                $IPN["payment_status"] = "Pending";
+                unset($IPN["mc_fee"]);
+                $details["delay"] = 'pending';
+            } else if( $details["delay"] === 'pending') {
+                $details["delay"] = 'yes';
+                $txn_id = $details["txn_id"];
+                $IPN["txn_id"] = $txn_id;
+            }
 
             $out = fopen($ipnfile,"w");
             foreach( $IPN as $key => $value) {
