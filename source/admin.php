@@ -49,3 +49,6 @@ apply_template("Administration",array(
 <p>
 <a href="withdrawals.php">Manage the Withdrawal Queue</a>
 </p>
+<p>
+<a href="bookkeeping.php">Bookkeeping</a>
+</p>
