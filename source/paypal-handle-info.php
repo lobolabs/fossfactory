@@ -112,9 +112,10 @@ function paypal_handle_info( $info)
         return array(0,"Huh?");
     }
 
-// We will accept incomplete payments for now
-//    if( $info["payment_status"] !== 'Completed')
-//        return array(4,"Payment not complete");
+    // We must reject pending payments because they don't necessarily
+    // include the transaction fee.
+    if( $info["payment_status"] === 'Pending')
+        return array(4,"Payment not complete");
 
     // The message is a verified transfer of funds.  Now let's make sure
     // it's a valid sponsorship.
@@ -126,7 +127,7 @@ function paypal_handle_info( $info)
     // Make sure it's not old.  This is because old sponsorship records may be
     // moved out of the database and archived, so they can't be compared
     // against to see if the current transaction is a repeat.
-    if( strtotime( $info["payment_date"]) < time() - 2*3600)
+    if( strtotime( $info["payment_date"]) < time() - 3*3600*24*7)
         return array(7,"IPN too old, probably a repeat: $info[payment_date]");
 
     $multiplier = intval("1".str_repeat("0",$currency["decimal_places"]));
