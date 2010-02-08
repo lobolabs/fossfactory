@@ -101,9 +101,7 @@ function show_body($topicid, $post,  $openids=false) {
         $diff = $args[2];
     }
 
-    $body =  str_replace("\n","<br />\n",trim(htmlentities($body)));
-    $body = ereg_replace("(https?://[-._~a-zA-Z0-9?&=#;/]*[-_a-zA-Z0-9/])",
-        "<a href=\"\\1\">\\1</a>", $body);
+    $body = linkify(str_replace("\n","<br />\n",trim(htmlentities($body))));
 
     //check if post has attachments
     if (sizeof($post['attachments'])> 0) {

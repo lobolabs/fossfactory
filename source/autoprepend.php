@@ -486,6 +486,11 @@ function projurl($id,$parms='') {
     return $url;
 }
 
+function linkify( $html) {
+    return ereg_replace("(https?://[-._~a-zA-Z0-9?&=#;/]*[-_a-zA-Z0-9/])",
+        "<a href=\"\\1\">\\1</a>", $html);
+}
+
 if( $_REQUEST["requser"] &&
     $_REQUEST["requser"] !== $username) {
     include_once("login.php");

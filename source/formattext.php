@@ -18,10 +18,10 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 */ ?>
 <?php
 function formatText( $text) {
-    return "<tt>".str_replace("\n","<br>\n",
+    return "<tt>".linkify(str_replace("\n","<br>\n",
         ereg_replace("^ ","&nbsp;",
         str_replace("\n ","\n&nbsp;",
         preg_replace("/(  *) /e", "str_replace(' ','&nbsp;','\\1').' '",
-        htmlentities($text)))))."</tt>";
+        htmlentities($text))))))."</tt>";
 }
 ?>
