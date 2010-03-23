@@ -229,6 +229,8 @@ function canceldel() {
     </div>
 <? } ?>
 
+<div class="projectsubinfo">
+
 <div id=projectlead><h1>Project Lead: </h1>
 <? if( $projinfo["lead"]) { ?>
 <a href="member.php?id=<?=urlencode($projinfo["lead"])?>"><?=htmlentities($projinfo["lead"])?></a>
@@ -298,6 +300,7 @@ if( $username && $username !== $projinfo["lead"]) {
     </div>
 </div>
 <?php } ?>
+</div>
 
 <span class=abstract-content>
 <?=formatText(ereg_replace("\n.*","",$projinfo["reqmts"]))?>

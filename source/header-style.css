@@ -365,7 +365,9 @@ body.loggedin #currency {
     font-size:12px;
     background-color: #eb5901;
     padding: 0.3em 0.8em 0.3em 0.5em;
+    border-radius: 0em 0em 0.5em 0em;
     -moz-border-radius: 0em 0em 0.5em 0em;
+    -webkit-border-radius: 0em 0em 0.5em 0em;
     text-decoration: none;
     margin:0em;
     height:1.28em;

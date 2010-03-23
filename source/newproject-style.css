@@ -41,7 +41,9 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
     height:12em;
     text-align:center;
     text-decoration:none;
+    border-radius: 1.5em;
     -moz-border-radius: 1.5em;
+    -webkit-border-radius: 1.5em;
     position: absolute;
     top: 0em;
 }
