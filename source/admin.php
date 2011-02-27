@@ -52,3 +52,6 @@ apply_template("Administration",array(
 <p>
 <a href="bookkeeping.php">Bookkeeping</a>
 </p>
+<p>
+<a href="deletemember.php">Delete a Member</a>
+</p>

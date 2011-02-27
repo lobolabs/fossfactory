@@ -47,6 +47,7 @@ if( isset( $_REQUEST["name"]) && !isset($_REQUEST["err"])) {
         if( strtolower($uname) === 'anonymous' ||
             strtolower($uname) === 'nobody' ||
             substr(strtolower($uname),0,7) === 'arbiter' ||
+            substr(strtolower($uname),0,7) === 'deleted' ||
             strtolower($uname) === 'admin' ||
             strtolower($uname) === 'administrator' ||
             strtolower($uname) === 'root') {

@@ -5912,11 +5912,14 @@ function admin_changeusername( $old, $new)
         return array(4,"Invalid username: $new");
 
     // The columns to update
-    $columns = array("disputes:plaintiff","donations:owner",
+    $columns = array("disputes:plaintiff",
         "member_donations:member","member_donations:assignee",
         "members:username","posts:owner","projects:creator",
         "projects:lead","sessions:username","submissions:username",
-        "subscriptions:username","watches:username");
+        "recent_funding_changes:username","project_user_data:member",
+        "draft_projects:creator","withdrawal_queue:username",
+        "sponsorship_queue:username","fix_factors_queue:member",
+        "notification_queue:username","watches:username");
 
     // Sort the columns in order to make sure we lock the tables in
     // alphabetical order
@@ -5924,6 +5927,17 @@ function admin_changeusername( $old, $new)
 
     $qu = sql_exec("begin");
     if( $qu === false) return private_dberr();
+
+    // If the user has a Paypal subscription, then we shouldn't change
+    // his username, because the subscription is tied to his original
+    // username.
+    $qu = sql_exec("lock table subscriptions");
+    if( $qu === false) return private_dberr(1);
+    $qu = sql_exec("select * from subscriptions where username='".
+        sql_escape($old)."'");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows($qu) != 0) return private_dberr(8,
+        "Can't change username until Paypal subscription is cancelled");
 
     // Completely lock all of the relevant tables.
     // This is extremely rude, and will pretty much halt the entire system
@@ -5954,6 +5968,38 @@ function admin_changeusername( $old, $new)
             "' where $colname='".sql_escape($old)."'");
         if( $qu === false) return private_dberr(1);
     }
+
+    $old = scrub($old);
+
+    // Change some less typical username usage patterns
+    //"transaction_log:account/reserve:$user"
+    //"transaction_log:account/sponsorship:$user:$proj"
+    //"recent_events:eventid/.*member:$user.* ..."
+    $qu = sql_exec("lock table transaction_log");
+    if( $qu === false) return private_dberr(1);
+    $qu = sql_exec("update transaction_log set ".
+        "account='reserve:".sql_escape($new).
+        "' where account='reserve:".sql_escape($old)."'");
+    if( $qu === false) return private_dberr(1);
+    $qu = sql_exec("update transaction_log set ".
+        "account='sponsorship:".sql_escape($new).
+        ":'||substring(account from ".(strlen($new)+14).
+        ") where account like 'sponsorship:".sql_escape($old).":%'");
+    if( $qu === false) return private_dberr(1);
+    $qu = sql_exec("update recent_events set ".
+        "eventid=substring(eventid from 1 for char_length(eventid)-".
+        strlen($old).")||'".sql_escape($new).
+        "' where eventid like '%member:".sql_escape($old)."'");
+    if( $qu === false) return private_dberr(1);
+    $qu = sql_exec("lock table recent_events");
+    if( $qu === false) return private_dberr(1);
+    $qu = sql_exec("update recent_events set ".
+        "eventid=substring(eventid from 1 for ".
+        "position('member:".sql_escape($old).",' in eventid)+6)||'".
+        sql_escape($new)."'||substring(eventid from position('member:".
+        sql_escape($old).",' in eventid)+".(strlen($old)+7).
+        ") where eventid like '%member:".sql_escape($old).",'");
+    if( $qu === false) return private_dberr(1);
 
     // We're done.
     return private_commit();
@@ -6182,5 +6228,91 @@ function admin_setmemberauth( $username, $auth)
         ($auth?"'".sql_escape($auth)."'":"null").
         " where username='".sql_escape($username)."'");
     return array(0,"Success");
+}
+
+function admin_deletemember( $username)
+{
+    // Retract all sponsorships
+    list($rc, $donations) = ff_memberdonations($username);
+    if( $rc) return array($rc,$donations);
+    foreach( $donations as $id => $details) {
+        list($rc,$err) = ff_setsponsorship($id,$username,'');
+        if( $rc) return array($rc,$err);
+    }
+
+    // Get the amount in the member's reserve
+    $qu = sql_exec("select email,reserve from members ".
+        "where username='".sql_escape($username)."'");
+    if( $qu  === false) return private_dberr(1);
+    if( sql_numrows( $qu) == 0)
+        return array(2,"No such member: $username");
+    $row = sql_fetch_array($qu,0);
+
+    // Withdraw all the money from the reserve
+    if( ereg("[1-9]",$row["reserve"])) {
+        list($rc,$err) = ff_requestwithdrawal(
+            $username, $row["email"], $row["reserve"]);
+        if( $rc) return array($rc,$err);
+    }
+
+    $qu = sql_exec("begin");
+    if( $qu  === false) return private_dberr();
+
+    // Lock the members record
+    $qu = sql_exec("select reserve from members ".
+        "where username='".sql_escape($username)."' for update");
+    if( $qu  === false) return private_dberr(1);
+    if( sql_numrows( $qu) == 0)
+        return array(2,"No such member: $username");
+    $row = sql_fetch_array($qu,0);
+
+    // Make sure there is still no money in the reserve
+    if( ereg("[1-9]","$row[reserve]"))
+        return private_dberr(7,"There is money in the reserve");
+
+    // Make sure there are still no sponsorships
+    $qu = sql_exec("select * from member_donations ".
+        "where member='".sql_escape($username)."'");
+    if( $qu  === false) return private_dberr(1);
+    for( $i=0; $i < sql_numrows($qu); $i++) {
+        $row = sql_fetch_array($qu,$i);
+        if( ereg("[1-9]","$row[amount]"))
+            return private_dberr(7,"The member has one or more sponsorships");
+    }
+
+    // Delete the member's password
+    $qu = sql_exec("update members set password='' ".
+        "where username='".sql_escape($username)."'");
+    if( $qu === false) return private_dberr(1);
+
+    // Delete existing sessions
+    $qu = sql_exec("delete from sessions where username='".
+        sql_escape($username)."'");
+    if( $qu === false) return private_dberr(1);
+
+    // Delete watches
+    $qu = sql_exec("delete from watches where username='".
+        sql_escape($username)."'");
+    if( $qu === false) return private_dberr(1);
+
+    $uniq = sql_nextval( "username_seq");
+    if( $uniq === false) return private_dberr();
+    $new = "deleted$uniq";
+
+    // Clear private info
+    $qu = sql_exec("update members set ".
+        "name='Deleted Member',email='$new@fossfactory.org' ".
+        "where username='".sql_escape($username)."'");
+    if( $qu === false) return private_dberr(1);
+
+    $qu = sql_exec("update posts set ownername='Deleted Member' ".
+        "where owner='".sql_escape($username)."'");
+    if( $qu === false) return private_dberr(1);
+
+    $rc = private_commit();
+    if( $rc[0]) return $rc;
+    
+    // Change the username
+    return admin_changeusername( $username, $new);
 }
 ?>
