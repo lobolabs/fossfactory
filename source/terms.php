@@ -21,6 +21,8 @@ along with Fossfactory-src.  If not, see <http://www.gnu.org/licenses/>.
 
 <h1>Terms of Use Agreement</h1>
 
+<p><small><a href="#recentchanges">Recent changes</a></small></p>
+
 <h2>Definitions</h2>
 
 <p><i>Content</i>: includes but is not limited to, any text, graphics,
@@ -245,3 +247,8 @@ to "Recent Changes" which will be listed in chronological order; and</p>
 
 <p>(d) Your use will be subject to the most recent version of the Terms
 and Conditions.</p>
+
+<a name="recentchanges"><h1>Recent Changes</h1></a>
+<table border=1 cellpadding=4 cellspacing=0>
+<tr><td>2011-04-15</td><td>Explicitly allowed submissions under compatible licences.</td></tr>
+</table>
