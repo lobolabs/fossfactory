@@ -46,7 +46,7 @@ terms and conditions of the Site.</p>
 
 <p>You agree that your licence to use this Site is contingent upon your
 agreement to abide by these Terms and Conditions. FOSS Factory reserves
-the right to terminate your license at any time, for any reason.</p>
+the right to terminate your licence at any time, for any reason.</p>
 
 <h2>2. Terms and Conditions are Legally Binding</h2>
 
@@ -80,7 +80,8 @@ that every part of the submitted content is either:</p>
 <ol style="list-style:decimal">
     <li>in the public domain; or</li>
     <li>licensed under the terms of one or more of the following
-    free/open source licences:
+    free/open source licences, or under the terms of a licence
+    compatible with one or more of these licences:
         <ul>
             <li>GNU General Public License, version 3 (<a href="http://www.gnu.org/copyleft/gpl.html">http://www.gnu.org/copyleft/gpl.html</a>)</li>
             <li>GNU General Public License, version 2 (<a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</a>)</li>
@@ -97,7 +98,9 @@ that every part of the submitted content is either:</p>
 
 <p>These licences provide that other users may freely copy, distribute,
 display, and perform the work, make derivative works and make commercial
-use of the work.</p>
+use of the work.  An alternate licence is deemed compatible if it permits
+any recipient of the content to freely redistribute the content under the
+terms of one or more of the above licences.</p>
 
 <p>(c) Moral Rights</p>
 
