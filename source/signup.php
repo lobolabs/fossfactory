@@ -66,7 +66,7 @@ if( isset( $_REQUEST["name"]) && !isset($_REQUEST["err"])) {
             $err = "You forgot to enter your email address.";
             break;
         }
-        if( !ereg("^[-._a-zA-Z0-9]+@[-._a-zA-Z0-9]+$", $email)) {
+        if( !ereg("^[-._+a-zA-Z0-9]+@[-._+a-zA-Z0-9]+$", $email)) {
             $err = "You entered an invalid email address.";
             break;
         }
