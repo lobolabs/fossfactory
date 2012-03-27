@@ -6218,6 +6218,68 @@ function admin_getwithdrawalfilenames( $from_YYYYMMDD=false, $to_YYYYMMDD=false)
     return array(0,$filenames);
 }
 
+function admin_cancelwithdrawal( $xid)
+{
+    $xid = intval($xid);
+
+    // Get all the info about the withdrawal
+    $qu = sql_exec("select * from withdrawal_queue where xid=$xid");
+    if( $qu === false) return false;
+    if( sql_numrows($qu) == 0)
+        return array(2,"No such withdrawal transaction: $xid");
+    $row = sql_fetch_array( $qu, 0);
+    $email = $row["email"];
+    $amount = $row["amount"];
+    $username = $row["username"];
+
+    $qu = sql_exec("begin");
+    if( $qu === false) return private_dberr();
+
+    // Make sure the member still exists
+    $qu = sql_exec("select username from members ".
+        "where username='".sql_escape($username)."' for update");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows($qu) == 0)
+        return private_dberr(2,"Member '$username' no longer exists.");
+
+    // Re-add the funds to the member's reserve
+    $qu = sql_exec("update members set reserve=add_money(reserve,'$amount') ".
+        "where username='".sql_escape($username)."'");
+    if( $qu === false) return private_dberr(1);
+
+    // Get a new transaction ID
+    $newxid = sql_nextval("transaction_seq");
+    if( $newxid === false) return private_dberr(1);
+    $split = 0;
+    $now = time();
+    $desc = "Cancel Withdrawal";
+
+    // Make sure the withdrawal record still exists
+    $qu = sql_exec("select * from withdrawal_queue where xid=$xid for update");
+    if( $qu === false) return private_dberr(1);
+    if( sql_numrows($qu) == 0)
+        return private_dberr(2,"No such withdrawal transaction: $xid");
+
+    // Delete the withdrawal record
+    $qu = sql_exec("delete from withdrawal_queue where xid=$xid");
+    if( $qu === false) return private_dberr(1);
+
+    // Log the transaction
+    $qu = sql_exec("insert into transaction_log ".
+        "(xid,split,time,account,change,description) values ".
+        "($newxid,".(++$split).",$now,'reserve:$username',".
+        "'$amount','".sql_escape($desc)."')");
+    if( $qu === false) return private_dberr(1);
+
+    $qu = sql_exec("insert into transaction_log ".
+        "(xid,split,time,account,change,description) values ".
+        "($newxid,".(++$split).",$now,'withdrawals:".sql_escape($email)."',".
+        "subtract_money('','$amount'),'".sql_escape($desc)."')");
+    if( $qu === false) return private_dberr(1);
+
+    return private_commit();
+}
+
 function admin_setmemberauth( $username, $auth)
 {
     $qu = sql_exec("update members set auth=".
