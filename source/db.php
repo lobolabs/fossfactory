@@ -61,6 +61,8 @@ function sql_exec($query) {
         }
         $conn = pg_connect("dbname=$dbname user=postgres");
         if( $conn === false) return false;
+        $rc = pg_set_client_encoding($conn,"LATIN1");
+        if( $rc != 0) return false;
     }
     $rc = pg_exec($query);
     if( $rc === false) {
